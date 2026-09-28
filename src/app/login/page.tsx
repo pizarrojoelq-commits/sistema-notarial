@@ -7,7 +7,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+ const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     
     const userClean = usuario.trim().toUpperCase();
@@ -28,16 +28,18 @@ export default function LoginPage() {
     if (empleado && passClean === userClean) {
       localStorage.setItem("usuarioLogueado", JSON.stringify(empleado));
       
+      // ALERTA DE PRUEBA: Esto te dirá exactamente qué rol detectó y a dónde va a saltar
+      alert(`Usuario reconocido: ${empleado.nombre} | Rol: ${empleado.rol}. Redirigiendo...`);
+
       if (empleado.rol === "OPERATIVO") {
         window.location.href = "/pedidos";
       } else {
-        window.location.href = "/"; // Los externos van directo al formulario de envíos (raíz)
+        window.location.href = "/"; // Aquí debería ir a la raíz (formulario)
       }
     } else {
       setError("❌ Usuario o contraseña incorrectos. Recuerda usar mayúsculas.");
     }
   };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#243c5a] to-[#1a2b4c] flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-8">
