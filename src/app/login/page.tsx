@@ -34,7 +34,7 @@ export default function LoginPage() {
       if (empleado.rol === "OPERATIVO") {
         window.location.href = "/pedidos";
       } else {
-        window.location.href = "/"; // Aquí debería ir a la raíz (formulario)
+        window.location.href = "/solicitud"; // Aquí debería ir a la raíz (formulario)
       }
     } else {
       setError("❌ Usuario o contraseña incorrectos. Recuerda usar mayúsculas.");
