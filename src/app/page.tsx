@@ -30,6 +30,13 @@ export default function SolicitudTomos() {
     } else {
       const user = JSON.parse(sesion);
       setUsuarioActual(user);
+      
+      // REGLA DE ORO: Si un operativo entra a la raíz, lo mandamos a su panel de pedidos
+      if (user.rol === "OPERATIVO") {
+        window.location.href = "/pedidos";
+        return;
+      }
+
       setSolicitante(user.nombre.split(" ")[0]);
     }
   }, []);
@@ -39,11 +46,11 @@ export default function SolicitudTomos() {
     window.location.href = "/login";
   };
 
- const enviarSolicitud = async (e: React.FormEvent) => {
+  const enviarSolicitud = async (e: React.FormEvent) => {
     e.preventDefault();
     
     const nuevoPedido = {
-      id: Date.now(), // 👈 Agregamos esto para que nunca vaya vacío
+      id: Date.now(),
       solicitante: solicitante || "No especificado",
       motivo: motivoSolicitud || "Sin motivo",
       documento: documento || "No especificado",
@@ -81,13 +88,15 @@ export default function SolicitudTomos() {
       }
 
       alert("¡Solicitud enviada con éxito al Archivo Central (Nube)!");
-      window.location.href = "/pedidos";
+      // Limpiar formulario o recargar
+      window.location.reload();
 
     } catch (err: any) {
       console.error("Error al guardar:", err);
       alert(`Error: ${err.message}`);
     }
   };
+
   if (!isMounted) return null;
 
   return (
@@ -110,14 +119,11 @@ export default function SolicitudTomos() {
           <div className="flex items-center gap-3 bg-white/10 p-3 rounded backdrop-blur-sm">
             <div className="text-right">
               <p className="text-xs text-gray-200">Usuario conectado:</p>
-              <p className="text-sm font-bold text-white">{usuarioActual?.nombre}</p>
+              <p className="text-sm font-bold text-white">{usuarioActual?.nombre} ({usuarioActual?.rol})</p>
             </div>
             <div className="flex gap-2 ml-4">
-              <a href="/pedidos" className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-1.5 px-3 rounded text-xs transition-colors">
-                Panel de Pedidos
-              </a>
               <a href="/inventarios" className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-1.5 px-3 rounded text-xs transition-colors">
-                Inventarios
+                Consultar Inventarios 📊
               </a>
               <button 
                 onClick={cerrarSesion}
