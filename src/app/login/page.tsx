@@ -31,11 +31,11 @@ export default function LoginPage() {
       // Guardamos la sesión activa en el navegador
       localStorage.setItem("usuarioLogueado", JSON.stringify(empleado));
       
-      // Redirigimos según su rol
+      // Redirigimos según su rol de manera estricta
       if (empleado.rol === "OPERATIVO") {
         window.location.href = "/pedidos";
       } else {
-        window.location.href = "/inventarios"; // Los externos ven inventarios / estados
+        window.location.href = "/"; // Los externos van directo al formulario de envío de pedidos
       }
     } else {
       setError("❌ Usuario o contraseña incorrectos. Recuerda usar mayúsculas (Ej. SAORI.AQUINO).");
