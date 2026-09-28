@@ -16,13 +16,13 @@ export default function LoginPage() {
 
     // Lista de usuarios permitidos y sus roles exactos
     const usuariosValidos: { [key: string]: { rol: "OPERATIVO" | "EXTERNO"; nombre: string } } = {
-      "JOEL.PIZARRO": { rol: "OPERATIVO", nombre: "Joel Pizarro (Archivo Central)" },
-      "SAORI.AQUINO": { rol: "OPERATIVO", nombre: "Saori Aquino (Archivo)" },
-      "ISABEL.RIOS": { rol: "OPERATIVO", nombre: "Isabel Rios (Archivo)" },
-      "ALONSO.CORTEZ": { rol: "OPERATIVO", nombre: "Alonso Cortez (Archivo)" },
-      "RUTH.UGARTE": { rol: "OPERATIVO", nombre: "Ruth Ugarte (Archivo)" },
-      "CINTHIA.SIRLOPU": { rol: "EXTERNO", nombre: "Cinthia Sirlopu (Solicitante)" },
-      "ENRIQUE.JARA": { rol: "EXTERNO", nombre: "Enrique Jara (Solicitante)" },
+      "JOEL.PIZARRO": { rol: "OPERATIVO", nombre: "Joel Pizarro" },
+      "SAORI.AQUINO": { rol: "OPERATIVO", nombre: "Saori Aquino" },
+      "ISABEL.RIOS": { rol: "OPERATIVO", nombre: "Isabel Rios" },
+      "ALONSO.CORTEZ": { rol: "OPERATIVO", nombre: "Alonso Cortez" },
+      "RUTH.UGARTE": { rol: "OPERATIVO", nombre: "Ruth Ugarte" },
+      "CINTHIA.SIRLOPU": { rol: "EXTERNO", nombre: "Cinthia Sirlopu" },
+      "ENRIQUE.JARA": { rol: "EXTERNO", nombre: "Enrique Jara" },
     };
 
     const empleado = usuariosValidos[userClean];

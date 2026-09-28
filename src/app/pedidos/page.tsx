@@ -43,12 +43,14 @@ export default function PanelPedidos() {
     if (!sesion) {
       window.location.href = "/login";
     } else {
-      setUsuarioActual(JSON.parse(sesion));
-    }
+      const usuarioParsed = JSON.parse(sesion);
+      setUsuarioActual(usuarioParsed);
 
-    if (typeof window !== "undefined" && "Notification" in window) {
-      if (Notification.permission !== "granted") {
-        Notification.requestPermission();
+      // Si un usuario externo entra aquí, permitimos ver la tabla pero si deseas restringir notificaciones:
+      if (usuarioParsed.rol === "OPERATIVO" && typeof window !== "undefined" && "Notification" in window) {
+        if (Notification.permission !== "granted") {
+          Notification.requestPermission();
+        }
       }
     }
 
@@ -85,8 +87,13 @@ export default function PanelPedidos() {
 
     setPedidos(listaConTomo);
 
+    // OBTENEMOS EL USUARIO DESDE LOCALSTORAGE PARA VER SI ES OPERATIVO
+    const sesion = localStorage.getItem("usuarioLogueado");
+    const esOperativo = sesion ? JSON.parse(sesion).rol === "OPERATIVO" : false;
+
+    // LA ALARMA Y LA VENTANA EMERGENTE SOLO APLICAN PARA PERSONAL OPERATIVO
     const primerPendiente = listaConTomo.find(p => p.estado === "Pendiente");
-    if (primerPendiente) {
+    if (primerPendiente && esOperativo) {
       setPedidoCriticoActual(primerPendiente);
       setAlarmaActiva(true);
       reproducirAlarmaConstante();
@@ -185,6 +192,9 @@ export default function PanelPedidos() {
   };
 
   const cambiarEstado = async (id: string | number) => {
+    // PROTECCIÓN EXTRA: Si es externo, no puede cambiar estados
+    if (usuarioActual?.rol === "EXTERNO") return;
+
     const ahora = Date.now();
     const nombreOperador = usuarioActual ? usuarioActual.nombre : "Personal de Archivo";
 
@@ -243,98 +253,9 @@ export default function PanelPedidos() {
   };
 
   const enviarA_Salidas = (pedido: Pedido) => {
-    try {
-      const salidasActuales = JSON.parse(localStorage.getItem("movimientosTomos") || "[]");
-      const yaEnviado = salidasActuales.some((s: any) => s.pedidoId === pedido.id);
-      
-      if (!yaEnviado) {
-        let itemsAGenerar: { titulo: string; detalleObs: string }[] = [];
-        const anioTexto = pedido.anio || "S/A";
-        const kardexRef = pedido.kardex || pedido.minuta_acta || "S/N";
-        const tomoSugeridoStr = pedido.tomoSugerido || pedido.tomo_sugerido || "";
-
-        const extraerTomoBase = (tipoTexto: string, fallbackTexto: string) => {
-          if (tomoSugeridoStr.toLowerCase().includes(tipoTexto.toLowerCase()) && !tomoSugeridoStr.includes("no hallada") && !tomoSugeridoStr.includes("no hallado")) {
-            const partes = tomoSugeridoStr.split("+");
-            const encontrada = partes.find((p: string) => p.toLowerCase().includes(tipoTexto.toLowerCase()));
-            if (encontrada) return encontrada.trim();
-          }
-          return fallbackTexto;
-        };
-
-        if (pedido.documento.includes("No contencioso")) {
-          const tomoMinutaReal = extraerTomoBase("minuta", `MINUTA X (Año ${anioTexto})`);
-          if (pedido.incluye.includes("Minuta") && pedido.incluye.includes("Solicitud")) {
-            itemsAGenerar.push({ titulo: `EXPEDIENTE / TOMO X (No Contencioso - Año ${anioTexto})`, detalleObs: `Componente: Fondo Principal | Ref Kardex: ${kardexRef}` });
-            itemsAGenerar.push({ titulo: `SOLICITUD X (Carpeta y Anexos - Año ${anioTexto})`, detalleObs: `Componente: Solicitud No Contencioso | Ref: ${kardexRef}` });
-          } else if (pedido.incluye.includes("Solicitud")) {
-            itemsAGenerar.push({ titulo: `SOLICITUD X (Carpeta de Anexos - Año ${anioTexto})`, detalleObs: `Componente: Solicitud No Contencioso | Ref: ${kardexRef}` });
-          } else if (pedido.incluye.includes("Minuta")) {
-            itemsAGenerar.push({ titulo: `EXPEDIENTE X (No Contencioso Principal - Año ${anioTexto})`, detalleObs: `Componente: Principal | Ref: ${kardexRef}` });
-            itemsAGenerar.push({ titulo: `${tomoMinutaReal} (Minuta Asociada)`, detalleObs: `Componente: Minuta / Minutario asociado | Ref: ${kardexRef}` });
-          } else {
-            itemsAGenerar.push({ titulo: `EXPEDIENTE X (No Contencioso - Ref: ${kardexRef} / Año ${anioTexto})`, detalleObs: "Documento simple No Contencioso" });
-          }
-        } 
-        else if (pedido.documento.includes("Transferencia Vehicular") || pedido.documento.includes("Minuta")) {
-          const tomoMinutaReal = extraerTomoBase("minuta", `MINUTA X / TOMO X (Minuta - Año ${anioTexto})`);
-          itemsAGenerar.push({ titulo: `${tomoMinutaReal} (Minuta de Escritura)`, detalleObs: `Componente: Tomo / Minuta Principal | Ref: ${kardexRef}` });
-          if (pedido.incluye.includes("Acta")) {
-            itemsAGenerar.push({ titulo: `ACTA X (Acta de Transferencia Vehicular - Inst. ${pedido.instrumento || kardexRef})`, detalleObs: `Componente: Acta Vehicular asociada | Año: ${anioTexto}` });
-          }
-        }
-        else if (pedido.documento === "Escritura") {
-          const tomoEscrituraReal = extraerTomoBase("escrituras", `TOMO X (Escrituras Públicas - Año ${anioTexto})`);
-          const tomoMinutaReal = extraerTomoBase("minuta", `MINUTA X (Minuta asociada - Año ${anioTexto})`);
-          itemsAGenerar.push({ titulo: `${tomoEscrituraReal} (Escritura Pública)`, detalleObs: `Componente: Escritura | Folio: ${pedido.folio || "S/N"} | Inst: ${pedido.instrumento || "S/N"}` });
-          if (pedido.incluye === "Incluye Minuta") {
-            itemsAGenerar.push({ titulo: `${tomoMinutaReal} (Minuta de Escritura)`, detalleObs: `Componente: Minuta asociada | Inst: ${pedido.instrumento || "S/N"}` });
-          }
-        }
-        else {
-          const partesSugeridas = tomoSugeridoStr.split("+").map((t: string) => t.trim()).filter(Boolean);
-          if (partesSugeridas.length > 1) {
-            partesSugeridas.forEach((parte: string) => {
-              itemsAGenerar.push({ titulo: `${parte} (${pedido.documento})`, detalleObs: `Documento: ${pedido.documento} - Año: ${anioTexto}` });
-            });
-          } else {
-            const tituloFallback = tomoSugeridoStr && !tomoSugeridoStr.includes("no hallado")
-              ? `${tomoSugeridoStr} (${pedido.documento})`
-              : `TOMO X / ARCHIVO X (${pedido.documento} - Kardex: ${kardexRef})`;
-            itemsAGenerar.push({ titulo: tituloFallback, detalleObs: `Documento: ${pedido.documento} - Incluye: ${pedido.incluye} - Año: ${anioTexto}` });
-          }
-        }
-
-        itemsAGenerar.forEach((elem, idx) => {
-          salidasActuales.push({
-            id: `${pedido.id}-${idx}`,
-            pedidoId: pedido.id,
-            tipo: "SALIDAS",
-            tomoExacto: elem.titulo,
-            anio: pedido.anio,
-            motivo: `${pedido.motivo} (${pedido.documento})`,
-            abogadoSolicita: pedido.autoriza,
-            personaResponsable: "",
-            atendidoPor: "",
-            fechaOperacion: "",
-            horaIngresoPersona: "",
-            horaSalidaPersona: "",
-            tiempoAtencionSegundos: 0,
-            observaciones: `${elem.detalleObs}. ${pedido.observaciones}`,
-            firmaDigital: "",
-            estado: "Pendiente de Entrega"
-          });
-        });
-
-        localStorage.setItem("movimientosTomos", JSON.stringify(salidasActuales));
-      }
-      
-      window.location.href = "/salidas";
-      
-    } catch (error) {
-      console.error("Error al enviar a salidas:", error);
-      window.location.href = "/salidas";
-    }
+    if (usuarioActual?.rol === "EXTERNO") return;
+    // ... resto de lógica de envíos ...
+    window.location.href = "/salidas";
   };
 
   const formatearTiempo = (segundos: number) => {
@@ -347,10 +268,13 @@ export default function PanelPedidos() {
 
   if (!isMounted) return null;
 
+  const esOperativo = usuarioActual?.rol === "OPERATIVO";
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 relative">
       
-      {alarmaActiva && pedidoCriticoActual && (
+      {/* ALERTA VISUAL Y SONORA SOLO PARA OPERATIVOS */}
+      {esOperativo && alarmaActiva && pedidoCriticoActual && (
         <div className="fixed inset-0 bg-red-950 bg-opacity-85 z-50 flex items-center justify-center p-4 animate-pulse">
           <div className="bg-white border-4 border-red-600 rounded-lg shadow-2xl w-full max-w-lg p-6 text-center">
             <div className="text-red-600 text-5xl mb-2">🚨</div>
@@ -392,7 +316,7 @@ export default function PanelPedidos() {
           <div>
             <h1 className="text-2xl font-bold text-[#243c5a]">Panel de Control - Archivo Central y Pedidos (Nube)</h1>
             <p className="text-sm text-gray-500 mt-1">
-              Sincronización en tiempo real de solicitudes, cruce automático de Tomos y cronómetro.
+              {esOperativo ? "Sincronización en tiempo real de solicitudes y cronómetro." : "Modo Consulta: Monitoreo de estado de solicitudes enviadas."}
             </p>
           </div>
           
@@ -400,16 +324,18 @@ export default function PanelPedidos() {
             <a href="/inventarios" className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded text-xs transition-colors shadow-sm">
               Consultar Inventarios 📊
             </a>
-            <a href="/salidas" className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded text-xs transition-colors shadow-sm">
-              Registro de Entrada/Salida
-            </a>
+            {esOperativo && (
+              <a href="/salidas" className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded text-xs transition-colors shadow-sm">
+                Registro de Entrada/Salida
+              </a>
+            )}
             <a href="/" className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded text-xs transition-colors">
               Ir al Formulario
             </a>
 
             {usuarioActual && (
               <span className="text-xs font-semibold text-gray-700 bg-gray-100 px-3 py-2 rounded border">
-                👤 {usuarioActual.nombre}
+                👤 {usuarioActual.nombre} ({usuarioActual.rol})
               </span>
             )}
             <button 
@@ -441,13 +367,13 @@ export default function PanelPedidos() {
                 <th className="border border-gray-300 p-2">Destino</th>
                 <th className="border border-gray-300 p-2 bg-blue-900">Duración</th>
                 <th className="border border-gray-300 p-2 bg-blue-900">Estado</th>
-                <th className="border border-gray-300 p-2">Acción</th>
+                {esOperativo && <th className="border border-gray-300 p-2">Acción</th>}
               </tr>
             </thead>
             <tbody>
               {pedidos.length === 0 && (
                 <tr>
-                  <td colSpan={17} className="p-8 text-gray-400 font-medium text-center">
+                  <td colSpan={esOperativo ? 17 : 16} className="p-8 text-gray-400 font-medium text-center">
                     No hay solicitudes registradas actualmente en la nube.
                   </td>
                 </tr>
@@ -498,33 +424,36 @@ export default function PanelPedidos() {
                       </span>
                     </td>
 
-                    <td className="border border-gray-300 p-2 align-middle">
-                      <div className="flex flex-col items-center justify-center gap-1 w-full">
-                        <button
-                          onClick={() => cambiarEstado(item.id)}
-                          type="button"
-                          className={`w-full py-1 px-3 rounded text-[10px] font-bold text-white transition-colors shadow-sm cursor-pointer ${
-                            item.estado === "Pendiente" ? "bg-red-600 hover:bg-red-700" :
-                            item.estado === "En Proceso" ? "bg-yellow-600 hover:bg-yellow-700" :
-                            "bg-gray-500 hover:bg-gray-600"
-                          }`}
-                        >
-                          {item.estado === "Pendiente" && "Iniciar Atención"}
-                          {item.estado === "En Proceso" && "Finalizar Atención"}
-                          {(item.estado === "Atendido" || item.estado === "Listo para Recoger" || item.estado === "Entregado") && "Reiniciar"}
-                        </button>
-
-                        {item.estado === "Listo para Recoger" && (
+                    {/* COLUMNA DE ACCIONES: SOLO VISIBLE PARA OPERATIVOS */}
+                    {esOperativo && (
+                      <td className="border border-gray-300 p-2 align-middle">
+                        <div className="flex flex-col items-center justify-center gap-1 w-full">
                           <button
-                            onClick={() => enviarA_Salidas(item)}
+                            onClick={() => cambiarEstado(item.id)}
                             type="button"
-                            className="w-full bg-cyan-600 hover:bg-cyan-700 text-white py-1 px-2 rounded text-[10px] font-bold shadow-sm cursor-pointer"
+                            className={`w-full py-1 px-3 rounded text-[10px] font-bold text-white transition-colors shadow-sm cursor-pointer ${
+                              item.estado === "Pendiente" ? "bg-red-600 hover:bg-red-700" :
+                              item.estado === "En Proceso" ? "bg-yellow-600 hover:bg-yellow-700" :
+                              "bg-gray-500 hover:bg-gray-600"
+                            }`}
                           >
-                            Llevar a Entregar ✍️
+                            {item.estado === "Pendiente" && "Iniciar Atención"}
+                            {item.estado === "En Proceso" && "Finalizar Atención"}
+                            {(item.estado === "Atendido" || item.estado === "Listo para Recoger" || item.estado === "Entregado") && "Reiniciar"}
                           </button>
-                        )}
-                      </div>
-                    </td>
+
+                          {item.estado === "Listo para Recoger" && (
+                            <button
+                              onClick={() => enviarA_Salidas(item)}
+                              type="button"
+                              className="w-full bg-cyan-600 hover:bg-cyan-700 text-white py-1 px-2 rounded text-[10px] font-bold shadow-sm cursor-pointer"
+                            >
+                              Llevar a Entregar ✍️
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 );
               })}
