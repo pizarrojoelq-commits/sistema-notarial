@@ -46,7 +46,7 @@ export default function PanelPedidos() {
       const usuarioParsed = JSON.parse(sesion);
       setUsuarioActual(usuarioParsed);
 
-      // Si un usuario externo entra aquí, permitimos ver la tabla pero si deseas restringir notificaciones:
+      // Solo pedimos permisos de notificación si es OPERATIVO
       if (usuarioParsed.rol === "OPERATIVO" && typeof window !== "undefined" && "Notification" in window) {
         if (Notification.permission !== "granted") {
           Notification.requestPermission();
@@ -87,11 +87,12 @@ export default function PanelPedidos() {
 
     setPedidos(listaConTomo);
 
-    // OBTENEMOS EL USUARIO DESDE LOCALSTORAGE PARA VER SI ES OPERATIVO
+    // VERIFICAMOS ESTRICTAMENTE EL ROL ACTUAL DESDE LOCALSTORAGE
     const sesion = localStorage.getItem("usuarioLogueado");
-    const esOperativo = sesion ? JSON.parse(sesion).rol === "OPERATIVO" : false;
+    const usuarioObj = sesion ? JSON.parse(sesion) : null;
+    const esOperativo = usuarioObj && usuarioObj.rol === "OPERATIVO";
 
-    // LA ALARMA Y LA VENTANA EMERGENTE SOLO APLICAN PARA PERSONAL OPERATIVO
+    // LA ALARMA Y LAS NOTIFICACIONES NUNCA DEBEN ACTIVARSE PARA EXTERNOS
     const primerPendiente = listaConTomo.find(p => p.estado === "Pendiente");
     if (primerPendiente && esOperativo) {
       setPedidoCriticoActual(primerPendiente);
@@ -192,8 +193,7 @@ export default function PanelPedidos() {
   };
 
   const cambiarEstado = async (id: string | number) => {
-    // PROTECCIÓN EXTRA: Si es externo, no puede cambiar estados
-    if (usuarioActual?.rol === "EXTERNO") return;
+    if (usuarioActual?.rol !== "OPERATIVO") return;
 
     const ahora = Date.now();
     const nombreOperador = usuarioActual ? usuarioActual.nombre : "Personal de Archivo";
@@ -253,8 +253,7 @@ export default function PanelPedidos() {
   };
 
   const enviarA_Salidas = (pedido: Pedido) => {
-    if (usuarioActual?.rol === "EXTERNO") return;
-    // ... resto de lógica de envíos ...
+    if (usuarioActual?.rol !== "OPERATIVO") return;
     window.location.href = "/salidas";
   };
 
@@ -273,7 +272,7 @@ export default function PanelPedidos() {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 relative">
       
-      {/* ALERTA VISUAL Y SONORA SOLO PARA OPERATIVOS */}
+      {/* ALERTA VISUAL Y SONORA ESTRICTAMENTE PARA OPERATIVOS */}
       {esOperativo && alarmaActiva && pedidoCriticoActual && (
         <div className="fixed inset-0 bg-red-950 bg-opacity-85 z-50 flex items-center justify-center p-4 animate-pulse">
           <div className="bg-white border-4 border-red-600 rounded-lg shadow-2xl w-full max-w-lg p-6 text-center">
@@ -316,7 +315,7 @@ export default function PanelPedidos() {
           <div>
             <h1 className="text-2xl font-bold text-[#243c5a]">Panel de Control - Archivo Central y Pedidos (Nube)</h1>
             <p className="text-sm text-gray-500 mt-1">
-              {esOperativo ? "Sincronización en tiempo real de solicitudes y cronómetro." : "Modo Consulta: Monitoreo de estado de solicitudes enviadas."}
+              {esOperativo ? "Sincronización en tiempo real de solicitudes y cronómetro." : "Modo Consulta (Solicitante): Monitoreo de estado de solicitudes enviadas."}
             </p>
           </div>
           
@@ -424,7 +423,7 @@ export default function PanelPedidos() {
                       </span>
                     </td>
 
-                    {/* COLUMNA DE ACCIONES: SOLO VISIBLE PARA OPERATIVOS */}
+                    {/* LA COLUMNA DE ACCIÓN SE OCULTA POR COMPLETO PARA EXTERNOS */}
                     {esOperativo && (
                       <td className="border border-gray-300 p-2 align-middle">
                         <div className="flex flex-col items-center justify-center gap-1 w-full">
@@ -464,4 +463,3 @@ export default function PanelPedidos() {
       </div>
     </div>
   );
-}
