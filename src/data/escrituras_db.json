@@ -1,0 +1,7042 @@
+[
+  {
+    "tomo": "TOMO",
+    "anio": "AÑO",
+    "rangoFolios": "RANGO DE FOLIOS",
+    "folioInicial": null,
+    "folioFinal": 0,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "1",
+    "anio": "1995",
+    "rangoFolios": "1-500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "2",
+    "anio": "1996",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "3",
+    "anio": "1996",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "4",
+    "anio": "1996",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "5",
+    "anio": "1996",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "6",
+    "anio": "1996",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "7",
+    "anio": "1996",
+    "rangoFolios": "3001-3100",
+    "folioInicial": 3001,
+    "folioFinal": 3100,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "8",
+    "anio": "1997",
+    "rangoFolios": "3101-3600",
+    "folioInicial": 3101,
+    "folioFinal": 3600,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "9",
+    "anio": "1997",
+    "rangoFolios": "3601-4100",
+    "folioInicial": 3601,
+    "folioFinal": 4100,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "10",
+    "anio": "1997",
+    "rangoFolios": "4101-4600",
+    "folioInicial": 4101,
+    "folioFinal": 4600,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "11",
+    "anio": "1997",
+    "rangoFolios": "4601-5100",
+    "folioInicial": 4601,
+    "folioFinal": 5100,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "12",
+    "anio": "1997",
+    "rangoFolios": "5101-5600",
+    "folioInicial": 5101,
+    "folioFinal": 5600,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "13",
+    "anio": "1997",
+    "rangoFolios": "5601-6100",
+    "folioInicial": 5601,
+    "folioFinal": 6100,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "14",
+    "anio": "1997",
+    "rangoFolios": "6101-6600",
+    "folioInicial": 6101,
+    "folioFinal": 6600,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "15",
+    "anio": "1997",
+    "rangoFolios": "6601-7100",
+    "folioInicial": 6601,
+    "folioFinal": 7100,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "16",
+    "anio": "1997",
+    "rangoFolios": "7101-7600",
+    "folioInicial": 7101,
+    "folioFinal": 7600,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "17",
+    "anio": "1998",
+    "rangoFolios": "7601-8100",
+    "folioInicial": 7601,
+    "folioFinal": 8100,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "18",
+    "anio": "1998",
+    "rangoFolios": "8101-8600",
+    "folioInicial": 8101,
+    "folioFinal": 8600,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "19",
+    "anio": "1998",
+    "rangoFolios": "8601-9100",
+    "folioInicial": 8601,
+    "folioFinal": 9100,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "20",
+    "anio": "1998",
+    "rangoFolios": "9101-9600",
+    "folioInicial": 9101,
+    "folioFinal": 9600,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "21",
+    "anio": "1998",
+    "rangoFolios": "9601-10100",
+    "folioInicial": 9601,
+    "folioFinal": 10100,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "22",
+    "anio": "1998",
+    "rangoFolios": "10101-10600",
+    "folioInicial": 10101,
+    "folioFinal": 10600,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "23",
+    "anio": "1998",
+    "rangoFolios": "10601-11100",
+    "folioInicial": 10601,
+    "folioFinal": 11100,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "24",
+    "anio": "1998",
+    "rangoFolios": "11101-11600",
+    "folioInicial": 11101,
+    "folioFinal": 11600,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "25",
+    "anio": "1998",
+    "rangoFolios": "11601-12100",
+    "folioInicial": 11601,
+    "folioFinal": 12100,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "26",
+    "anio": "1998",
+    "rangoFolios": "12101-12600",
+    "folioInicial": 12101,
+    "folioFinal": 12600,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "27",
+    "anio": "1998",
+    "rangoFolios": "12601-13100",
+    "folioInicial": 12601,
+    "folioFinal": 13100,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "28",
+    "anio": "1998",
+    "rangoFolios": "13101-13600",
+    "folioInicial": 13101,
+    "folioFinal": 13600,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "29",
+    "anio": "1998",
+    "rangoFolios": "13601-14100",
+    "folioInicial": 13601,
+    "folioFinal": 14100,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "30",
+    "anio": "1998",
+    "rangoFolios": "14101-14600",
+    "folioInicial": 14101,
+    "folioFinal": 14600,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "31",
+    "anio": "1998",
+    "rangoFolios": "14601-15100",
+    "folioInicial": 14601,
+    "folioFinal": 15100,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "32",
+    "anio": "1998",
+    "rangoFolios": "15101-15250",
+    "folioInicial": 15101,
+    "folioFinal": 15250,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "33",
+    "anio": "1999",
+    "rangoFolios": "1-500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "34",
+    "anio": "1999",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "35",
+    "anio": "1999",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "36",
+    "anio": "1999",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "37",
+    "anio": "1999",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "38",
+    "anio": "1999",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "39",
+    "anio": "1999",
+    "rangoFolios": "3001-3500",
+    "folioInicial": 3001,
+    "folioFinal": 3500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "40",
+    "anio": "1999",
+    "rangoFolios": "3501-4000",
+    "folioInicial": 3501,
+    "folioFinal": 4000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "41",
+    "anio": "1999",
+    "rangoFolios": "4001-4500",
+    "folioInicial": 4001,
+    "folioFinal": 4500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "42",
+    "anio": "1999",
+    "rangoFolios": "4501-5000",
+    "folioInicial": 4501,
+    "folioFinal": 5000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "43",
+    "anio": "1999",
+    "rangoFolios": "5001-5500",
+    "folioInicial": 5001,
+    "folioFinal": 5500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "44",
+    "anio": "1999",
+    "rangoFolios": "5501-6000",
+    "folioInicial": 5501,
+    "folioFinal": 6000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "45",
+    "anio": "1999",
+    "rangoFolios": "6001-6500",
+    "folioInicial": 6001,
+    "folioFinal": 6500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "46",
+    "anio": "1999",
+    "rangoFolios": "6501-7000",
+    "folioInicial": 6501,
+    "folioFinal": 7000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "47",
+    "anio": "1999",
+    "rangoFolios": "7001-7500",
+    "folioInicial": 7001,
+    "folioFinal": 7500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "48",
+    "anio": "1999",
+    "rangoFolios": "7501-8000",
+    "folioInicial": 7501,
+    "folioFinal": 8000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "49",
+    "anio": "2000",
+    "rangoFolios": "8001-8500",
+    "folioInicial": 8001,
+    "folioFinal": 8500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "50",
+    "anio": "2000",
+    "rangoFolios": "8501-9000",
+    "folioInicial": 8501,
+    "folioFinal": 9000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "51",
+    "anio": "2000",
+    "rangoFolios": "9001-9500",
+    "folioInicial": 9001,
+    "folioFinal": 9500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "52",
+    "anio": "2000",
+    "rangoFolios": "9501-10000",
+    "folioInicial": 9501,
+    "folioFinal": 10000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "53",
+    "anio": "2000",
+    "rangoFolios": "10001-10500",
+    "folioInicial": 10001,
+    "folioFinal": 10500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "54",
+    "anio": "2000",
+    "rangoFolios": "10501-11000",
+    "folioInicial": 10501,
+    "folioFinal": 11000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "55",
+    "anio": "2000",
+    "rangoFolios": "11001-11500",
+    "folioInicial": 11001,
+    "folioFinal": 11500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "56",
+    "anio": "2000",
+    "rangoFolios": "11501-12000",
+    "folioInicial": 11501,
+    "folioFinal": 12000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "57",
+    "anio": "2000",
+    "rangoFolios": "12001-12500",
+    "folioInicial": 12001,
+    "folioFinal": 12500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "58",
+    "anio": "2000",
+    "rangoFolios": "12501-13000",
+    "folioInicial": 12501,
+    "folioFinal": 13000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "59",
+    "anio": "2000",
+    "rangoFolios": "13001-13500",
+    "folioInicial": 13001,
+    "folioFinal": 13500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "60",
+    "anio": "2000",
+    "rangoFolios": "13501-14000",
+    "folioInicial": 13501,
+    "folioFinal": 14000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "61",
+    "anio": "2000",
+    "rangoFolios": "14001-14500",
+    "folioInicial": 14001,
+    "folioFinal": 14500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "62",
+    "anio": "2001",
+    "rangoFolios": "1-500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "63",
+    "anio": "2001",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "64",
+    "anio": "2001",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "65",
+    "anio": "2001",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "66",
+    "anio": "2001",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "67",
+    "anio": "2001",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "68",
+    "anio": "2001",
+    "rangoFolios": "3001-3500",
+    "folioInicial": 3001,
+    "folioFinal": 3500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "69",
+    "anio": "2001",
+    "rangoFolios": "3501-4000",
+    "folioInicial": 3501,
+    "folioFinal": 4000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "70",
+    "anio": "2001",
+    "rangoFolios": "4001-4500",
+    "folioInicial": 4001,
+    "folioFinal": 4500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "71",
+    "anio": "2001",
+    "rangoFolios": "4501-5000",
+    "folioInicial": 4501,
+    "folioFinal": 5000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "72",
+    "anio": "2001",
+    "rangoFolios": "5001-5500",
+    "folioInicial": 5001,
+    "folioFinal": 5500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "73",
+    "anio": "2001",
+    "rangoFolios": "5501-6000",
+    "folioInicial": 5501,
+    "folioFinal": 6000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "74",
+    "anio": "2001",
+    "rangoFolios": "6001-6500",
+    "folioInicial": 6001,
+    "folioFinal": 6500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "75",
+    "anio": "2002",
+    "rangoFolios": "6501-7000",
+    "folioInicial": 6501,
+    "folioFinal": 7000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "76",
+    "anio": "2002",
+    "rangoFolios": "7001-7500",
+    "folioInicial": 7001,
+    "folioFinal": 7500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "77",
+    "anio": "2002",
+    "rangoFolios": "7501-8000",
+    "folioInicial": 7501,
+    "folioFinal": 8000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "78",
+    "anio": "2002",
+    "rangoFolios": "8001-8500",
+    "folioInicial": 8001,
+    "folioFinal": 8500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "79",
+    "anio": "2002",
+    "rangoFolios": "8501-9000",
+    "folioInicial": 8501,
+    "folioFinal": 9000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "80",
+    "anio": "2002",
+    "rangoFolios": "9001-9500",
+    "folioInicial": 9001,
+    "folioFinal": 9500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "81",
+    "anio": "2002",
+    "rangoFolios": "9501-10000",
+    "folioInicial": 9501,
+    "folioFinal": 10000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "82",
+    "anio": "2002",
+    "rangoFolios": "10001-10500",
+    "folioInicial": 10001,
+    "folioFinal": 10500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "83",
+    "anio": "2002",
+    "rangoFolios": "10501-11000",
+    "folioInicial": 10501,
+    "folioFinal": 11000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "84",
+    "anio": "2002",
+    "rangoFolios": "11001-11500",
+    "folioInicial": 11001,
+    "folioFinal": 11500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "85",
+    "anio": "2002",
+    "rangoFolios": "11501-12000",
+    "folioInicial": 11501,
+    "folioFinal": 12000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "86",
+    "anio": "2002",
+    "rangoFolios": "12001-12500",
+    "folioInicial": 12001,
+    "folioFinal": 12500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "87",
+    "anio": "2002",
+    "rangoFolios": "12501-12700",
+    "folioInicial": 12501,
+    "folioFinal": 12700,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "88",
+    "anio": "2003",
+    "rangoFolios": "1-500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "89",
+    "anio": "2003",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "90",
+    "anio": "2003",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "91",
+    "anio": "2003",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "92",
+    "anio": "2003",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "93",
+    "anio": "2003",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "94",
+    "anio": "2003",
+    "rangoFolios": "3001-3500",
+    "folioInicial": 3001,
+    "folioFinal": 3500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "95",
+    "anio": "2003",
+    "rangoFolios": "3501-4000",
+    "folioInicial": 3501,
+    "folioFinal": 4000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "96",
+    "anio": "2003",
+    "rangoFolios": "4001-4500",
+    "folioInicial": 4001,
+    "folioFinal": 4500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "97",
+    "anio": "2003",
+    "rangoFolios": "4501-5000",
+    "folioInicial": 4501,
+    "folioFinal": 5000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "98",
+    "anio": "2003",
+    "rangoFolios": "5001-5500",
+    "folioInicial": 5001,
+    "folioFinal": 5500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "99",
+    "anio": "2003",
+    "rangoFolios": "5501-6000",
+    "folioInicial": 5501,
+    "folioFinal": 6000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "100",
+    "anio": "2003",
+    "rangoFolios": "6001-6500",
+    "folioInicial": 6001,
+    "folioFinal": 6500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "101",
+    "anio": "2003",
+    "rangoFolios": "6501-7000",
+    "folioInicial": 6501,
+    "folioFinal": 7000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "102",
+    "anio": "2003",
+    "rangoFolios": "7001-7500",
+    "folioInicial": 7001,
+    "folioFinal": 7500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "103",
+    "anio": "2003",
+    "rangoFolios": "7501-8000",
+    "folioInicial": 7501,
+    "folioFinal": 8000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "104",
+    "anio": "2003",
+    "rangoFolios": "8001-8500",
+    "folioInicial": 8001,
+    "folioFinal": 8500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "105",
+    "anio": "2004",
+    "rangoFolios": "8501-9000",
+    "folioInicial": 8501,
+    "folioFinal": 9000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "106",
+    "anio": "2004",
+    "rangoFolios": "9001-9500",
+    "folioInicial": 9001,
+    "folioFinal": 9500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "107",
+    "anio": "2004",
+    "rangoFolios": "9501-10000",
+    "folioInicial": 9501,
+    "folioFinal": 10000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "108",
+    "anio": "2004",
+    "rangoFolios": "10001-10500",
+    "folioInicial": 10001,
+    "folioFinal": 10500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "109",
+    "anio": "2004",
+    "rangoFolios": "10501-11000",
+    "folioInicial": 10501,
+    "folioFinal": 11000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "110",
+    "anio": "2004",
+    "rangoFolios": "11001-11500",
+    "folioInicial": 11001,
+    "folioFinal": 11500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "111",
+    "anio": "2004",
+    "rangoFolios": "11501-12000",
+    "folioInicial": 11501,
+    "folioFinal": 12000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "112",
+    "anio": "2004",
+    "rangoFolios": "12001-12500",
+    "folioInicial": 12001,
+    "folioFinal": 12500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "113",
+    "anio": "2004",
+    "rangoFolios": "12501-13000",
+    "folioInicial": 12501,
+    "folioFinal": 13000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "114",
+    "anio": "2004",
+    "rangoFolios": "13001-13500",
+    "folioInicial": 13001,
+    "folioFinal": 13500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "115",
+    "anio": "2004",
+    "rangoFolios": "13501-14000",
+    "folioInicial": 13501,
+    "folioFinal": 14000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "116",
+    "anio": "2004",
+    "rangoFolios": "14001-14500",
+    "folioInicial": 14001,
+    "folioFinal": 14500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "117",
+    "anio": "2004",
+    "rangoFolios": "14501-15000",
+    "folioInicial": 14501,
+    "folioFinal": 15000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "118",
+    "anio": "2004",
+    "rangoFolios": "15001-15500",
+    "folioInicial": 15001,
+    "folioFinal": 15500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "119",
+    "anio": "2004",
+    "rangoFolios": "15501-16000",
+    "folioInicial": 15501,
+    "folioFinal": 16000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "120",
+    "anio": "2004",
+    "rangoFolios": "16001-16500",
+    "folioInicial": 16001,
+    "folioFinal": 16500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "121",
+    "anio": "2004",
+    "rangoFolios": "16501-17000",
+    "folioInicial": 16501,
+    "folioFinal": 17000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "122",
+    "anio": "2004",
+    "rangoFolios": "17001-17500",
+    "folioInicial": 17001,
+    "folioFinal": 17500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "123",
+    "anio": "2004",
+    "rangoFolios": "17501-17600",
+    "folioInicial": 17501,
+    "folioFinal": 17600,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "124",
+    "anio": "2005",
+    "rangoFolios": "1-500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "125",
+    "anio": "2005",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "126",
+    "anio": "2005",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "127",
+    "anio": "2005",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "128",
+    "anio": "2005",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "129",
+    "anio": "2005",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "130",
+    "anio": "2005",
+    "rangoFolios": "3001-3500",
+    "folioInicial": 3001,
+    "folioFinal": 3500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "131",
+    "anio": "2005",
+    "rangoFolios": "3501-4000",
+    "folioInicial": 3501,
+    "folioFinal": 4000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "132",
+    "anio": "2005",
+    "rangoFolios": "4001-4500",
+    "folioInicial": 4001,
+    "folioFinal": 4500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "133",
+    "anio": "2005",
+    "rangoFolios": "4501-5000",
+    "folioInicial": 4501,
+    "folioFinal": 5000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "134",
+    "anio": "2005",
+    "rangoFolios": "5001-5500",
+    "folioInicial": 5001,
+    "folioFinal": 5500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "135",
+    "anio": "2005",
+    "rangoFolios": "5501-6000",
+    "folioInicial": 5501,
+    "folioFinal": 6000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "136",
+    "anio": "2005",
+    "rangoFolios": "6001-6500",
+    "folioInicial": 6001,
+    "folioFinal": 6500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "137",
+    "anio": "2005",
+    "rangoFolios": "6501-7000",
+    "folioInicial": 6501,
+    "folioFinal": 7000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "138",
+    "anio": "2005",
+    "rangoFolios": "7001-7500",
+    "folioInicial": 7001,
+    "folioFinal": 7500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "139",
+    "anio": "2005",
+    "rangoFolios": "7501-8000",
+    "folioInicial": 7501,
+    "folioFinal": 8000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "140",
+    "anio": "2005",
+    "rangoFolios": "8001-8500",
+    "folioInicial": 8001,
+    "folioFinal": 8500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "141",
+    "anio": "2005",
+    "rangoFolios": "8501-9000",
+    "folioInicial": 8501,
+    "folioFinal": 9000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "142",
+    "anio": "2005",
+    "rangoFolios": "9001-9500",
+    "folioInicial": 9001,
+    "folioFinal": 9500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "143",
+    "anio": "2005",
+    "rangoFolios": "9501-10000",
+    "folioInicial": 9501,
+    "folioFinal": 10000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "144",
+    "anio": "2005",
+    "rangoFolios": "10001-10500",
+    "folioInicial": 10001,
+    "folioFinal": 10500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "145",
+    "anio": "2005",
+    "rangoFolios": "10501-11000",
+    "folioInicial": 10501,
+    "folioFinal": 11000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "146",
+    "anio": "2005",
+    "rangoFolios": "11001-11500",
+    "folioInicial": 11001,
+    "folioFinal": 11500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "147",
+    "anio": "2006",
+    "rangoFolios": "11501-12000",
+    "folioInicial": 11501,
+    "folioFinal": 12000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "148",
+    "anio": "2006",
+    "rangoFolios": "12001-12500",
+    "folioInicial": 12001,
+    "folioFinal": 12500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "149",
+    "anio": "2006",
+    "rangoFolios": "12501-13000",
+    "folioInicial": 12501,
+    "folioFinal": 13000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "150",
+    "anio": "2006",
+    "rangoFolios": "13001-13500",
+    "folioInicial": 13001,
+    "folioFinal": 13500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "151",
+    "anio": "2006",
+    "rangoFolios": "13501-14000",
+    "folioInicial": 13501,
+    "folioFinal": 14000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "152",
+    "anio": "2006",
+    "rangoFolios": "14001-14500",
+    "folioInicial": 14001,
+    "folioFinal": 14500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "153",
+    "anio": "2006",
+    "rangoFolios": "14501-15000",
+    "folioInicial": 14501,
+    "folioFinal": 15000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "154",
+    "anio": "2006",
+    "rangoFolios": "15001-15500",
+    "folioInicial": 15001,
+    "folioFinal": 15500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "155",
+    "anio": "2006",
+    "rangoFolios": "15501-16000",
+    "folioInicial": 15501,
+    "folioFinal": 16000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "156",
+    "anio": "2006",
+    "rangoFolios": "16001-16500",
+    "folioInicial": 16001,
+    "folioFinal": 16500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "157",
+    "anio": "2006",
+    "rangoFolios": "16501-17000",
+    "folioInicial": 16501,
+    "folioFinal": 17000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "158",
+    "anio": "2006",
+    "rangoFolios": "17001-17500",
+    "folioInicial": 17001,
+    "folioFinal": 17500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "159",
+    "anio": "2006",
+    "rangoFolios": "17501-18000",
+    "folioInicial": 17501,
+    "folioFinal": 18000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "160",
+    "anio": "2006",
+    "rangoFolios": "18001-18500",
+    "folioInicial": 18001,
+    "folioFinal": 18500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "161",
+    "anio": "2006",
+    "rangoFolios": "18501-19000",
+    "folioInicial": 18501,
+    "folioFinal": 19000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "162",
+    "anio": "2006",
+    "rangoFolios": "19001-19500",
+    "folioInicial": 19001,
+    "folioFinal": 19500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "163",
+    "anio": "2006",
+    "rangoFolios": "19501-20000",
+    "folioInicial": 19501,
+    "folioFinal": 20000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "164",
+    "anio": "2006",
+    "rangoFolios": "20001-20500",
+    "folioInicial": 20001,
+    "folioFinal": 20500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "165",
+    "anio": "2006",
+    "rangoFolios": "20501-21000",
+    "folioInicial": 20501,
+    "folioFinal": 21000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "166",
+    "anio": "2006",
+    "rangoFolios": "21001-21500",
+    "folioInicial": 21001,
+    "folioFinal": 21500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "167",
+    "anio": "2006",
+    "rangoFolios": "21501-22000",
+    "folioInicial": 21501,
+    "folioFinal": 22000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "168",
+    "anio": "2006",
+    "rangoFolios": "22001-22500",
+    "folioInicial": 22001,
+    "folioFinal": 22500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "169",
+    "anio": "2006",
+    "rangoFolios": "22501-23000",
+    "folioInicial": 22501,
+    "folioFinal": 23000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "170",
+    "anio": "2006",
+    "rangoFolios": "23001-23500",
+    "folioInicial": 23001,
+    "folioFinal": 23500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "171",
+    "anio": "2006",
+    "rangoFolios": "23501-23750",
+    "folioInicial": 23501,
+    "folioFinal": 23750,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "172",
+    "anio": "2007",
+    "rangoFolios": "1-500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "173",
+    "anio": "2007",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "174",
+    "anio": "2007",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "175",
+    "anio": "2007",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "176",
+    "anio": "2007",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "177",
+    "anio": "2007",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "178",
+    "anio": "2007",
+    "rangoFolios": "3001-3500",
+    "folioInicial": 3001,
+    "folioFinal": 3500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "179",
+    "anio": "2007",
+    "rangoFolios": "3501-4000",
+    "folioInicial": 3501,
+    "folioFinal": 4000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "180",
+    "anio": "2007",
+    "rangoFolios": "4001-4500",
+    "folioInicial": 4001,
+    "folioFinal": 4500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "181",
+    "anio": "2007",
+    "rangoFolios": "4501-5000",
+    "folioInicial": 4501,
+    "folioFinal": 5000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "182",
+    "anio": "2007",
+    "rangoFolios": "5001-5500",
+    "folioInicial": 5001,
+    "folioFinal": 5500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "183",
+    "anio": "2007",
+    "rangoFolios": "5501-6000",
+    "folioInicial": 5501,
+    "folioFinal": 6000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "184",
+    "anio": "2007",
+    "rangoFolios": "6001-6500",
+    "folioInicial": 6001,
+    "folioFinal": 6500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "185",
+    "anio": "2007",
+    "rangoFolios": "6501-7000",
+    "folioInicial": 6501,
+    "folioFinal": 7000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "186",
+    "anio": "2007",
+    "rangoFolios": "7001-7500",
+    "folioInicial": 7001,
+    "folioFinal": 7500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "187",
+    "anio": "2007",
+    "rangoFolios": "7501-8000",
+    "folioInicial": 7501,
+    "folioFinal": 8000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "188",
+    "anio": "2007",
+    "rangoFolios": "8001-8500",
+    "folioInicial": 8001,
+    "folioFinal": 8500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "189",
+    "anio": "2007",
+    "rangoFolios": "8501-9000",
+    "folioInicial": 8501,
+    "folioFinal": 9000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "190",
+    "anio": "2007",
+    "rangoFolios": "9001-9500",
+    "folioInicial": 9001,
+    "folioFinal": 9500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "191",
+    "anio": "2007",
+    "rangoFolios": "9501-10000",
+    "folioInicial": 9501,
+    "folioFinal": 10000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "192",
+    "anio": "2007",
+    "rangoFolios": "10001-10500",
+    "folioInicial": 10001,
+    "folioFinal": 10500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "193",
+    "anio": "2007",
+    "rangoFolios": "10501-11000",
+    "folioInicial": 10501,
+    "folioFinal": 11000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "194",
+    "anio": "2007",
+    "rangoFolios": "11001-11500",
+    "folioInicial": 11001,
+    "folioFinal": 11500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "195",
+    "anio": "2007",
+    "rangoFolios": "11501-12000",
+    "folioInicial": 11501,
+    "folioFinal": 12000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "196",
+    "anio": "2007",
+    "rangoFolios": "12001-12500",
+    "folioInicial": 12001,
+    "folioFinal": 12500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "197",
+    "anio": "2007",
+    "rangoFolios": "12501-13000",
+    "folioInicial": 12501,
+    "folioFinal": 13000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "198",
+    "anio": "2007",
+    "rangoFolios": "13001-13500",
+    "folioInicial": 13001,
+    "folioFinal": 13500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "199",
+    "anio": "2007",
+    "rangoFolios": "13501-14000",
+    "folioInicial": 13501,
+    "folioFinal": 14000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "200",
+    "anio": "2007",
+    "rangoFolios": "14001-14500",
+    "folioInicial": 14001,
+    "folioFinal": 14500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "201",
+    "anio": "2007",
+    "rangoFolios": "14501-15000",
+    "folioInicial": 14501,
+    "folioFinal": 15000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "202",
+    "anio": "2008",
+    "rangoFolios": "15001-15500",
+    "folioInicial": 15001,
+    "folioFinal": 15500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "203",
+    "anio": "2008",
+    "rangoFolios": "15501-16000",
+    "folioInicial": 15501,
+    "folioFinal": 16000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "204",
+    "anio": "2008",
+    "rangoFolios": "16001-16500",
+    "folioInicial": 16001,
+    "folioFinal": 16500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "205",
+    "anio": "2008",
+    "rangoFolios": "16501-17000",
+    "folioInicial": 16501,
+    "folioFinal": 17000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "206",
+    "anio": "2008",
+    "rangoFolios": "17001-17500",
+    "folioInicial": 17001,
+    "folioFinal": 17500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "207",
+    "anio": "2008",
+    "rangoFolios": "17501-18000",
+    "folioInicial": 17501,
+    "folioFinal": 18000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "208",
+    "anio": "2008",
+    "rangoFolios": "18001-18500",
+    "folioInicial": 18001,
+    "folioFinal": 18500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "209",
+    "anio": "2008",
+    "rangoFolios": "18501-19000",
+    "folioInicial": 18501,
+    "folioFinal": 19000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "210",
+    "anio": "2008",
+    "rangoFolios": "19001-19500",
+    "folioInicial": 19001,
+    "folioFinal": 19500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "211",
+    "anio": "2008",
+    "rangoFolios": "19501-20000",
+    "folioInicial": 19501,
+    "folioFinal": 20000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "212",
+    "anio": "2008",
+    "rangoFolios": "20001-20500",
+    "folioInicial": 20001,
+    "folioFinal": 20500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "213",
+    "anio": "2008",
+    "rangoFolios": "20501-21000",
+    "folioInicial": 20501,
+    "folioFinal": 21000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "214",
+    "anio": "2008",
+    "rangoFolios": "21001-21500",
+    "folioInicial": 21001,
+    "folioFinal": 21500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "215",
+    "anio": "2008",
+    "rangoFolios": "21501-22000",
+    "folioInicial": 21501,
+    "folioFinal": 22000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "216",
+    "anio": "2008",
+    "rangoFolios": "22001-22500",
+    "folioInicial": 22001,
+    "folioFinal": 22500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "217",
+    "anio": "2008",
+    "rangoFolios": "22501-23000",
+    "folioInicial": 22501,
+    "folioFinal": 23000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "218",
+    "anio": "2008",
+    "rangoFolios": "23001-23500",
+    "folioInicial": 23001,
+    "folioFinal": 23500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "219",
+    "anio": "2008",
+    "rangoFolios": "23501-24000",
+    "folioInicial": 23501,
+    "folioFinal": 24000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "220",
+    "anio": "2008",
+    "rangoFolios": "24001-24500",
+    "folioInicial": 24001,
+    "folioFinal": 24500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "221",
+    "anio": "2008",
+    "rangoFolios": "24501-25000",
+    "folioInicial": 24501,
+    "folioFinal": 25000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "222",
+    "anio": "2008",
+    "rangoFolios": "25001-25500",
+    "folioInicial": 25001,
+    "folioFinal": 25500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "223",
+    "anio": "2008",
+    "rangoFolios": "25501-26000",
+    "folioInicial": 25501,
+    "folioFinal": 26000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "224",
+    "anio": "2008",
+    "rangoFolios": "26001-26500",
+    "folioInicial": 26001,
+    "folioFinal": 26500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "225",
+    "anio": "2008",
+    "rangoFolios": "26501-27000",
+    "folioInicial": 26501,
+    "folioFinal": 27000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "226",
+    "anio": "2008",
+    "rangoFolios": "27001-27500",
+    "folioInicial": 27001,
+    "folioFinal": 27500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "227",
+    "anio": "2008",
+    "rangoFolios": "27501-28000",
+    "folioInicial": 27501,
+    "folioFinal": 28000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "228",
+    "anio": "2008",
+    "rangoFolios": "28001-28500",
+    "folioInicial": 28001,
+    "folioFinal": 28500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "229",
+    "anio": "2008",
+    "rangoFolios": "28501-29000",
+    "folioInicial": 28501,
+    "folioFinal": 29000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "230",
+    "anio": "2008",
+    "rangoFolios": "29001-29500",
+    "folioInicial": 29001,
+    "folioFinal": 29500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "231",
+    "anio": "2008",
+    "rangoFolios": "29501-30000",
+    "folioInicial": 29501,
+    "folioFinal": 30000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "232",
+    "anio": "2008",
+    "rangoFolios": "30001-30500",
+    "folioInicial": 30001,
+    "folioFinal": 30500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "233",
+    "anio": "2008",
+    "rangoFolios": "30501-31000",
+    "folioInicial": 30501,
+    "folioFinal": 31000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "234",
+    "anio": "2008",
+    "rangoFolios": "31001-31500",
+    "folioInicial": 31001,
+    "folioFinal": 31500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "235",
+    "anio": "2008",
+    "rangoFolios": "31501-32000",
+    "folioInicial": 31501,
+    "folioFinal": 32000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "236",
+    "anio": "2008",
+    "rangoFolios": "32001-32500",
+    "folioInicial": 32001,
+    "folioFinal": 32500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "237",
+    "anio": "2008",
+    "rangoFolios": "32501-33000",
+    "folioInicial": 32501,
+    "folioFinal": 33000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "238",
+    "anio": "2008",
+    "rangoFolios": "33001-33500",
+    "folioInicial": 33001,
+    "folioFinal": 33500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "239",
+    "anio": "2008",
+    "rangoFolios": "33501-34050",
+    "folioInicial": 33501,
+    "folioFinal": 34050,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "240",
+    "anio": "2009",
+    "rangoFolios": "1-500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "241",
+    "anio": "2009",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "242",
+    "anio": "2009",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "243",
+    "anio": "2009",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "244",
+    "anio": "2009",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "245",
+    "anio": "2009",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "246",
+    "anio": "2009",
+    "rangoFolios": "3001-3500",
+    "folioInicial": 3001,
+    "folioFinal": 3500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "247",
+    "anio": "2009",
+    "rangoFolios": "3501-4000",
+    "folioInicial": 3501,
+    "folioFinal": 4000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "248",
+    "anio": "2009",
+    "rangoFolios": "4001-4500",
+    "folioInicial": 4001,
+    "folioFinal": 4500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "249",
+    "anio": "2009",
+    "rangoFolios": "4501-5000",
+    "folioInicial": 4501,
+    "folioFinal": 5000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "250",
+    "anio": "2009",
+    "rangoFolios": "5001-5500",
+    "folioInicial": 5001,
+    "folioFinal": 5500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "251",
+    "anio": "2009",
+    "rangoFolios": "5501-6000",
+    "folioInicial": 5501,
+    "folioFinal": 6000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "252",
+    "anio": "2009",
+    "rangoFolios": "6001-6500",
+    "folioInicial": 6001,
+    "folioFinal": 6500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "253",
+    "anio": "2009",
+    "rangoFolios": "6501-7000",
+    "folioInicial": 6501,
+    "folioFinal": 7000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "254",
+    "anio": "2009",
+    "rangoFolios": "7001-7500",
+    "folioInicial": 7001,
+    "folioFinal": 7500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "255",
+    "anio": "2009",
+    "rangoFolios": "7501-8000",
+    "folioInicial": 7501,
+    "folioFinal": 8000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "256",
+    "anio": "2009",
+    "rangoFolios": "8001-8500",
+    "folioInicial": 8001,
+    "folioFinal": 8500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "257",
+    "anio": "2009",
+    "rangoFolios": "8501-9000",
+    "folioInicial": 8501,
+    "folioFinal": 9000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "258",
+    "anio": "2009",
+    "rangoFolios": "9001-9500",
+    "folioInicial": 9001,
+    "folioFinal": 9500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "259",
+    "anio": "2009",
+    "rangoFolios": "9501-10000",
+    "folioInicial": 9501,
+    "folioFinal": 10000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "260",
+    "anio": "2009",
+    "rangoFolios": "10001-10500",
+    "folioInicial": 10001,
+    "folioFinal": 10500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "261",
+    "anio": "2009",
+    "rangoFolios": "10501-11000",
+    "folioInicial": 10501,
+    "folioFinal": 11000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "262",
+    "anio": "2009",
+    "rangoFolios": "11001-11500",
+    "folioInicial": 11001,
+    "folioFinal": 11500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "263",
+    "anio": "2009",
+    "rangoFolios": "11501-12000",
+    "folioInicial": 11501,
+    "folioFinal": 12000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "264",
+    "anio": "2009",
+    "rangoFolios": "12001-12500",
+    "folioInicial": 12001,
+    "folioFinal": 12500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "265",
+    "anio": "2009",
+    "rangoFolios": "12501-13000",
+    "folioInicial": 12501,
+    "folioFinal": 13000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "266",
+    "anio": "2009",
+    "rangoFolios": "13001-13500",
+    "folioInicial": 13001,
+    "folioFinal": 13500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "267",
+    "anio": "2009",
+    "rangoFolios": "13501-14000",
+    "folioInicial": 13501,
+    "folioFinal": 14000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "268",
+    "anio": "2009",
+    "rangoFolios": "14001-14500",
+    "folioInicial": 14001,
+    "folioFinal": 14500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "269",
+    "anio": "2009",
+    "rangoFolios": "14501-15000",
+    "folioInicial": 14501,
+    "folioFinal": 15000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "270",
+    "anio": "2009",
+    "rangoFolios": "15001-15500",
+    "folioInicial": 15001,
+    "folioFinal": 15500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "271",
+    "anio": "2009",
+    "rangoFolios": "15501-16000",
+    "folioInicial": 15501,
+    "folioFinal": 16000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "272",
+    "anio": "2009",
+    "rangoFolios": "16001-16500",
+    "folioInicial": 16001,
+    "folioFinal": 16500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "273",
+    "anio": "2009",
+    "rangoFolios": "16501-17000",
+    "folioInicial": 16501,
+    "folioFinal": 17000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "274",
+    "anio": "2009",
+    "rangoFolios": "17001-17500",
+    "folioInicial": 17001,
+    "folioFinal": 17500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "275",
+    "anio": "2009",
+    "rangoFolios": "17501-18000",
+    "folioInicial": 17501,
+    "folioFinal": 18000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "276",
+    "anio": "2009",
+    "rangoFolios": "18001-18500",
+    "folioInicial": 18001,
+    "folioFinal": 18500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "277",
+    "anio": "2009",
+    "rangoFolios": "18501-19000",
+    "folioInicial": 18501,
+    "folioFinal": 19000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "278",
+    "anio": "2009",
+    "rangoFolios": "19001-19500",
+    "folioInicial": 19001,
+    "folioFinal": 19500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "279",
+    "anio": "2009",
+    "rangoFolios": "19501-20000",
+    "folioInicial": 19501,
+    "folioFinal": 20000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "280",
+    "anio": "2009",
+    "rangoFolios": "20001-20500",
+    "folioInicial": 20001,
+    "folioFinal": 20500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "281",
+    "anio": "2009",
+    "rangoFolios": "20501-21000",
+    "folioInicial": 20501,
+    "folioFinal": 21000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "282",
+    "anio": "2009",
+    "rangoFolios": "21001-21500",
+    "folioInicial": 21001,
+    "folioFinal": 21500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "283",
+    "anio": "2009",
+    "rangoFolios": "21501-21950",
+    "folioInicial": 21501,
+    "folioFinal": 21950,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "284",
+    "anio": "2010",
+    "rangoFolios": "1-500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "285",
+    "anio": "2010",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "286",
+    "anio": "2010",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "287",
+    "anio": "2010",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "288",
+    "anio": "2010",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "289",
+    "anio": "2010",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "290",
+    "anio": "2010",
+    "rangoFolios": "3001-3500",
+    "folioInicial": 3001,
+    "folioFinal": 3500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "291",
+    "anio": "2010",
+    "rangoFolios": "3501-4000",
+    "folioInicial": 3501,
+    "folioFinal": 4000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "292",
+    "anio": "2010",
+    "rangoFolios": "4001-4500",
+    "folioInicial": 4001,
+    "folioFinal": 4500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "293",
+    "anio": "2010",
+    "rangoFolios": "4501-5000",
+    "folioInicial": 4501,
+    "folioFinal": 5000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "294",
+    "anio": "2010",
+    "rangoFolios": "5001-5500",
+    "folioInicial": 5001,
+    "folioFinal": 5500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "295",
+    "anio": "2010",
+    "rangoFolios": "5501-6000",
+    "folioInicial": 5501,
+    "folioFinal": 6000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "296",
+    "anio": "2010",
+    "rangoFolios": "6001-6500",
+    "folioInicial": 6001,
+    "folioFinal": 6500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "297",
+    "anio": "2010",
+    "rangoFolios": "6501-7000",
+    "folioInicial": 6501,
+    "folioFinal": 7000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "298",
+    "anio": "2010",
+    "rangoFolios": "7001-7500",
+    "folioInicial": 7001,
+    "folioFinal": 7500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "299",
+    "anio": "2010",
+    "rangoFolios": "7501-8000",
+    "folioInicial": 7501,
+    "folioFinal": 8000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "300",
+    "anio": "2010",
+    "rangoFolios": "8001-8500",
+    "folioInicial": 8001,
+    "folioFinal": 8500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "301",
+    "anio": "2010",
+    "rangoFolios": "8501-9000",
+    "folioInicial": 8501,
+    "folioFinal": 9000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "302",
+    "anio": "2010",
+    "rangoFolios": "9001-9500",
+    "folioInicial": 9001,
+    "folioFinal": 9500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "303",
+    "anio": "2010",
+    "rangoFolios": "9501-10000",
+    "folioInicial": 9501,
+    "folioFinal": 10000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "304",
+    "anio": "2010",
+    "rangoFolios": "10001-10500",
+    "folioInicial": 10001,
+    "folioFinal": 10500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "305",
+    "anio": "2010",
+    "rangoFolios": "10501-11000",
+    "folioInicial": 10501,
+    "folioFinal": 11000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "306",
+    "anio": "2010",
+    "rangoFolios": "11001-11500",
+    "folioInicial": 11001,
+    "folioFinal": 11500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "307",
+    "anio": "2010",
+    "rangoFolios": "11501-12000",
+    "folioInicial": 11501,
+    "folioFinal": 12000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "308",
+    "anio": "2010",
+    "rangoFolios": "12001-12500",
+    "folioInicial": 12001,
+    "folioFinal": 12500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "309",
+    "anio": "2010",
+    "rangoFolios": "12501-13000",
+    "folioInicial": 12501,
+    "folioFinal": 13000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "310",
+    "anio": "2010",
+    "rangoFolios": "13001-13500",
+    "folioInicial": 13001,
+    "folioFinal": 13500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "311",
+    "anio": "2010",
+    "rangoFolios": "13501-14000",
+    "folioInicial": 13501,
+    "folioFinal": 14000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "312",
+    "anio": "2010",
+    "rangoFolios": "14001-14500",
+    "folioInicial": 14001,
+    "folioFinal": 14500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "313",
+    "anio": "2010",
+    "rangoFolios": "14501-15000",
+    "folioInicial": 14501,
+    "folioFinal": 15000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "314",
+    "anio": "2010",
+    "rangoFolios": "15001-15500",
+    "folioInicial": 15001,
+    "folioFinal": 15500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "315",
+    "anio": "2010",
+    "rangoFolios": "15501-16000",
+    "folioInicial": 15501,
+    "folioFinal": 16000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "316",
+    "anio": "2010",
+    "rangoFolios": "16001-16500",
+    "folioInicial": 16001,
+    "folioFinal": 16500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "317",
+    "anio": "2010",
+    "rangoFolios": "16501-17000",
+    "folioInicial": 16501,
+    "folioFinal": 17000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "318",
+    "anio": "2010",
+    "rangoFolios": "17001-17500",
+    "folioInicial": 17001,
+    "folioFinal": 17500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "319",
+    "anio": "2010",
+    "rangoFolios": "17501-18000",
+    "folioInicial": 17501,
+    "folioFinal": 18000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "320",
+    "anio": "2010",
+    "rangoFolios": "18001-18500",
+    "folioInicial": 18001,
+    "folioFinal": 18500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "321",
+    "anio": "2010",
+    "rangoFolios": "18501-19000",
+    "folioInicial": 18501,
+    "folioFinal": 19000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "322",
+    "anio": "2010",
+    "rangoFolios": "19001-19500",
+    "folioInicial": 19001,
+    "folioFinal": 19500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "323",
+    "anio": "2010",
+    "rangoFolios": "19501-20000",
+    "folioInicial": 19501,
+    "folioFinal": 20000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "324",
+    "anio": "2010",
+    "rangoFolios": "20001-20500",
+    "folioInicial": 20001,
+    "folioFinal": 20500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "325",
+    "anio": "2010",
+    "rangoFolios": "20501-21000",
+    "folioInicial": 20501,
+    "folioFinal": 21000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "326",
+    "anio": "2010",
+    "rangoFolios": "21001-21500",
+    "folioInicial": 21001,
+    "folioFinal": 21500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "327",
+    "anio": "2010",
+    "rangoFolios": "21501-22000",
+    "folioInicial": 21501,
+    "folioFinal": 22000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "328",
+    "anio": "2010",
+    "rangoFolios": "22001-22500",
+    "folioInicial": 22001,
+    "folioFinal": 22500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "329",
+    "anio": "2010",
+    "rangoFolios": "22501-23000",
+    "folioInicial": 22501,
+    "folioFinal": 23000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "330",
+    "anio": "2010",
+    "rangoFolios": "23001-23500",
+    "folioInicial": 23001,
+    "folioFinal": 23500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "331",
+    "anio": "2010",
+    "rangoFolios": "23501-23650",
+    "folioInicial": 23501,
+    "folioFinal": 23650,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "332",
+    "anio": "2011",
+    "rangoFolios": "1-500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "333",
+    "anio": "2011",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "334",
+    "anio": "2011",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "335",
+    "anio": "2011",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "336",
+    "anio": "2011",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "337",
+    "anio": "2011",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "338",
+    "anio": "2011",
+    "rangoFolios": "3001-3500",
+    "folioInicial": 3001,
+    "folioFinal": 3500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "339",
+    "anio": "2011",
+    "rangoFolios": "3501-4000",
+    "folioInicial": 3501,
+    "folioFinal": 4000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "340",
+    "anio": "2011",
+    "rangoFolios": "4001-4500",
+    "folioInicial": 4001,
+    "folioFinal": 4500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "341",
+    "anio": "2011",
+    "rangoFolios": "4501-5000",
+    "folioInicial": 4501,
+    "folioFinal": 5000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "342",
+    "anio": "2011",
+    "rangoFolios": "5001-5500",
+    "folioInicial": 5001,
+    "folioFinal": 5500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "343",
+    "anio": "2011",
+    "rangoFolios": "5501-6000",
+    "folioInicial": 5501,
+    "folioFinal": 6000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "344",
+    "anio": "2011",
+    "rangoFolios": "6001-6500",
+    "folioInicial": 6001,
+    "folioFinal": 6500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "345",
+    "anio": "2011",
+    "rangoFolios": "6501-7000",
+    "folioInicial": 6501,
+    "folioFinal": 7000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "346",
+    "anio": "2011",
+    "rangoFolios": "7001-7500",
+    "folioInicial": 7001,
+    "folioFinal": 7500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "347",
+    "anio": "2011",
+    "rangoFolios": "7501-8000",
+    "folioInicial": 7501,
+    "folioFinal": 8000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "348",
+    "anio": "2011",
+    "rangoFolios": "8001-8500",
+    "folioInicial": 8001,
+    "folioFinal": 8500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "349",
+    "anio": "2011",
+    "rangoFolios": "8501-9000",
+    "folioInicial": 8501,
+    "folioFinal": 9000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "350",
+    "anio": "2011",
+    "rangoFolios": "9001-9500",
+    "folioInicial": 9001,
+    "folioFinal": 9500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "351",
+    "anio": "2011",
+    "rangoFolios": "9501-10000",
+    "folioInicial": 9501,
+    "folioFinal": 10000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "352",
+    "anio": "2011",
+    "rangoFolios": "10001-10500",
+    "folioInicial": 10001,
+    "folioFinal": 10500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "353",
+    "anio": "2011",
+    "rangoFolios": "10501-11000",
+    "folioInicial": 10501,
+    "folioFinal": 11000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "354",
+    "anio": "2011",
+    "rangoFolios": "11001-11500",
+    "folioInicial": 11001,
+    "folioFinal": 11500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "355",
+    "anio": "2011",
+    "rangoFolios": "11501-12000",
+    "folioInicial": 11501,
+    "folioFinal": 12000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "356",
+    "anio": "2011",
+    "rangoFolios": "12001-12500",
+    "folioInicial": 12001,
+    "folioFinal": 12500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "357",
+    "anio": "2011",
+    "rangoFolios": "12501-13000",
+    "folioInicial": 12501,
+    "folioFinal": 13000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "358",
+    "anio": "2011",
+    "rangoFolios": "13001-13500",
+    "folioInicial": 13001,
+    "folioFinal": 13500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "359",
+    "anio": "2011",
+    "rangoFolios": "13501-14000",
+    "folioInicial": 13501,
+    "folioFinal": 14000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "360",
+    "anio": "2011",
+    "rangoFolios": "14001-14500",
+    "folioInicial": 14001,
+    "folioFinal": 14500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "361",
+    "anio": "2011",
+    "rangoFolios": "14501-15000",
+    "folioInicial": 14501,
+    "folioFinal": 15000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "362",
+    "anio": "2011",
+    "rangoFolios": "15001-15500",
+    "folioInicial": 15001,
+    "folioFinal": 15500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "363",
+    "anio": "2011",
+    "rangoFolios": "15501-16000",
+    "folioInicial": 15501,
+    "folioFinal": 16000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "364",
+    "anio": "2011",
+    "rangoFolios": "16001-16500",
+    "folioInicial": 16001,
+    "folioFinal": 16500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "365",
+    "anio": "2011",
+    "rangoFolios": "16501-17000",
+    "folioInicial": 16501,
+    "folioFinal": 17000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "366",
+    "anio": "2011",
+    "rangoFolios": "17001-17500",
+    "folioInicial": 17001,
+    "folioFinal": 17500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "367",
+    "anio": "2011",
+    "rangoFolios": "17501-18000",
+    "folioInicial": 17501,
+    "folioFinal": 18000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "368",
+    "anio": "2011",
+    "rangoFolios": "18001-18500",
+    "folioInicial": 18001,
+    "folioFinal": 18500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "369",
+    "anio": "2011",
+    "rangoFolios": "18501-19000",
+    "folioInicial": 18501,
+    "folioFinal": 19000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "370",
+    "anio": "2011",
+    "rangoFolios": "19001-19500",
+    "folioInicial": 19001,
+    "folioFinal": 19500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "371",
+    "anio": "2011",
+    "rangoFolios": "19501-20000",
+    "folioInicial": 19501,
+    "folioFinal": 20000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "372",
+    "anio": "2011",
+    "rangoFolios": "20001-20500",
+    "folioInicial": 20001,
+    "folioFinal": 20500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "373",
+    "anio": "2011",
+    "rangoFolios": "20501-21000",
+    "folioInicial": 20501,
+    "folioFinal": 21000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "374",
+    "anio": "2011",
+    "rangoFolios": "21001-21500",
+    "folioInicial": 21001,
+    "folioFinal": 21500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "375",
+    "anio": "2011",
+    "rangoFolios": "21501-22000",
+    "folioInicial": 21501,
+    "folioFinal": 22000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "376",
+    "anio": "2011",
+    "rangoFolios": "22001-22500",
+    "folioInicial": 22001,
+    "folioFinal": 22500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "377",
+    "anio": "2011",
+    "rangoFolios": "22501-23000",
+    "folioInicial": 22501,
+    "folioFinal": 23000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "378",
+    "anio": "2011",
+    "rangoFolios": "23001-23500",
+    "folioInicial": 23001,
+    "folioFinal": 23500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "379",
+    "anio": "2011",
+    "rangoFolios": "23501-24000",
+    "folioInicial": 23501,
+    "folioFinal": 24000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "380",
+    "anio": "2011",
+    "rangoFolios": "24001-24500",
+    "folioInicial": 24001,
+    "folioFinal": 24500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "381",
+    "anio": "2011",
+    "rangoFolios": "24501-25000",
+    "folioInicial": 24501,
+    "folioFinal": 25000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "382",
+    "anio": "2011",
+    "rangoFolios": "25001-25500",
+    "folioInicial": 25001,
+    "folioFinal": 25500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "383",
+    "anio": "2011",
+    "rangoFolios": "25501-26000",
+    "folioInicial": 25501,
+    "folioFinal": 26000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "384",
+    "anio": "2011",
+    "rangoFolios": "26001-26500",
+    "folioInicial": 26001,
+    "folioFinal": 26500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "385",
+    "anio": "2011",
+    "rangoFolios": "26501-27000",
+    "folioInicial": 26501,
+    "folioFinal": 27000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "386",
+    "anio": "2011",
+    "rangoFolios": "27001-27450",
+    "folioInicial": 27001,
+    "folioFinal": 27450,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "387",
+    "anio": "2012",
+    "rangoFolios": "1-500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "388",
+    "anio": "2012",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "389",
+    "anio": "2012",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "390",
+    "anio": "2012",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "391",
+    "anio": "2012",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "392",
+    "anio": "2012",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "393",
+    "anio": "2012",
+    "rangoFolios": "3001-3500",
+    "folioInicial": 3001,
+    "folioFinal": 3500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "394",
+    "anio": "2012",
+    "rangoFolios": "3501-4000",
+    "folioInicial": 3501,
+    "folioFinal": 4000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "395",
+    "anio": "2012",
+    "rangoFolios": "4001-4500",
+    "folioInicial": 4001,
+    "folioFinal": 4500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "396",
+    "anio": "2012",
+    "rangoFolios": "4501-5000",
+    "folioInicial": 4501,
+    "folioFinal": 5000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "397",
+    "anio": "2012",
+    "rangoFolios": "5001-5500",
+    "folioInicial": 5001,
+    "folioFinal": 5500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "398",
+    "anio": "2012",
+    "rangoFolios": "5501-6000",
+    "folioInicial": 5501,
+    "folioFinal": 6000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "399",
+    "anio": "2012",
+    "rangoFolios": "6001-6500",
+    "folioInicial": 6001,
+    "folioFinal": 6500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "400",
+    "anio": "2012",
+    "rangoFolios": "6501-7000",
+    "folioInicial": 6501,
+    "folioFinal": 7000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "401",
+    "anio": "2012",
+    "rangoFolios": "7001-7500",
+    "folioInicial": 7001,
+    "folioFinal": 7500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "402",
+    "anio": "2012",
+    "rangoFolios": "7501-8000",
+    "folioInicial": 7501,
+    "folioFinal": 8000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "403",
+    "anio": "2012",
+    "rangoFolios": "8001-8500",
+    "folioInicial": 8001,
+    "folioFinal": 8500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "404",
+    "anio": "2012",
+    "rangoFolios": "8501-9000",
+    "folioInicial": 8501,
+    "folioFinal": 9000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "405",
+    "anio": "2012",
+    "rangoFolios": "9001-9500",
+    "folioInicial": 9001,
+    "folioFinal": 9500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "406",
+    "anio": "2012",
+    "rangoFolios": "9501-10000",
+    "folioInicial": 9501,
+    "folioFinal": 10000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "407",
+    "anio": "2012",
+    "rangoFolios": "10001-10500",
+    "folioInicial": 10001,
+    "folioFinal": 10500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "408",
+    "anio": "2012",
+    "rangoFolios": "10501-11000",
+    "folioInicial": 10501,
+    "folioFinal": 11000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "409",
+    "anio": "2012",
+    "rangoFolios": "11001-11500",
+    "folioInicial": 11001,
+    "folioFinal": 11500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "410",
+    "anio": "2012",
+    "rangoFolios": "11501-12000",
+    "folioInicial": 11501,
+    "folioFinal": 12000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "411",
+    "anio": "2012",
+    "rangoFolios": "12001-12500",
+    "folioInicial": 12001,
+    "folioFinal": 12500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "412",
+    "anio": "2012",
+    "rangoFolios": "12501-13000",
+    "folioInicial": 12501,
+    "folioFinal": 13000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "413",
+    "anio": "2012",
+    "rangoFolios": "13001-13500",
+    "folioInicial": 13001,
+    "folioFinal": 13500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "414",
+    "anio": "2012",
+    "rangoFolios": "13501-14000",
+    "folioInicial": 13501,
+    "folioFinal": 14000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "415",
+    "anio": "2012",
+    "rangoFolios": "14001-14500",
+    "folioInicial": 14001,
+    "folioFinal": 14500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "416",
+    "anio": "2012",
+    "rangoFolios": "14501-15000",
+    "folioInicial": 14501,
+    "folioFinal": 15000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "417",
+    "anio": "2012",
+    "rangoFolios": "15001-15500",
+    "folioInicial": 15001,
+    "folioFinal": 15500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "418",
+    "anio": "2012",
+    "rangoFolios": "15501-16000",
+    "folioInicial": 15501,
+    "folioFinal": 16000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "419",
+    "anio": "2012",
+    "rangoFolios": "16001-16500",
+    "folioInicial": 16001,
+    "folioFinal": 16500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "420",
+    "anio": "2012",
+    "rangoFolios": "16501-17000",
+    "folioInicial": 16501,
+    "folioFinal": 17000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "421",
+    "anio": "2012",
+    "rangoFolios": "17001-17500",
+    "folioInicial": 17001,
+    "folioFinal": 17500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "422",
+    "anio": "2012",
+    "rangoFolios": "17501-18000",
+    "folioInicial": 17501,
+    "folioFinal": 18000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "423",
+    "anio": "2012",
+    "rangoFolios": "18001-18500",
+    "folioInicial": 18001,
+    "folioFinal": 18500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "424",
+    "anio": "2012",
+    "rangoFolios": "18501-19000",
+    "folioInicial": 18501,
+    "folioFinal": 19000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "425",
+    "anio": "2012",
+    "rangoFolios": "19001-19500",
+    "folioInicial": 19001,
+    "folioFinal": 19500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "426",
+    "anio": "2012",
+    "rangoFolios": "19501-20000",
+    "folioInicial": 19501,
+    "folioFinal": 20000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "427",
+    "anio": "2012",
+    "rangoFolios": "20001-20500",
+    "folioInicial": 20001,
+    "folioFinal": 20500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "428",
+    "anio": "2012",
+    "rangoFolios": "20501-21000",
+    "folioInicial": 20501,
+    "folioFinal": 21000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "429",
+    "anio": "2012",
+    "rangoFolios": "21001-21500",
+    "folioInicial": 21001,
+    "folioFinal": 21500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "430",
+    "anio": "2012",
+    "rangoFolios": "21501-22000",
+    "folioInicial": 21501,
+    "folioFinal": 22000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "431",
+    "anio": "2012",
+    "rangoFolios": "22001-22500",
+    "folioInicial": 22001,
+    "folioFinal": 22500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "432",
+    "anio": "2012",
+    "rangoFolios": "22501-23000",
+    "folioInicial": 22501,
+    "folioFinal": 23000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "433",
+    "anio": "2012",
+    "rangoFolios": "23001-23500",
+    "folioInicial": 23001,
+    "folioFinal": 23500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "434",
+    "anio": "2012",
+    "rangoFolios": "23501-24000",
+    "folioInicial": 23501,
+    "folioFinal": 24000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "435",
+    "anio": "2012",
+    "rangoFolios": "24001-24500",
+    "folioInicial": 24001,
+    "folioFinal": 24500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "436",
+    "anio": "2012",
+    "rangoFolios": "24501-25000",
+    "folioInicial": 24501,
+    "folioFinal": 25000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "437",
+    "anio": "2012",
+    "rangoFolios": "25001-25500",
+    "folioInicial": 25001,
+    "folioFinal": 25500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "438",
+    "anio": "2012",
+    "rangoFolios": "25501-26000",
+    "folioInicial": 25501,
+    "folioFinal": 26000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "439",
+    "anio": "2012",
+    "rangoFolios": "26001-26500",
+    "folioInicial": 26001,
+    "folioFinal": 26500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "440",
+    "anio": "2012",
+    "rangoFolios": "26501-27000",
+    "folioInicial": 26501,
+    "folioFinal": 27000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "441",
+    "anio": "2012",
+    "rangoFolios": "27001-27500",
+    "folioInicial": 27001,
+    "folioFinal": 27500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "442",
+    "anio": "2012",
+    "rangoFolios": "27501-28000",
+    "folioInicial": 27501,
+    "folioFinal": 28000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "443",
+    "anio": "2012",
+    "rangoFolios": "28001-28500",
+    "folioInicial": 28001,
+    "folioFinal": 28500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "444",
+    "anio": "2012",
+    "rangoFolios": "28501-29000",
+    "folioInicial": 28501,
+    "folioFinal": 29000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "445",
+    "anio": "2012",
+    "rangoFolios": "29001-29500",
+    "folioInicial": 29001,
+    "folioFinal": 29500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "446",
+    "anio": "2012",
+    "rangoFolios": "29501-30000",
+    "folioInicial": 29501,
+    "folioFinal": 30000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "447",
+    "anio": "2012",
+    "rangoFolios": "30001-30050",
+    "folioInicial": 30001,
+    "folioFinal": 30050,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "448",
+    "anio": "2013",
+    "rangoFolios": "1-500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "449",
+    "anio": "2013",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "450",
+    "anio": "2013",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "451",
+    "anio": "2013",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "452",
+    "anio": "2013",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "453",
+    "anio": "2013",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "454",
+    "anio": "2013",
+    "rangoFolios": "3001-3500",
+    "folioInicial": 3001,
+    "folioFinal": 3500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "455",
+    "anio": "2013",
+    "rangoFolios": "3501-4000",
+    "folioInicial": 3501,
+    "folioFinal": 4000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "456",
+    "anio": "2013",
+    "rangoFolios": "4001-4500",
+    "folioInicial": 4001,
+    "folioFinal": 4500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "457",
+    "anio": "2013",
+    "rangoFolios": "4501-5000",
+    "folioInicial": 4501,
+    "folioFinal": 5000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "458",
+    "anio": "2013",
+    "rangoFolios": "5001-5500",
+    "folioInicial": 5001,
+    "folioFinal": 5500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "459",
+    "anio": "2013",
+    "rangoFolios": "5501-6000",
+    "folioInicial": 5501,
+    "folioFinal": 6000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "460",
+    "anio": "2013",
+    "rangoFolios": "6001-6500",
+    "folioInicial": 6001,
+    "folioFinal": 6500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "461",
+    "anio": "2013",
+    "rangoFolios": "6501-7000",
+    "folioInicial": 6501,
+    "folioFinal": 7000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "462",
+    "anio": "2013",
+    "rangoFolios": "7001-7500",
+    "folioInicial": 7001,
+    "folioFinal": 7500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "463",
+    "anio": "2013",
+    "rangoFolios": "7501-8000",
+    "folioInicial": 7501,
+    "folioFinal": 8000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "464",
+    "anio": "2013",
+    "rangoFolios": "8001-8500",
+    "folioInicial": 8001,
+    "folioFinal": 8500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "465",
+    "anio": "2013",
+    "rangoFolios": "8501-9000",
+    "folioInicial": 8501,
+    "folioFinal": 9000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "466",
+    "anio": "2013",
+    "rangoFolios": "9001-9500",
+    "folioInicial": 9001,
+    "folioFinal": 9500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "467",
+    "anio": "2013",
+    "rangoFolios": "9501-10000",
+    "folioInicial": 9501,
+    "folioFinal": 10000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "468",
+    "anio": "2013",
+    "rangoFolios": "10001-10500",
+    "folioInicial": 10001,
+    "folioFinal": 10500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "469",
+    "anio": "2013",
+    "rangoFolios": "10501-11000",
+    "folioInicial": 10501,
+    "folioFinal": 11000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "470",
+    "anio": "2013",
+    "rangoFolios": "11001-11500",
+    "folioInicial": 11001,
+    "folioFinal": 11500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "471",
+    "anio": "2013",
+    "rangoFolios": "11501-12000",
+    "folioInicial": 11501,
+    "folioFinal": 12000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "472",
+    "anio": "2013",
+    "rangoFolios": "12001-12500",
+    "folioInicial": 12001,
+    "folioFinal": 12500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "473",
+    "anio": "2013",
+    "rangoFolios": "12501-13000",
+    "folioInicial": 12501,
+    "folioFinal": 13000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "474",
+    "anio": "2013",
+    "rangoFolios": "13001-13500",
+    "folioInicial": 13001,
+    "folioFinal": 13500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "475",
+    "anio": "2013",
+    "rangoFolios": "13501-14000",
+    "folioInicial": 13501,
+    "folioFinal": 14000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "476",
+    "anio": "2013",
+    "rangoFolios": "14001-14500",
+    "folioInicial": 14001,
+    "folioFinal": 14500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "477",
+    "anio": "2013",
+    "rangoFolios": "14501-15000",
+    "folioInicial": 14501,
+    "folioFinal": 15000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "478",
+    "anio": "2013",
+    "rangoFolios": "15001-15500",
+    "folioInicial": 15001,
+    "folioFinal": 15500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "479",
+    "anio": "2013",
+    "rangoFolios": "15501-16000",
+    "folioInicial": 15501,
+    "folioFinal": 16000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "480",
+    "anio": "2013",
+    "rangoFolios": "16001-16500",
+    "folioInicial": 16001,
+    "folioFinal": 16500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "481",
+    "anio": "2013",
+    "rangoFolios": "16501-17000",
+    "folioInicial": 16501,
+    "folioFinal": 17000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "482",
+    "anio": "2013",
+    "rangoFolios": "17001-17500",
+    "folioInicial": 17001,
+    "folioFinal": 17500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "483",
+    "anio": "2013",
+    "rangoFolios": "17501-18000",
+    "folioInicial": 17501,
+    "folioFinal": 18000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "484",
+    "anio": "2013",
+    "rangoFolios": "18001-18500",
+    "folioInicial": 18001,
+    "folioFinal": 18500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "485",
+    "anio": "2013",
+    "rangoFolios": "18501-19000",
+    "folioInicial": 18501,
+    "folioFinal": 19000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "486",
+    "anio": "2013",
+    "rangoFolios": "19001-19500",
+    "folioInicial": 19001,
+    "folioFinal": 19500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "487",
+    "anio": "2013",
+    "rangoFolios": "19501-20000",
+    "folioInicial": 19501,
+    "folioFinal": 20000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "488",
+    "anio": "2013",
+    "rangoFolios": "20001-20500",
+    "folioInicial": 20001,
+    "folioFinal": 20500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "489",
+    "anio": "2013",
+    "rangoFolios": "20501-21000",
+    "folioInicial": 20501,
+    "folioFinal": 21000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "490",
+    "anio": "2013",
+    "rangoFolios": "21001-21500",
+    "folioInicial": 21001,
+    "folioFinal": 21500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "491",
+    "anio": "2013",
+    "rangoFolios": "21501-22000",
+    "folioInicial": 21501,
+    "folioFinal": 22000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "492",
+    "anio": "2013",
+    "rangoFolios": "22001-22500",
+    "folioInicial": 22001,
+    "folioFinal": 22500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "493",
+    "anio": "2013",
+    "rangoFolios": "22501-23000",
+    "folioInicial": 22501,
+    "folioFinal": 23000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "494",
+    "anio": "2013",
+    "rangoFolios": "23001-23500",
+    "folioInicial": 23001,
+    "folioFinal": 23500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "495",
+    "anio": "2013",
+    "rangoFolios": "23501-24000",
+    "folioInicial": 23501,
+    "folioFinal": 24000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "496",
+    "anio": "2013",
+    "rangoFolios": "24001-24500",
+    "folioInicial": 24001,
+    "folioFinal": 24500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "497",
+    "anio": "2013",
+    "rangoFolios": "24501-25000",
+    "folioInicial": 24501,
+    "folioFinal": 25000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "498",
+    "anio": "2013",
+    "rangoFolios": "25001-25500",
+    "folioInicial": 25001,
+    "folioFinal": 25500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "499",
+    "anio": "2013",
+    "rangoFolios": "25501-26000",
+    "folioInicial": 25501,
+    "folioFinal": 26000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "500",
+    "anio": "2013",
+    "rangoFolios": "26001-26500",
+    "folioInicial": 26001,
+    "folioFinal": 26500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "501",
+    "anio": "2013",
+    "rangoFolios": "26501-27000",
+    "folioInicial": 26501,
+    "folioFinal": 27000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "502",
+    "anio": "2013",
+    "rangoFolios": "27001-27500",
+    "folioInicial": 27001,
+    "folioFinal": 27500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "503",
+    "anio": "2013",
+    "rangoFolios": "27501-28000",
+    "folioInicial": 27501,
+    "folioFinal": 28000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "504",
+    "anio": "2013",
+    "rangoFolios": "28001-28500",
+    "folioInicial": 28001,
+    "folioFinal": 28500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "505",
+    "anio": "2013",
+    "rangoFolios": "28501-29000",
+    "folioInicial": 28501,
+    "folioFinal": 29000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "506",
+    "anio": "2013",
+    "rangoFolios": "29001-29500",
+    "folioInicial": 29001,
+    "folioFinal": 29500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "507",
+    "anio": "2013",
+    "rangoFolios": "29501-30000",
+    "folioInicial": 29501,
+    "folioFinal": 30000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "508",
+    "anio": "2013",
+    "rangoFolios": "30001-30500",
+    "folioInicial": 30001,
+    "folioFinal": 30500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "509",
+    "anio": "2013",
+    "rangoFolios": "30501-31000",
+    "folioInicial": 30501,
+    "folioFinal": 31000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "510",
+    "anio": "2013",
+    "rangoFolios": "31001-31350",
+    "folioInicial": 31001,
+    "folioFinal": 31350,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "511",
+    "anio": "2014",
+    "rangoFolios": "1-500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "512",
+    "anio": "2014",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "513",
+    "anio": "2014",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "514",
+    "anio": "2014",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "515",
+    "anio": "2014",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "516",
+    "anio": "2014",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "517",
+    "anio": "2014",
+    "rangoFolios": "3001-3500",
+    "folioInicial": 3001,
+    "folioFinal": 3500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "518",
+    "anio": "2014",
+    "rangoFolios": "3501-4000",
+    "folioInicial": 3501,
+    "folioFinal": 4000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "519",
+    "anio": "2014",
+    "rangoFolios": "4001-4500",
+    "folioInicial": 4001,
+    "folioFinal": 4500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "520",
+    "anio": "2014",
+    "rangoFolios": "4501-5000",
+    "folioInicial": 4501,
+    "folioFinal": 5000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "521",
+    "anio": "2014",
+    "rangoFolios": "5001-5500",
+    "folioInicial": 5001,
+    "folioFinal": 5500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "522",
+    "anio": "2014",
+    "rangoFolios": "5501-6000",
+    "folioInicial": 5501,
+    "folioFinal": 6000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "523",
+    "anio": "2014",
+    "rangoFolios": "6001-6500",
+    "folioInicial": 6001,
+    "folioFinal": 6500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "524",
+    "anio": "2014",
+    "rangoFolios": "6501-7000",
+    "folioInicial": 6501,
+    "folioFinal": 7000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "525",
+    "anio": "2014",
+    "rangoFolios": "7001-7500",
+    "folioInicial": 7001,
+    "folioFinal": 7500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "526",
+    "anio": "2014",
+    "rangoFolios": "7501-8000",
+    "folioInicial": 7501,
+    "folioFinal": 8000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "527",
+    "anio": "2014",
+    "rangoFolios": "8001-8500",
+    "folioInicial": 8001,
+    "folioFinal": 8500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "528",
+    "anio": "2014",
+    "rangoFolios": "8501-9000",
+    "folioInicial": 8501,
+    "folioFinal": 9000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "529",
+    "anio": "2014",
+    "rangoFolios": "9001-9500",
+    "folioInicial": 9001,
+    "folioFinal": 9500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "530",
+    "anio": "2014",
+    "rangoFolios": "9501-10000",
+    "folioInicial": 9501,
+    "folioFinal": 10000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "531",
+    "anio": "2014",
+    "rangoFolios": "10001-10500",
+    "folioInicial": 10001,
+    "folioFinal": 10500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "532",
+    "anio": "2014",
+    "rangoFolios": "10501-11000",
+    "folioInicial": 10501,
+    "folioFinal": 11000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "533",
+    "anio": "2014",
+    "rangoFolios": "11001-11500",
+    "folioInicial": 11001,
+    "folioFinal": 11500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "534",
+    "anio": "2014",
+    "rangoFolios": "11501-12000",
+    "folioInicial": 11501,
+    "folioFinal": 12000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "535",
+    "anio": "2014",
+    "rangoFolios": "12001-12500",
+    "folioInicial": 12001,
+    "folioFinal": 12500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "536",
+    "anio": "2014",
+    "rangoFolios": "12501-13000",
+    "folioInicial": 12501,
+    "folioFinal": 13000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "537",
+    "anio": "2014",
+    "rangoFolios": "13001-13500",
+    "folioInicial": 13001,
+    "folioFinal": 13500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "538",
+    "anio": "2014",
+    "rangoFolios": "13501-14000",
+    "folioInicial": 13501,
+    "folioFinal": 14000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "539",
+    "anio": "2014",
+    "rangoFolios": "14001-14500",
+    "folioInicial": 14001,
+    "folioFinal": 14500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "540",
+    "anio": "2014",
+    "rangoFolios": "14501-15000",
+    "folioInicial": 14501,
+    "folioFinal": 15000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "541",
+    "anio": "2014",
+    "rangoFolios": "15001-15500",
+    "folioInicial": 15001,
+    "folioFinal": 15500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "542",
+    "anio": "2014",
+    "rangoFolios": "15501-16000",
+    "folioInicial": 15501,
+    "folioFinal": 16000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "543",
+    "anio": "2014",
+    "rangoFolios": "16001-16500",
+    "folioInicial": 16001,
+    "folioFinal": 16500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "544",
+    "anio": "2014",
+    "rangoFolios": "16501-17000",
+    "folioInicial": 16501,
+    "folioFinal": 17000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "545",
+    "anio": "2014",
+    "rangoFolios": "17001-17500",
+    "folioInicial": 17001,
+    "folioFinal": 17500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "546",
+    "anio": "2014",
+    "rangoFolios": "17501-18000",
+    "folioInicial": 17501,
+    "folioFinal": 18000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "547",
+    "anio": "2014",
+    "rangoFolios": "18001-18500",
+    "folioInicial": 18001,
+    "folioFinal": 18500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "548",
+    "anio": "2014",
+    "rangoFolios": "18501-19000",
+    "folioInicial": 18501,
+    "folioFinal": 19000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "549",
+    "anio": "2014",
+    "rangoFolios": "19001-19500",
+    "folioInicial": 19001,
+    "folioFinal": 19500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "550",
+    "anio": "2014",
+    "rangoFolios": "19501-20000",
+    "folioInicial": 19501,
+    "folioFinal": 20000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "551",
+    "anio": "2014",
+    "rangoFolios": "20001-20500",
+    "folioInicial": 20001,
+    "folioFinal": 20500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "552",
+    "anio": "2014",
+    "rangoFolios": "20501-21000",
+    "folioInicial": 20501,
+    "folioFinal": 21000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "553",
+    "anio": "2014",
+    "rangoFolios": "21001-21500",
+    "folioInicial": 21001,
+    "folioFinal": 21500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "554",
+    "anio": "2014",
+    "rangoFolios": "21501-22000",
+    "folioInicial": 21501,
+    "folioFinal": 22000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "555",
+    "anio": "2014",
+    "rangoFolios": "22001-22500",
+    "folioInicial": 22001,
+    "folioFinal": 22500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "556",
+    "anio": "2014",
+    "rangoFolios": "22501-23000",
+    "folioInicial": 22501,
+    "folioFinal": 23000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "557",
+    "anio": "2014",
+    "rangoFolios": "23001-23500",
+    "folioInicial": 23001,
+    "folioFinal": 23500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "558",
+    "anio": "2014",
+    "rangoFolios": "23501-24000",
+    "folioInicial": 23501,
+    "folioFinal": 24000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "559",
+    "anio": "2014",
+    "rangoFolios": "24001-24500",
+    "folioInicial": 24001,
+    "folioFinal": 24500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "560",
+    "anio": "2014",
+    "rangoFolios": "24501-24950",
+    "folioInicial": 24501,
+    "folioFinal": 24950,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "561",
+    "anio": "2015",
+    "rangoFolios": "1-500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "562",
+    "anio": "2015",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "563",
+    "anio": "2015",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "564",
+    "anio": "2015",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "565",
+    "anio": "2015",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "566",
+    "anio": "2015",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "567",
+    "anio": "2015",
+    "rangoFolios": "3001-3500",
+    "folioInicial": 3001,
+    "folioFinal": 3500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "568",
+    "anio": "2015",
+    "rangoFolios": "3501-4000",
+    "folioInicial": 3501,
+    "folioFinal": 4000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "569",
+    "anio": "2015",
+    "rangoFolios": "4001-4500",
+    "folioInicial": 4001,
+    "folioFinal": 4500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "570",
+    "anio": "2015",
+    "rangoFolios": "4501-5000",
+    "folioInicial": 4501,
+    "folioFinal": 5000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "571",
+    "anio": "2015",
+    "rangoFolios": "5001-5500",
+    "folioInicial": 5001,
+    "folioFinal": 5500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "572",
+    "anio": "2015",
+    "rangoFolios": "5501-6000",
+    "folioInicial": 5501,
+    "folioFinal": 6000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "573",
+    "anio": "2015",
+    "rangoFolios": "6001-6500",
+    "folioInicial": 6001,
+    "folioFinal": 6500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "574",
+    "anio": "2015",
+    "rangoFolios": "6501-7000",
+    "folioInicial": 6501,
+    "folioFinal": 7000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "575",
+    "anio": "2015",
+    "rangoFolios": "7001-7500",
+    "folioInicial": 7001,
+    "folioFinal": 7500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "576",
+    "anio": "2015",
+    "rangoFolios": "7501-8000",
+    "folioInicial": 7501,
+    "folioFinal": 8000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "577",
+    "anio": "2015",
+    "rangoFolios": "8001-8500",
+    "folioInicial": 8001,
+    "folioFinal": 8500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "578",
+    "anio": "2015",
+    "rangoFolios": "8501-9000",
+    "folioInicial": 8501,
+    "folioFinal": 9000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "579",
+    "anio": "2015",
+    "rangoFolios": "9001-9500",
+    "folioInicial": 9001,
+    "folioFinal": 9500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "580",
+    "anio": "2015",
+    "rangoFolios": "9501-10000",
+    "folioInicial": 9501,
+    "folioFinal": 10000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "581",
+    "anio": "2015",
+    "rangoFolios": "10001-10500",
+    "folioInicial": 10001,
+    "folioFinal": 10500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "582",
+    "anio": "2015",
+    "rangoFolios": "10501-11000",
+    "folioInicial": 10501,
+    "folioFinal": 11000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "583",
+    "anio": "2015",
+    "rangoFolios": "11001-11500",
+    "folioInicial": 11001,
+    "folioFinal": 11500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "584",
+    "anio": "2015",
+    "rangoFolios": "11501-12000",
+    "folioInicial": 11501,
+    "folioFinal": 12000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "585",
+    "anio": "2015",
+    "rangoFolios": "12001-12500",
+    "folioInicial": 12001,
+    "folioFinal": 12500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "586",
+    "anio": "2015",
+    "rangoFolios": "12501-13000",
+    "folioInicial": 12501,
+    "folioFinal": 13000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "587",
+    "anio": "2015",
+    "rangoFolios": "13001-13500",
+    "folioInicial": 13001,
+    "folioFinal": 13500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "588",
+    "anio": "2015",
+    "rangoFolios": "13501-14000",
+    "folioInicial": 13501,
+    "folioFinal": 14000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "589",
+    "anio": "2015",
+    "rangoFolios": "14001-14500",
+    "folioInicial": 14001,
+    "folioFinal": 14500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "590",
+    "anio": "2015",
+    "rangoFolios": "14501-15000",
+    "folioInicial": 14501,
+    "folioFinal": 15000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "591",
+    "anio": "2015",
+    "rangoFolios": "15001-15500",
+    "folioInicial": 15001,
+    "folioFinal": 15500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "592",
+    "anio": "2015",
+    "rangoFolios": "15501-16000",
+    "folioInicial": 15501,
+    "folioFinal": 16000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "593",
+    "anio": "2015",
+    "rangoFolios": "16001-16500",
+    "folioInicial": 16001,
+    "folioFinal": 16500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "594",
+    "anio": "2015",
+    "rangoFolios": "16501-17000",
+    "folioInicial": 16501,
+    "folioFinal": 17000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "595",
+    "anio": "2015",
+    "rangoFolios": "17001-17500",
+    "folioInicial": 17001,
+    "folioFinal": 17500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "596",
+    "anio": "2015",
+    "rangoFolios": "17501-18000",
+    "folioInicial": 17501,
+    "folioFinal": 18000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "597",
+    "anio": "2015",
+    "rangoFolios": "18001-18100",
+    "folioInicial": 18001,
+    "folioFinal": 18100,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "598",
+    "anio": "2016",
+    "rangoFolios": "1-500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "599",
+    "anio": "2016",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "600",
+    "anio": "2016",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "601",
+    "anio": "2016",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "602",
+    "anio": "2016",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "603",
+    "anio": "2016",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "604",
+    "anio": "2016",
+    "rangoFolios": "3001-3500",
+    "folioInicial": 3001,
+    "folioFinal": 3500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "605",
+    "anio": "2016",
+    "rangoFolios": "3501-4000",
+    "folioInicial": 3501,
+    "folioFinal": 4000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "606",
+    "anio": "2016",
+    "rangoFolios": "4001-4500",
+    "folioInicial": 4001,
+    "folioFinal": 4500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "607",
+    "anio": "2016",
+    "rangoFolios": "4501-5000",
+    "folioInicial": 4501,
+    "folioFinal": 5000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "608",
+    "anio": "2016",
+    "rangoFolios": "5001-5500",
+    "folioInicial": 5001,
+    "folioFinal": 5500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "609",
+    "anio": "2016",
+    "rangoFolios": "5501-6000",
+    "folioInicial": 5501,
+    "folioFinal": 6000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "610",
+    "anio": "2016",
+    "rangoFolios": "6001-6500",
+    "folioInicial": 6001,
+    "folioFinal": 6500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "611",
+    "anio": "2016",
+    "rangoFolios": "6501-7000",
+    "folioInicial": 6501,
+    "folioFinal": 7000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "612",
+    "anio": "2016",
+    "rangoFolios": "7001-7500",
+    "folioInicial": 7001,
+    "folioFinal": 7500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "613",
+    "anio": "2016",
+    "rangoFolios": "7501-8000",
+    "folioInicial": 7501,
+    "folioFinal": 8000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "614",
+    "anio": "2016",
+    "rangoFolios": "8001-8500",
+    "folioInicial": 8001,
+    "folioFinal": 8500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "615",
+    "anio": "2016",
+    "rangoFolios": "8501-9000",
+    "folioInicial": 8501,
+    "folioFinal": 9000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "616",
+    "anio": "2016",
+    "rangoFolios": "9001-9500",
+    "folioInicial": 9001,
+    "folioFinal": 9500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "617",
+    "anio": "2016",
+    "rangoFolios": "9501-10000",
+    "folioInicial": 9501,
+    "folioFinal": 10000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "618",
+    "anio": "2016",
+    "rangoFolios": "10001-10500",
+    "folioInicial": 10001,
+    "folioFinal": 10500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "619",
+    "anio": "2016",
+    "rangoFolios": "10501-11000",
+    "folioInicial": 10501,
+    "folioFinal": 11000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "620",
+    "anio": "2016",
+    "rangoFolios": "11001-11500",
+    "folioInicial": 11001,
+    "folioFinal": 11500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "621",
+    "anio": "2016",
+    "rangoFolios": "11501-12000",
+    "folioInicial": 11501,
+    "folioFinal": 12000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "622",
+    "anio": "2016",
+    "rangoFolios": "12001-12500",
+    "folioInicial": 12001,
+    "folioFinal": 12500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "623",
+    "anio": "2016",
+    "rangoFolios": "12501-13000",
+    "folioInicial": 12501,
+    "folioFinal": 13000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "624",
+    "anio": "2016",
+    "rangoFolios": "13001-13500",
+    "folioInicial": 13001,
+    "folioFinal": 13500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "625",
+    "anio": "2016",
+    "rangoFolios": "13501-14000",
+    "folioInicial": 13501,
+    "folioFinal": 14000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "626",
+    "anio": "2016",
+    "rangoFolios": "14001-14500",
+    "folioInicial": 14001,
+    "folioFinal": 14500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "627",
+    "anio": "2016",
+    "rangoFolios": "14501-14900",
+    "folioInicial": 14501,
+    "folioFinal": 14900,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "628",
+    "anio": "2017",
+    "rangoFolios": "1-500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "629",
+    "anio": "2017",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "630",
+    "anio": "2017",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "631",
+    "anio": "2017",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "632",
+    "anio": "2017",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "633",
+    "anio": "2017",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "634",
+    "anio": "2017",
+    "rangoFolios": "3001-3500",
+    "folioInicial": 3001,
+    "folioFinal": 3500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "635",
+    "anio": "2017",
+    "rangoFolios": "3501-4000",
+    "folioInicial": 3501,
+    "folioFinal": 4000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "636",
+    "anio": "2017",
+    "rangoFolios": "4001-4500",
+    "folioInicial": 4001,
+    "folioFinal": 4500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "637",
+    "anio": "2017",
+    "rangoFolios": "4501-5000",
+    "folioInicial": 4501,
+    "folioFinal": 5000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "638",
+    "anio": "2017",
+    "rangoFolios": "5001-5500",
+    "folioInicial": 5001,
+    "folioFinal": 5500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "639",
+    "anio": "2017",
+    "rangoFolios": "5501-6000",
+    "folioInicial": 5501,
+    "folioFinal": 6000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "640",
+    "anio": "2017",
+    "rangoFolios": "6001-6500",
+    "folioInicial": 6001,
+    "folioFinal": 6500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "641",
+    "anio": "2017",
+    "rangoFolios": "6501-7000",
+    "folioInicial": 6501,
+    "folioFinal": 7000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "642",
+    "anio": "2017",
+    "rangoFolios": "7001-7500",
+    "folioInicial": 7001,
+    "folioFinal": 7500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "643",
+    "anio": "2017",
+    "rangoFolios": "7501-8000",
+    "folioInicial": 7501,
+    "folioFinal": 8000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "644",
+    "anio": "2017",
+    "rangoFolios": "8001-8500",
+    "folioInicial": 8001,
+    "folioFinal": 8500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "645",
+    "anio": "2017",
+    "rangoFolios": "8501-9000",
+    "folioInicial": 8501,
+    "folioFinal": 9000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "646",
+    "anio": "2017",
+    "rangoFolios": "9001-9500",
+    "folioInicial": 9001,
+    "folioFinal": 9500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "647",
+    "anio": "2017",
+    "rangoFolios": "9501-10000",
+    "folioInicial": 9501,
+    "folioFinal": 10000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "648",
+    "anio": "2017",
+    "rangoFolios": "10001-10500",
+    "folioInicial": 10001,
+    "folioFinal": 10500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "649",
+    "anio": "2017",
+    "rangoFolios": "10501-11000",
+    "folioInicial": 10501,
+    "folioFinal": 11000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "650",
+    "anio": "2017",
+    "rangoFolios": "11001-11500",
+    "folioInicial": 11001,
+    "folioFinal": 11500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "651",
+    "anio": "2017",
+    "rangoFolios": "11501-12000",
+    "folioInicial": 11501,
+    "folioFinal": 12000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "652",
+    "anio": "2017",
+    "rangoFolios": "12001-12500",
+    "folioInicial": 12001,
+    "folioFinal": 12500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "653",
+    "anio": "2017",
+    "rangoFolios": "12501-13000",
+    "folioInicial": 12501,
+    "folioFinal": 13000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "654",
+    "anio": "2017",
+    "rangoFolios": "13001-13500",
+    "folioInicial": 13001,
+    "folioFinal": 13500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "655",
+    "anio": "2017",
+    "rangoFolios": "13501-14000",
+    "folioInicial": 13501,
+    "folioFinal": 14000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "656",
+    "anio": "2017",
+    "rangoFolios": "14001-14500",
+    "folioInicial": 14001,
+    "folioFinal": 14500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "657",
+    "anio": "2017",
+    "rangoFolios": "14501-15000",
+    "folioInicial": 14501,
+    "folioFinal": 15000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "658",
+    "anio": "2017",
+    "rangoFolios": "15001-15500",
+    "folioInicial": 15001,
+    "folioFinal": 15500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "659",
+    "anio": "2017",
+    "rangoFolios": "15501-16000",
+    "folioInicial": 15501,
+    "folioFinal": 16000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "660",
+    "anio": "2017",
+    "rangoFolios": "16001-16200",
+    "folioInicial": 16001,
+    "folioFinal": 16200,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "661",
+    "anio": "2018",
+    "rangoFolios": "1-500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "662",
+    "anio": "2018",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "663",
+    "anio": "2018",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "664",
+    "anio": "2018",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "665",
+    "anio": "2018",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "666",
+    "anio": "2018",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "667",
+    "anio": "2018",
+    "rangoFolios": "3001-3500",
+    "folioInicial": 3001,
+    "folioFinal": 3500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "668",
+    "anio": "2018",
+    "rangoFolios": "3501-4000",
+    "folioInicial": 3501,
+    "folioFinal": 4000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "669",
+    "anio": "2018",
+    "rangoFolios": "4001-4500",
+    "folioInicial": 4001,
+    "folioFinal": 4500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "670",
+    "anio": "2018",
+    "rangoFolios": "4501-5000",
+    "folioInicial": 4501,
+    "folioFinal": 5000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "671",
+    "anio": "2018",
+    "rangoFolios": "5001-5500",
+    "folioInicial": 5001,
+    "folioFinal": 5500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "672",
+    "anio": "2018",
+    "rangoFolios": "5501-6000",
+    "folioInicial": 5501,
+    "folioFinal": 6000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "673",
+    "anio": "2018",
+    "rangoFolios": "6001-6500",
+    "folioInicial": 6001,
+    "folioFinal": 6500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "674",
+    "anio": "2018",
+    "rangoFolios": "6501-7000",
+    "folioInicial": 6501,
+    "folioFinal": 7000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "675",
+    "anio": "2018",
+    "rangoFolios": "7001-7500",
+    "folioInicial": 7001,
+    "folioFinal": 7500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "676",
+    "anio": "2018",
+    "rangoFolios": "7501-8000",
+    "folioInicial": 7501,
+    "folioFinal": 8000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "677",
+    "anio": "2018",
+    "rangoFolios": "8001-8500",
+    "folioInicial": 8001,
+    "folioFinal": 8500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "678",
+    "anio": "2018",
+    "rangoFolios": "8501-9000",
+    "folioInicial": 8501,
+    "folioFinal": 9000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "679",
+    "anio": "2018",
+    "rangoFolios": "9001-9500",
+    "folioInicial": 9001,
+    "folioFinal": 9500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "680",
+    "anio": "2018",
+    "rangoFolios": "9501-10000",
+    "folioInicial": 9501,
+    "folioFinal": 10000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "681",
+    "anio": "2018",
+    "rangoFolios": "10001-10500",
+    "folioInicial": 10001,
+    "folioFinal": 10500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "682",
+    "anio": "2018",
+    "rangoFolios": "10501-11000",
+    "folioInicial": 10501,
+    "folioFinal": 11000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "683",
+    "anio": "2018",
+    "rangoFolios": "11001-11500",
+    "folioInicial": 11001,
+    "folioFinal": 11500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "684",
+    "anio": "2018",
+    "rangoFolios": "11501-12000",
+    "folioInicial": 11501,
+    "folioFinal": 12000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "685",
+    "anio": "2018",
+    "rangoFolios": "12001-12500",
+    "folioInicial": 12001,
+    "folioFinal": 12500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "686",
+    "anio": "2018",
+    "rangoFolios": "12501-13000",
+    "folioInicial": 12501,
+    "folioFinal": 13000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "687",
+    "anio": "2018",
+    "rangoFolios": "13001-13500",
+    "folioInicial": 13001,
+    "folioFinal": 13500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "688",
+    "anio": "2018",
+    "rangoFolios": "13501-14000",
+    "folioInicial": 13501,
+    "folioFinal": 14000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "689",
+    "anio": "2018",
+    "rangoFolios": "14001-14500",
+    "folioInicial": 14001,
+    "folioFinal": 14500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "690",
+    "anio": "2018",
+    "rangoFolios": "14501-15000",
+    "folioInicial": 14501,
+    "folioFinal": 15000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "691",
+    "anio": "2018",
+    "rangoFolios": "15001-15500",
+    "folioInicial": 15001,
+    "folioFinal": 15500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "692",
+    "anio": "2018",
+    "rangoFolios": "15501-16000",
+    "folioInicial": 15501,
+    "folioFinal": 16000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "693",
+    "anio": "2018",
+    "rangoFolios": "16001-16500",
+    "folioInicial": 16001,
+    "folioFinal": 16500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "694",
+    "anio": "2018",
+    "rangoFolios": "16501-16950",
+    "folioInicial": 16501,
+    "folioFinal": 16950,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "695",
+    "anio": "2019",
+    "rangoFolios": "1-500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "696",
+    "anio": "2019",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "697",
+    "anio": "2019",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "698",
+    "anio": "2019",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "699",
+    "anio": "2019",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "700",
+    "anio": "2019",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "701",
+    "anio": "2019",
+    "rangoFolios": "3001-3500",
+    "folioInicial": 3001,
+    "folioFinal": 3500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "702",
+    "anio": "2019",
+    "rangoFolios": "3501-4000",
+    "folioInicial": 3501,
+    "folioFinal": 4000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "703",
+    "anio": "2019",
+    "rangoFolios": "4001-4500",
+    "folioInicial": 4001,
+    "folioFinal": 4500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "704",
+    "anio": "2019",
+    "rangoFolios": "4501-5000",
+    "folioInicial": 4501,
+    "folioFinal": 5000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "705",
+    "anio": "2019",
+    "rangoFolios": "5001-5500",
+    "folioInicial": 5001,
+    "folioFinal": 5500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "706",
+    "anio": "2019",
+    "rangoFolios": "5501-6000",
+    "folioInicial": 5501,
+    "folioFinal": 6000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "707",
+    "anio": "2019",
+    "rangoFolios": "6001-6500",
+    "folioInicial": 6001,
+    "folioFinal": 6500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "708",
+    "anio": "2019",
+    "rangoFolios": "6501-7000",
+    "folioInicial": 6501,
+    "folioFinal": 7000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "709",
+    "anio": "2019",
+    "rangoFolios": "7001-7500",
+    "folioInicial": 7001,
+    "folioFinal": 7500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "710",
+    "anio": "2019",
+    "rangoFolios": "7501-8000",
+    "folioInicial": 7501,
+    "folioFinal": 8000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "711",
+    "anio": "2019",
+    "rangoFolios": "8001-8500",
+    "folioInicial": 8001,
+    "folioFinal": 8500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "712",
+    "anio": "2019",
+    "rangoFolios": "8501-9000",
+    "folioInicial": 8501,
+    "folioFinal": 9000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "713",
+    "anio": "2019",
+    "rangoFolios": "9001-9500",
+    "folioInicial": 9001,
+    "folioFinal": 9500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "714",
+    "anio": "2019",
+    "rangoFolios": "9501-10000",
+    "folioInicial": 9501,
+    "folioFinal": 10000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "715",
+    "anio": "2019",
+    "rangoFolios": "10001-10500",
+    "folioInicial": 10001,
+    "folioFinal": 10500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "716",
+    "anio": "2019",
+    "rangoFolios": "10501-11000",
+    "folioInicial": 10501,
+    "folioFinal": 11000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "717",
+    "anio": "2019",
+    "rangoFolios": "11001-11500",
+    "folioInicial": 11001,
+    "folioFinal": 11500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "718",
+    "anio": "2019",
+    "rangoFolios": "11501-12000",
+    "folioInicial": 11501,
+    "folioFinal": 12000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "719",
+    "anio": "2019",
+    "rangoFolios": "12001-12500",
+    "folioInicial": 12001,
+    "folioFinal": 12500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "720",
+    "anio": "2019",
+    "rangoFolios": "12501-13000",
+    "folioInicial": 12501,
+    "folioFinal": 13000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "721",
+    "anio": "2019",
+    "rangoFolios": "13001-13500",
+    "folioInicial": 13001,
+    "folioFinal": 13500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "722",
+    "anio": "2019",
+    "rangoFolios": "13501-14000",
+    "folioInicial": 13501,
+    "folioFinal": 14000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "723",
+    "anio": "2019",
+    "rangoFolios": "14001-14500",
+    "folioInicial": 14001,
+    "folioFinal": 14500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "724",
+    "anio": "2019",
+    "rangoFolios": "14501-15000",
+    "folioInicial": 14501,
+    "folioFinal": 15000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "725",
+    "anio": "2019",
+    "rangoFolios": "15001-15500",
+    "folioInicial": 15001,
+    "folioFinal": 15500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "726",
+    "anio": "2019",
+    "rangoFolios": "15501-15950",
+    "folioInicial": 15501,
+    "folioFinal": 15950,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "727",
+    "anio": "2020",
+    "rangoFolios": "1-500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "728",
+    "anio": "2020",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "729",
+    "anio": "2020",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "730",
+    "anio": "2020",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "731",
+    "anio": "2020",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "732",
+    "anio": "2020",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "733",
+    "anio": "2020",
+    "rangoFolios": "3001-3500",
+    "folioInicial": 3001,
+    "folioFinal": 3500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "734",
+    "anio": "2020",
+    "rangoFolios": "3501-4000",
+    "folioInicial": 3501,
+    "folioFinal": 4000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "735",
+    "anio": "2020",
+    "rangoFolios": "4001-4500",
+    "folioInicial": 4001,
+    "folioFinal": 4500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "736",
+    "anio": "2020",
+    "rangoFolios": "4501-5000",
+    "folioInicial": 4501,
+    "folioFinal": 5000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "737",
+    "anio": "2020",
+    "rangoFolios": "5001-5500",
+    "folioInicial": 5001,
+    "folioFinal": 5500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "738",
+    "anio": "2020",
+    "rangoFolios": "5501-6000",
+    "folioInicial": 5501,
+    "folioFinal": 6000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "739",
+    "anio": "2020",
+    "rangoFolios": "6001-6500",
+    "folioInicial": 6001,
+    "folioFinal": 6500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "740",
+    "anio": "2020",
+    "rangoFolios": "6501-7000",
+    "folioInicial": 6501,
+    "folioFinal": 7000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "741",
+    "anio": "2020",
+    "rangoFolios": "7001-7500",
+    "folioInicial": 7001,
+    "folioFinal": 7500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "742",
+    "anio": "2020",
+    "rangoFolios": "7501-8000",
+    "folioInicial": 7501,
+    "folioFinal": 8000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "743",
+    "anio": "2020",
+    "rangoFolios": "8001-8500",
+    "folioInicial": 8001,
+    "folioFinal": 8500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "744",
+    "anio": "2020",
+    "rangoFolios": "8501-9000",
+    "folioInicial": 8501,
+    "folioFinal": 9000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "745",
+    "anio": "2020",
+    "rangoFolios": "9001-9150",
+    "folioInicial": 9001,
+    "folioFinal": 9150,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "746",
+    "anio": "2021",
+    "rangoFolios": "1-500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "747",
+    "anio": "2021",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "748",
+    "anio": "2021",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "749",
+    "anio": "2021",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "750",
+    "anio": "2021",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "751",
+    "anio": "2021",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "752",
+    "anio": "2021",
+    "rangoFolios": "3001-3500",
+    "folioInicial": 3001,
+    "folioFinal": 3500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "753",
+    "anio": "2021",
+    "rangoFolios": "3501-4000",
+    "folioInicial": 3501,
+    "folioFinal": 4000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "754",
+    "anio": "2021",
+    "rangoFolios": "4001-4500",
+    "folioInicial": 4001,
+    "folioFinal": 4500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "755",
+    "anio": "2021",
+    "rangoFolios": "4501-5000",
+    "folioInicial": 4501,
+    "folioFinal": 5000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "756",
+    "anio": "2021",
+    "rangoFolios": "5001-5500",
+    "folioInicial": 5001,
+    "folioFinal": 5500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "757",
+    "anio": "2021",
+    "rangoFolios": "5501-6000",
+    "folioInicial": 5501,
+    "folioFinal": 6000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "758",
+    "anio": "2021",
+    "rangoFolios": "6001-6500",
+    "folioInicial": 6001,
+    "folioFinal": 6500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "759",
+    "anio": "2021",
+    "rangoFolios": "6501-7000",
+    "folioInicial": 6501,
+    "folioFinal": 7000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "760",
+    "anio": "2021",
+    "rangoFolios": "7001-7500",
+    "folioInicial": 7001,
+    "folioFinal": 7500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "761",
+    "anio": "2021",
+    "rangoFolios": "7501-8000",
+    "folioInicial": 7501,
+    "folioFinal": 8000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "762",
+    "anio": "2021",
+    "rangoFolios": "8001-8500",
+    "folioInicial": 8001,
+    "folioFinal": 8500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "763",
+    "anio": "2021",
+    "rangoFolios": "8501-9000",
+    "folioInicial": 8501,
+    "folioFinal": 9000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "764",
+    "anio": "2021",
+    "rangoFolios": "9001-9500",
+    "folioInicial": 9001,
+    "folioFinal": 9500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "765",
+    "anio": "2021",
+    "rangoFolios": "9501-10000",
+    "folioInicial": 9501,
+    "folioFinal": 10000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "766",
+    "anio": "2021",
+    "rangoFolios": "10001-10500",
+    "folioInicial": 10001,
+    "folioFinal": 10500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "767",
+    "anio": "2021",
+    "rangoFolios": "10501-11000",
+    "folioInicial": 10501,
+    "folioFinal": 11000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "768",
+    "anio": "2021",
+    "rangoFolios": "11001-11500",
+    "folioInicial": 11001,
+    "folioFinal": 11500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "769",
+    "anio": "2021",
+    "rangoFolios": "11501-12000",
+    "folioInicial": 11501,
+    "folioFinal": 12000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "770",
+    "anio": "2021",
+    "rangoFolios": "12001-12500",
+    "folioInicial": 12001,
+    "folioFinal": 12500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "771",
+    "anio": "2021",
+    "rangoFolios": "12501-12650",
+    "folioInicial": 12501,
+    "folioFinal": 12650,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "772",
+    "anio": "2022",
+    "rangoFolios": "1-500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "773",
+    "anio": "2022",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "774",
+    "anio": "2022",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "775",
+    "anio": "2022",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "776",
+    "anio": "2022",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "777",
+    "anio": "2022",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "778",
+    "anio": "2022",
+    "rangoFolios": "3001-3500",
+    "folioInicial": 3001,
+    "folioFinal": 3500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "779",
+    "anio": "2022",
+    "rangoFolios": "3501-4000",
+    "folioInicial": 3501,
+    "folioFinal": 4000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "780",
+    "anio": "2022",
+    "rangoFolios": "4001-4500",
+    "folioInicial": 4001,
+    "folioFinal": 4500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "781",
+    "anio": "2022",
+    "rangoFolios": "4501-5000",
+    "folioInicial": 4501,
+    "folioFinal": 5000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "782",
+    "anio": "2022",
+    "rangoFolios": "5001-5500",
+    "folioInicial": 5001,
+    "folioFinal": 5500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "783",
+    "anio": "2022",
+    "rangoFolios": "5501-6000",
+    "folioInicial": 5501,
+    "folioFinal": 6000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "784",
+    "anio": "2022",
+    "rangoFolios": "6001-6500",
+    "folioInicial": 6001,
+    "folioFinal": 6500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "785",
+    "anio": "2022",
+    "rangoFolios": "6501-7000",
+    "folioInicial": 6501,
+    "folioFinal": 7000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "786",
+    "anio": "2022",
+    "rangoFolios": "7001-7500",
+    "folioInicial": 7001,
+    "folioFinal": 7500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "787",
+    "anio": "2022",
+    "rangoFolios": "7501-8000",
+    "folioInicial": 7501,
+    "folioFinal": 8000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "788",
+    "anio": "2022",
+    "rangoFolios": "8001-8500",
+    "folioInicial": 8001,
+    "folioFinal": 8500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "789",
+    "anio": "2022",
+    "rangoFolios": "8501-9000",
+    "folioInicial": 8501,
+    "folioFinal": 9000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "790",
+    "anio": "2022",
+    "rangoFolios": "9001-9500",
+    "folioInicial": 9001,
+    "folioFinal": 9500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "791",
+    "anio": "2022",
+    "rangoFolios": "9501-10000",
+    "folioInicial": 9501,
+    "folioFinal": 10000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "792",
+    "anio": "2022",
+    "rangoFolios": "10001-10500",
+    "folioInicial": 10001,
+    "folioFinal": 10500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "793",
+    "anio": "2022",
+    "rangoFolios": "10501-11000",
+    "folioInicial": 10501,
+    "folioFinal": 11000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "794",
+    "anio": "2022",
+    "rangoFolios": "11001-11500",
+    "folioInicial": 11001,
+    "folioFinal": 11500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "795",
+    "anio": "2022",
+    "rangoFolios": "11501-12000",
+    "folioInicial": 11501,
+    "folioFinal": 12000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "796",
+    "anio": "2022",
+    "rangoFolios": "12001-12500",
+    "folioInicial": 12001,
+    "folioFinal": 12500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "797",
+    "anio": "2022",
+    "rangoFolios": "12501-13000",
+    "folioInicial": 12501,
+    "folioFinal": 13000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "798",
+    "anio": "2022",
+    "rangoFolios": "13001-13500",
+    "folioInicial": 13001,
+    "folioFinal": 13500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "799",
+    "anio": "2022",
+    "rangoFolios": "13501-14000",
+    "folioInicial": 13501,
+    "folioFinal": 14000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "800",
+    "anio": "2022",
+    "rangoFolios": "14001-14500",
+    "folioInicial": 14001,
+    "folioFinal": 14500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "801",
+    "anio": "2022",
+    "rangoFolios": "14501-15000",
+    "folioInicial": 14501,
+    "folioFinal": 15000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "802",
+    "anio": "2022",
+    "rangoFolios": "15001-15500",
+    "folioInicial": 15001,
+    "folioFinal": 15500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "803",
+    "anio": "2022",
+    "rangoFolios": "15501-16000",
+    "folioInicial": 15501,
+    "folioFinal": 16000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "804",
+    "anio": "2022",
+    "rangoFolios": "16001-16350",
+    "folioInicial": 16001,
+    "folioFinal": 16350,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "805",
+    "anio": "2023",
+    "rangoFolios": "1-500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "806",
+    "anio": "2023",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "807",
+    "anio": "2023",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "808",
+    "anio": "2023",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "809",
+    "anio": "2023",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "810",
+    "anio": "2023",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "811",
+    "anio": "2023",
+    "rangoFolios": "3001-3500",
+    "folioInicial": 3001,
+    "folioFinal": 3500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "812",
+    "anio": "2023",
+    "rangoFolios": "3501-4000",
+    "folioInicial": 3501,
+    "folioFinal": 4000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "813",
+    "anio": "2023",
+    "rangoFolios": "4001-4500",
+    "folioInicial": 4001,
+    "folioFinal": 4500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "814",
+    "anio": "2023",
+    "rangoFolios": "4501-5000",
+    "folioInicial": 4501,
+    "folioFinal": 5000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "815",
+    "anio": "2023",
+    "rangoFolios": "5001-5500",
+    "folioInicial": 5001,
+    "folioFinal": 5500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "816",
+    "anio": "2023",
+    "rangoFolios": "5501-6000",
+    "folioInicial": 5501,
+    "folioFinal": 6000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "817",
+    "anio": "2023",
+    "rangoFolios": "6001-6500",
+    "folioInicial": 6001,
+    "folioFinal": 6500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "818",
+    "anio": "2023",
+    "rangoFolios": "6501-7000",
+    "folioInicial": 6501,
+    "folioFinal": 7000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "819",
+    "anio": "2023",
+    "rangoFolios": "7001-7500",
+    "folioInicial": 7001,
+    "folioFinal": 7500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "820",
+    "anio": "2023",
+    "rangoFolios": "7501-8000",
+    "folioInicial": 7501,
+    "folioFinal": 8000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "821",
+    "anio": "2023",
+    "rangoFolios": "8001-8500",
+    "folioInicial": 8001,
+    "folioFinal": 8500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "822",
+    "anio": "2023",
+    "rangoFolios": "8501-9000",
+    "folioInicial": 8501,
+    "folioFinal": 9000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "823",
+    "anio": "2023",
+    "rangoFolios": "9001-9500",
+    "folioInicial": 9001,
+    "folioFinal": 9500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "824",
+    "anio": "2023",
+    "rangoFolios": "9501-10000",
+    "folioInicial": 9501,
+    "folioFinal": 10000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "825",
+    "anio": "2023",
+    "rangoFolios": "10001-10500",
+    "folioInicial": 10001,
+    "folioFinal": 10500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "826",
+    "anio": "2023",
+    "rangoFolios": "10501-11000",
+    "folioInicial": 10501,
+    "folioFinal": 11000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "827",
+    "anio": "2023",
+    "rangoFolios": "11001-11500",
+    "folioInicial": 11001,
+    "folioFinal": 11500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "828",
+    "anio": "2023",
+    "rangoFolios": "11501-12000",
+    "folioInicial": 11501,
+    "folioFinal": 12000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "829",
+    "anio": "2023",
+    "rangoFolios": "12001-12500",
+    "folioInicial": 12001,
+    "folioFinal": 12500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "830",
+    "anio": "2023",
+    "rangoFolios": "12501-13000",
+    "folioInicial": 12501,
+    "folioFinal": 13000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "831",
+    "anio": "2023",
+    "rangoFolios": "13001-13500",
+    "folioInicial": 13001,
+    "folioFinal": 13500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "832",
+    "anio": "2023",
+    "rangoFolios": "13501-14000",
+    "folioInicial": 13501,
+    "folioFinal": 14000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "833",
+    "anio": "2023",
+    "rangoFolios": "14001-14500",
+    "folioInicial": 14001,
+    "folioFinal": 14500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "834",
+    "anio": "2023",
+    "rangoFolios": "14501-15000",
+    "folioInicial": 14501,
+    "folioFinal": 15000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "835",
+    "anio": "2023",
+    "rangoFolios": "15001-15500",
+    "folioInicial": 15001,
+    "folioFinal": 15500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "836",
+    "anio": "2023",
+    "rangoFolios": "15501-16000",
+    "folioInicial": 15501,
+    "folioFinal": 16000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "837",
+    "anio": "2023",
+    "rangoFolios": "16001-16500",
+    "folioInicial": 16001,
+    "folioFinal": 16500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "838",
+    "anio": "2023",
+    "rangoFolios": "16501-17000",
+    "folioInicial": 16501,
+    "folioFinal": 17000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "839",
+    "anio": "2023",
+    "rangoFolios": "17001-17500",
+    "folioInicial": 17001,
+    "folioFinal": 17500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "840",
+    "anio": "2023",
+    "rangoFolios": "17501-17650",
+    "folioInicial": 17501,
+    "folioFinal": 17650,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "841",
+    "anio": "2024",
+    "rangoFolios": "1 - 500",
+    "folioInicial": 1,
+    "folioFinal": 500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "842",
+    "anio": "2024",
+    "rangoFolios": "501-1000",
+    "folioInicial": 501,
+    "folioFinal": 1000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "843",
+    "anio": "2024",
+    "rangoFolios": "1001-1500",
+    "folioInicial": 1001,
+    "folioFinal": 1500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "844",
+    "anio": "2024",
+    "rangoFolios": "1501-2000",
+    "folioInicial": 1501,
+    "folioFinal": 2000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "845",
+    "anio": "2024",
+    "rangoFolios": "2001-2500",
+    "folioInicial": 2001,
+    "folioFinal": 2500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "846",
+    "anio": "2024",
+    "rangoFolios": "2501-3000",
+    "folioInicial": 2501,
+    "folioFinal": 3000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "847",
+    "anio": "2024",
+    "rangoFolios": "3001-3500",
+    "folioInicial": 3001,
+    "folioFinal": 3500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "848",
+    "anio": "2024",
+    "rangoFolios": "3501-4000",
+    "folioInicial": 3501,
+    "folioFinal": 4000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "849",
+    "anio": "2024",
+    "rangoFolios": "4001-4500",
+    "folioInicial": 4001,
+    "folioFinal": 4500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "850",
+    "anio": "2024",
+    "rangoFolios": "4501-5000",
+    "folioInicial": 4501,
+    "folioFinal": 5000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "851",
+    "anio": "2024",
+    "rangoFolios": "5001-5500",
+    "folioInicial": 5001,
+    "folioFinal": 5500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "852",
+    "anio": "2024",
+    "rangoFolios": "5501-6000",
+    "folioInicial": 5501,
+    "folioFinal": 6000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "853",
+    "anio": "2024",
+    "rangoFolios": "6001-6500",
+    "folioInicial": 6001,
+    "folioFinal": 6500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "854",
+    "anio": "2024",
+    "rangoFolios": "6501-7000",
+    "folioInicial": 6501,
+    "folioFinal": 7000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "855",
+    "anio": "2024",
+    "rangoFolios": "7001-7500",
+    "folioInicial": 7001,
+    "folioFinal": 7500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "856",
+    "anio": "2024",
+    "rangoFolios": "7501-8000",
+    "folioInicial": 7501,
+    "folioFinal": 8000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "857",
+    "anio": "2024",
+    "rangoFolios": "8001-8500",
+    "folioInicial": 8001,
+    "folioFinal": 8500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "858",
+    "anio": "2024",
+    "rangoFolios": "8501-9000",
+    "folioInicial": 8501,
+    "folioFinal": 9000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "859",
+    "anio": "2024",
+    "rangoFolios": "9001-9500",
+    "folioInicial": 9001,
+    "folioFinal": 9500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "860",
+    "anio": "2024",
+    "rangoFolios": "9501-10000",
+    "folioInicial": 9501,
+    "folioFinal": 10000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "861",
+    "anio": "2024",
+    "rangoFolios": "10001-10500",
+    "folioInicial": 10001,
+    "folioFinal": 10500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "862",
+    "anio": "2024",
+    "rangoFolios": "10501-11000",
+    "folioInicial": 10501,
+    "folioFinal": 11000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "863",
+    "anio": "2024",
+    "rangoFolios": "11001-11500",
+    "folioInicial": 11001,
+    "folioFinal": 11500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "864",
+    "anio": "2024",
+    "rangoFolios": "11501-12000",
+    "folioInicial": 11501,
+    "folioFinal": 12000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "865",
+    "anio": "2024",
+    "rangoFolios": "12001-12500",
+    "folioInicial": 12001,
+    "folioFinal": 12500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "866",
+    "anio": "2024",
+    "rangoFolios": "12501-13000",
+    "folioInicial": 12501,
+    "folioFinal": 13000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "867",
+    "anio": "2024",
+    "rangoFolios": "13001-13500",
+    "folioInicial": 13001,
+    "folioFinal": 13500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "868",
+    "anio": "2024",
+    "rangoFolios": "13501-14000",
+    "folioInicial": 13501,
+    "folioFinal": 14000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "869",
+    "anio": "2024",
+    "rangoFolios": "14001-14500",
+    "folioInicial": 14001,
+    "folioFinal": 14500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "870",
+    "anio": "2024",
+    "rangoFolios": "14501-15000",
+    "folioInicial": 14501,
+    "folioFinal": 15000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "871",
+    "anio": "2024",
+    "rangoFolios": "15001-15500",
+    "folioInicial": 15001,
+    "folioFinal": 15500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "872",
+    "anio": "2024",
+    "rangoFolios": "15501-16000",
+    "folioInicial": 15501,
+    "folioFinal": 16000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "873",
+    "anio": "2024",
+    "rangoFolios": "16001-16500",
+    "folioInicial": 16001,
+    "folioFinal": 16500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "874",
+    "anio": "2024",
+    "rangoFolios": "16501-17000",
+    "folioInicial": 16501,
+    "folioFinal": 17000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "875",
+    "anio": "2024",
+    "rangoFolios": "17001-17500",
+    "folioInicial": 17001,
+    "folioFinal": 17500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "876",
+    "anio": "2024",
+    "rangoFolios": "17501-18000",
+    "folioInicial": 17501,
+    "folioFinal": 18000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "877",
+    "anio": "2024",
+    "rangoFolios": "18001-18500",
+    "folioInicial": 18001,
+    "folioFinal": 18500,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "878",
+    "anio": "2024",
+    "rangoFolios": "18501-19000",
+    "folioInicial": 18501,
+    "folioFinal": 19000,
+    "estado": "DISPONIBLE"
+  },
+  {
+    "tomo": "879",
+    "anio": "2024",
+    "rangoFolios": "19001-19500",
+    "folioInicial": 19001,
+    "folioFinal": 19500,
+    "estado": "DISPONIBLE"
+  }
+]
