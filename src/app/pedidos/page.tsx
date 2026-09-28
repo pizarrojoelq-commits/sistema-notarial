@@ -90,8 +90,10 @@ export default function PanelPedidos() {
     // VERIFICAMOS ESTRICTAMENTE EL ROL ACTUAL DESDE LOCALSTORAGE
     const sesion = localStorage.getItem("usuarioLogueado");
     const usuarioObj = sesion ? JSON.parse(sesion) : null;
-    const esOperativo = usuarioObj && usuarioObj.rol === "OPERATIVO";
-
+    
+    // Verificamos de forma estricta que NO sea externo y que su rol sea operativo
+    const esExterno = usuarioObj && (usuarioObj.rol === "EXTERNO" || usuarioObj.nombre.includes("Cinthia") || usuarioObj.nombre.includes("Enrique"));
+    const esOperativo = usuarioObj && usuarioObj.rol === "OPERATIVO" && !esExterno;
     // LA ALARMA Y LAS NOTIFICACIONES NUNCA DEBEN ACTIVARSE PARA EXTERNOS
     const primerPendiente = listaConTomo.find(p => p.estado === "Pendiente");
     if (primerPendiente && esOperativo) {
