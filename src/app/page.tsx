@@ -87,9 +87,9 @@ export default function SolicitudTomos() {
         throw new Error(resultado.error || "Error desconocido al guardar");
       }
 
-      alert("¡Solicitud enviada con éxito al Archivo Central (Nube)!");
-      // Limpiar formulario o recargar
-      window.location.reload();
+     alert("¡Solicitud enviada con éxito al Archivo Central (Nube)!");
+      // Redirigir directamente al panel de pedidos para ver el estado
+      window.location.href = "/pedidos";
 
     } catch (err: any) {
       console.error("Error al guardar:", err);

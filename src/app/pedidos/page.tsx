@@ -46,7 +46,6 @@ export default function PanelPedidos() {
       const usuarioParsed = JSON.parse(sesion);
       setUsuarioActual(usuarioParsed);
 
-      // Solo pedimos permisos de notificación si es OPERATIVO
       if (usuarioParsed.rol === "OPERATIVO" && typeof window !== "undefined" && "Notification" in window) {
         if (Notification.permission !== "granted") {
           Notification.requestPermission();
@@ -87,15 +86,16 @@ export default function PanelPedidos() {
 
     setPedidos(listaConTomo);
 
-    // VERIFICAMOS ESTRICTAMENTE EL ROL ACTUAL DESDE LOCALSTORAGE
     const sesion = localStorage.getItem("usuarioLogueado");
     const usuarioObj = sesion ? JSON.parse(sesion) : null;
     
-    // Verificamos de forma estricta que NO sea externo y que su rol sea operativo
     const esExterno = usuarioObj && (usuarioObj.rol === "EXTERNO" || usuarioObj.nombre.includes("Cinthia") || usuarioObj.nombre.includes("Enrique"));
     const esOperativo = usuarioObj && usuarioObj.rol === "OPERATIVO" && !esExterno;
-    // LA ALARMA Y LAS NOTIFICACIONES NUNCA DEBEN ACTIVARSE PARA EXTERNOS
+
+    // BUSCAMOS ESTRICTAMENTE EL PRIMER PEDIDO PENDIENTE
     const primerPendiente = listaConTomo.find(p => p.estado === "Pendiente");
+    
+    // LA ALARMA SOLO SE ACTIVA SI ES OPERATIVO Y HAY UN PENDIENTE REAL
     if (primerPendiente && esOperativo) {
       setPedidoCriticoActual(primerPendiente);
       setAlarmaActiva(true);
@@ -108,6 +108,7 @@ export default function PanelPedidos() {
         });
       }
     } else {
+      // 🛑 APAGAMOS LA ALARMA AUTOMÁTICAMENTE SI YA NO HAY PENDIENTES O SI ES EXTERNO
       setPedidoCriticoActual(null);
       setAlarmaActiva(false);
     }
@@ -129,6 +130,13 @@ export default function PanelPedidos() {
   };
 
   const reproducirAlarmaConstante = () => {
+    // BLINDAJE EXTRA: Si por alguna razón un externo ejecuta esto, se bloquea
+    const sesion = localStorage.getItem("usuarioLogueado");
+    const usuarioObj = sesion ? JSON.parse(sesion) : null;
+    if (usuarioObj && (usuarioObj.rol === "EXTERNO" || usuarioObj.nombre.includes("Cinthia") || usuarioObj.nombre.includes("Enrique"))) {
+      return;
+    }
+
     try {
       const audio = new Audio("/timbre.mp3"); 
       audio.volume = 1.0; 
@@ -243,12 +251,11 @@ export default function PanelPedidos() {
         return;
       }
 
-      cargarPedidosNube();
+      // APAGADO INMEDIATO DE LA ALARMA LOCAL
+      setAlarmaActiva(false);
+      setPedidoCriticoActual(null);
 
-      if (pedidoCriticoActual && pedidoCriticoActual.id === id) {
-        setAlarmaActiva(false);
-        setPedidoCriticoActual(null);
-      }
+      cargarPedidosNube();
     } catch (err) {
       console.error("Error de conexión:", err);
     }
@@ -305,7 +312,7 @@ export default function PanelPedidos() {
               </button>
             </div>
             <p className="text-[10px] text-gray-400 mt-4">
-              Esta alerta sonora y visual no desaparecerá hasta que el pedido sea atendido.
+              Esta alerta sonora y visual se detendrá en cuanto el pedido comience a ser atendido.
             </p>
           </div>
         </div>
@@ -465,4 +472,4 @@ export default function PanelPedidos() {
       </div>
     </div>
   );
-  }
+}
