@@ -45,11 +45,12 @@ export default function ControlInventarioTomos() {
         let limite = 1000;
         let hayMasDatos = true;
 
-        // Paginación segura y robusta para tablas grandes (como minutas con más de 2300 filas)
+        // Paginación ordenada por ID para evitar saltos extraños entre bloques
         while (hayMasDatos) {
           const { data, error } = await supabase
             .from(t.nombre)
             .select("*")
+            .order('id', { ascending: true })
             .range(inicio, inicio + limite - 1);
 
           if (error) {
@@ -60,7 +61,7 @@ export default function ControlInventarioTomos() {
           if (data && data.length > 0) {
             registrosTabla = [...registrosTabla, ...data];
             if (data.length < limite) {
-              hayMasDatos = false; // Ya se trajeron todos los registros
+              hayMasDatos = false;
             } else {
               inicio += limite;
             }
@@ -69,14 +70,21 @@ export default function ControlInventarioTomos() {
           }
         }
 
-        // Mapeo exhaustivo para detectar cualquier nombre de columna sin perder el número 1 o 0
         const formateados = registrosTabla.map((item: any, index: number) => {
-          const valorTomo = 
+          // Búsqueda exhaustiva asegurando que detecte el '1' o '0' en cualquier variante de columna
+          let valorTomo = 
             item['TOMO'] ?? item['Tomo'] ?? item['tomo'] ?? 
             item['ACTA'] ?? item['Acta'] ?? item['acta'] ?? 
             item['MINUTA'] ?? item['Minuta'] ?? item['minuta'] ??
             item['ANEXO'] ?? item['Anexo'] ?? item['anexo'] ?? 
-            item['ARCHIVADOR'] ?? item['Archivador'] ?? item['archivador'] ?? '-';
+            item['ARCHIVADOR'] ?? item['Archivador'] ?? item['archivador'];
+
+          // Si por alguna razón la celda del acta o tomo vino vacía en la fila 0, le asignamos su ID correspondiente (ej: Acta 1)
+          if ((valorTomo === undefined || valorTomo === null || valorTomo === '') && t.cat.includes('Actas')) {
+            valorTomo = item.id || index + 1;
+          } else if (valorTomo === undefined || valorTomo === null || valorTomo === '') {
+            valorTomo = '-';
+          }
 
           const valorAnio = 
             item['AÑO'] ?? item['Año'] ?? item['año'] ?? 
