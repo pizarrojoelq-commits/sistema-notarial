@@ -75,7 +75,6 @@ export default function PanelPedidos() {
     }
   };
 
-  // Función auxiliar para evaluar si un número está dentro de un rango de texto (ej: "501-1000")
   const perteneceAlRango = (numBuscado: number, textoRango: string) => {
     if (!textoRango || !textoRango.includes('-')) return false;
     const partes = textoRango.split('-');
@@ -84,7 +83,6 @@ export default function PanelPedidos() {
     return !isNaN(min) && !isNaN(max) && numBuscado >= min && numBuscado <= max;
   };
 
-  // Búsqueda dinámica y asíncrona en las tablas de inventario en la nube de Supabase
   const calcularTomoNubeDinamico = async (documento: string, incluye: string, anioBuscado: string, instrumento: string, minutaActa: string, folioStr: string) => {
     const numFolio = parseInt((folioStr || "").replace(/[,.]/g, '')) || 0;
     const numInstrumento = parseInt((instrumento || "").replace(/[,.]/g, '')) || 0;
@@ -92,11 +90,11 @@ export default function PanelPedidos() {
     
     let resultados: string[] = [];
 
+    // 1. ESCRITURAS
     if (documento === "Escritura") {
       if (numFolio === 0) {
-        resultados.push("[Folio 0: Buscar manualmente en archivo]");
+        resultados.push("[Folio 0: Buscar manualmente]");
       } else {
-        // Consultar inv_escrituras en la nube
         let query = supabase.from("inv_escrituras").select("*");
         if (anioBuscado) query = query.eq("AÑO", anioBuscado);
         const { data } = await query;
@@ -105,15 +103,13 @@ export default function PanelPedidos() {
         if (hallado) {
           resultados.push(`Tomo ${hallado.TOMO || hallado.tomo} (Escrituras ${hallado.AÑO || hallado.anio || anioBuscado})`);
         } else {
-          resultados.push("[Folio no hallado en inventario]");
+          resultados.push(`[Folio ${numFolio} no hallado en Escrituras]`);
         }
       }
 
       if (incluye === "Incluye Minuta") {
         const nMinuta = numMinuta > 0 ? numMinuta : numInstrumento;
-        if (nMinuta === 0) {
-          resultados.push("[Minuta 0: Buscar manualmente]");
-        } else {
+        if (nMinuta > 0) {
           let queryMin = supabase.from("inv_minutas").select("*");
           if (anioBuscado) queryMin = queryMin.eq("AÑO", anioBuscado);
           const { data: dataMin } = await queryMin;
@@ -122,16 +118,44 @@ export default function PanelPedidos() {
           if (halladoMin) {
             resultados.push(`Tomo ${halladoMin.TOMO || halladoMin.tomo} (Minutas)`);
           } else {
-            resultados.push("[Minuta anexa no hallada]");
+            resultados.push(`[Minuta ${nMinuta} no hallada]`);
           }
         }
       }
     } 
-    else if (documento.includes("Minuta") || documento.includes("Vehicular")) {
-      const nMinuta = numMinuta > 0 ? numMinuta : numInstrumento;
-      if (nMinuta === 0) {
-        resultados.push("[Minuta/Instrumento 0: Buscar manualmente]");
+    // 2. TRANSFERENCIAS VEHICULARES Y ACTAS VEHICULARES
+    else if (documento.includes("Vehicular") || documento.includes("vehicular")) {
+      const nRef = numMinuta > 0 ? numMinuta : (numFolio > 0 ? numFolio : numInstrumento);
+      
+      // Buscar en Tomos de Transferencias Vehiculares
+      let queryVeh = supabase.from("inv_vehiculares").select("*");
+      if (anioBuscado) queryVeh = queryVeh.eq("AÑO", anioBuscado);
+      const { data: dataVeh } = await queryVeh;
+
+      let halladoVeh = dataVeh?.find((v: any) => perteneceAlRango(nRef, v["RANGO DE FOLIOS"] || v.rango));
+      if (halladoVeh) {
+        resultados.push(`Tomo ${halladoVeh.TOMO || halladoVeh.tomo} (Vehiculares)`);
       } else {
+        resultados.push(`[Vehicular Ref: ${nRef} no hallado]`);
+      }
+
+      if (incluye.includes("Acta") || incluye.includes("acta")) {
+        let queryActa = supabase.from("inv_actas_vehiculares").select("*");
+        if (anioBuscado) queryActa = queryActa.eq("AÑO", anioBuscado);
+        const { data: dataActa } = await queryActa;
+
+        let halladoActa = dataActa?.find((a: any) => perteneceAlRango(nRef, a["RANGO DE ACTAS"] || a.rango));
+        if (halladoActa) {
+          resultados.push(`Acta Archivador/Tomo ${halladoActa.ACTA || halladoActa.archivador || '1'} (Actas Vehiculares)`);
+        } else {
+          resultados.push(`Acta asociada (Ref: ${nRef})`);
+        }
+      }
+    }
+    // 3. MINUTAS
+    else if (documento.includes("Minuta")) {
+      const nMinuta = numMinuta > 0 ? numMinuta : numInstrumento;
+      if (nMinuta > 0) {
         let queryMin = supabase.from("inv_minutas").select("*");
         if (anioBuscado) queryMin = queryMin.eq("AÑO", anioBuscado);
         const { data: dataMin } = await queryMin;
@@ -140,30 +164,45 @@ export default function PanelPedidos() {
         if (halladoMin) {
           resultados.push(`Tomo ${halladoMin.TOMO || halladoMin.tomo} (Minutas)`);
         } else {
-          resultados.push("[Minuta no hallada en inventario]");
+          resultados.push(`[Minuta ${nMinuta} no hallada]`);
+        }
+      }
+    } 
+    // 4. NO CONTENCIOSOS
+    else if (documento.includes("No contencioso")) {
+      const nRef = numMinuta > 0 ? numMinuta : (numFolio > 0 ? numFolio : numInstrumento);
+      
+      let queryNC = supabase.from("inv_no_contenciosos").select("*");
+      if (anioBuscado) queryNC = queryNC.eq("AÑO", anioBuscado);
+      const { data: dataNC } = await queryNC;
+
+      let halladoNC = dataNC?.find((nc: any) => perteneceAlRango(nRef, nc["RANGO DE FOLIOS"] || nc.rango));
+      if (halladoNC) {
+        resultados.push(`Tomo ${halladoNC.TOMO || halladoNC.tomo} (No Contenciosos)`);
+      } else {
+        resultados.push(`Expediente No Contencioso (Ref: ${nRef})`);
+      }
+
+      if (incluye.includes("Minuta") && nRef > 0) {
+        let queryMinNC = supabase.from("inv_minutario_no_contenciosos").select("*");
+        if (anioBuscado) queryMinNC = queryMinNC.eq("AÑO", anioBuscado);
+        const { data: dataMinNC } = await queryMinNC;
+        let halladoMinNC = dataMinNC?.find((m: any) => perteneceAlRango(nRef, m["RANGO DE MINUTAS"] || m.rango));
+        if (halladoMinNC) {
+          resultados.push(`Tomo ${halladoMinNC.TOMO || halladoMinNC.tomo} (Minutario No Contenciosos)`);
         }
       }
 
-      if (incluye.includes("Acta")) {
-        resultados.push(`Acta asociada (Inst. ${numInstrumento})`);
-      }
-    } 
-    else if (documento.includes("No contencioso")) {
-      const nRef = numMinuta > 0 ? numMinuta : numInstrumento;
-      resultados.push(`Expediente No Contencioso (Ref: ${nRef || numFolio})`);
-      if (incluye.includes("Minuta") && nRef > 0) {
-        let queryMin = supabase.from("inv_minutario_no_contenciosos").select("*");
-        if (anioBuscado) queryMin = queryMin.eq("AÑO", anioBuscado);
-        const { data: dataMin } = await queryMin;
-        let halladoMin = dataMin?.find((m: any) => perteneceAlRango(nRef, m["RANGO DE MINUTAS"] || m.rango));
-        if (halladoMin) {
-          resultados.push(`Tomo ${halladoMin.TOMO || halladoMin.tomo} (Minutario No Contenciosos)`);
-        } else {
-          resultados.push("[Minuta No Contenciosa no hallada]");
-        }
-      }
       if (incluye.includes("Solicitud")) {
-        resultados.push(`Carpeta Solicitud (${anioBuscado || "General"})`);
+        let querySol = supabase.from("inv_solicitudes_no_contenciosos").select("*");
+        if (anioBuscado) querySol = querySol.eq("AÑO", anioBuscado);
+        const { data: dataSol } = await querySol;
+        let halladoSol = dataSol?.find((s: any) => perteneceAlRango(nRef, s["RANGO DE SOLICITUD"] || s.rango));
+        if (halladoSol) {
+          resultados.push(`Carpeta Solicitud Anexo ${halladoSol.ANEXO || halladoSol.anexo || '1'} (${anioBuscado})`);
+        } else {
+          resultados.push(`Carpeta Solicitud (${anioBuscado || "General"})`);
+        }
       }
     }
     else {
@@ -416,7 +455,7 @@ export default function PanelPedidos() {
                 onClick={() => cambiarEstado(pedidoCriticoActual.id)}
                 className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded text-sm shadow-lg transition-transform transform active:scale-95 cursor-pointer animate-bounce"
               >
-                🛠️ Atender Pedido Ahora (Iniciar Atención)
+                🛠️️ Atender Pedido Ahora (Iniciar Atención)
               </button>
             </div>
             <p className="text-[10px] text-gray-400 mt-4">
