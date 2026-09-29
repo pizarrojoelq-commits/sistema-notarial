@@ -76,15 +76,39 @@ export default function PanelPedidos() {
     }
   };
 
+  // Lógica de desglose inteligente de tomos múltiples por documentos anexos
   const procesarYActualizarPedidos = (listaCruda: any[]) => {
-    const listaConTomo = listaCruda.map((item: any) => {
-      const tomoReal = calcularTomoReal(
+    const listaExpandida: any[] = [];
+
+    listaCruda.forEach((item: any) => {
+      const tomosDesglosados = calcularTomosDesglosados(
         item.documento, item.incluye, item.anio, item.instrumento || "", item.minuta_acta || "", item.folio || ""
       );
-      return { ...item, tomoSugerido: tomoReal, tomo_sugerido: tomoReal };
+
+      // Si el pedido se desglosa en múltiples tomos/documentos físicos independientes
+      if (tomosDesglosados.length > 1) {
+        tomosDesglosados.forEach((tomoInfo, index) => {
+          listaExpandida.push({
+            ...item,
+            id: `${item.id}-anexo${index + 1}`,
+            documento: `${item.documento} (${tomoInfo.etiqueta})`,
+            tomoSugerido: tomoInfo.ubicacion,
+            tomo_sugerido: tomoInfo.ubicacion
+          });
+        });
+      } else {
+        const unicaUbicacion = tomosDesglosados.length === 1 ? tomosDesglosados[0].ubicacion : calcularTomoRealUnico(
+          item.documento, item.incluye, item.anio, item.instrumento || "", item.minuta_acta || "", item.folio || ""
+        );
+        listaExpandida.push({ 
+          ...item, 
+          tomoSugerido: unicaUbicacion, 
+          tomo_sugerido: unicaUbicacion 
+        });
+      }
     });
 
-    setPedidos(listaConTomo);
+    setPedidos(listaExpandida);
 
     const sesion = localStorage.getItem("usuarioLogueado");
     const usuarioObj = sesion ? JSON.parse(sesion) : null;
@@ -92,10 +116,8 @@ export default function PanelPedidos() {
     const esExterno = usuarioObj && (usuarioObj.rol === "EXTERNO" || usuarioObj.nombre.includes("Cinthia") || usuarioObj.nombre.includes("Enrique"));
     const esOperativo = usuarioObj && usuarioObj.rol === "OPERATIVO" && !esExterno;
 
-    // BUSCAMOS ESTRICTAMENTE EL PRIMER PEDIDO PENDIENTE
-    const primerPendiente = listaConTomo.find(p => p.estado === "Pendiente");
+    const primerPendiente = listaExpandida.find(p => p.estado === "Pendiente");
     
-    // LA ALARMA SOLO SE ACTIVA SI ES OPERATIVO Y HAY UN PENDIENTE REAL
     if (primerPendiente && esOperativo) {
       setPedidoCriticoActual(primerPendiente);
       setAlarmaActiva(true);
@@ -108,7 +130,6 @@ export default function PanelPedidos() {
         });
       }
     } else {
-      // 🛑 APAGAMOS LA ALARMA AUTOMÁTICAMENTE SI YA NO HAY PENDIENTES O SI ES EXTERNO
       setPedidoCriticoActual(null);
       setAlarmaActiva(false);
     }
@@ -130,7 +151,6 @@ export default function PanelPedidos() {
   };
 
   const reproducirAlarmaConstante = () => {
-    // BLINDAJE EXTRA: Si por alguna razón un externo ejecuta esto, se bloquea
     const sesion = localStorage.getItem("usuarioLogueado");
     const usuarioObj = sesion ? JSON.parse(sesion) : null;
     if (usuarioObj && (usuarioObj.rol === "EXTERNO" || usuarioObj.nombre.includes("Cinthia") || usuarioObj.nombre.includes("Enrique"))) {
@@ -146,41 +166,76 @@ export default function PanelPedidos() {
     }
   };
 
-  const calcularTomoReal = (documento: string, incluye: string, anioBuscado: string, instrumento: string, minutaActa: string, folioStr: string) => {
+  const buscarEnEscrituras = (folio: number, anioBuscado: string) => {
+    if (folio === 0) return ""; 
+    const hallado = escriturasDB.find((e: any) => {
+      const coincideFolio = folio >= e.folioInicial && folio <= e.folioFinal;
+      const coincideAnio = anioBuscado ? e.anio.includes(anioBuscado) : true;
+      return coincideFolio && coincideAnio;
+    });
+    return hallado ? `Tomo ${hallado.tomo} (Escrituras ${hallado.anio})` : `[Folio no hallado]`;
+  };
+
+  const buscarEnMinutas = (num: number, anioBuscado: string) => {
+    if (num === 0) return ""; 
+    const hallado = minutasDB.find((m: any) => 
+      num >= m.minutaInicial && num <= m.minutaFinal && (!anioBuscado || m.anio.includes(anioBuscado))
+    );
+    return hallado ? `Tomo ${hallado.tomo} (Minutas)` : `[Minuta no hallada]`;
+  };
+
+  // Función que desglosa en múltiples elementos independientes si hay anexos
+  const calcularTomosDesglosados = (documento: string, incluye: string, anioBuscado: string, instrumento: string, minutaActa: string, folioStr: string) => {
+    const numFolio = parseInt((folioStr || "").replace(/[,.]/g, '')) || 0;
+    const numInstrumento = parseInt((instrumento || "").replace(/[,.]/g, '')) || 0;
+    const numMinuta = parseInt((minutaActa || "").replace(/[,.]/g, '')) || 0;
+    
+    let listaResultados: { etiqueta: string; ubicacion: string }[] = [];
+
+    if (documento === "Escritura") {
+      const ubicacionEscritura = buscarEnEscrituras(numFolio, anioBuscado);
+      if (ubicacionEscritura) {
+        listaResultados.push({ etiqueta: "Escritura / Tomo Principal", ubicacion: ubicacionEscritura });
+      }
+      if (incluye === "Incluye Minuta") {
+        const nMinuta = numMinuta > 0 ? numMinuta : numInstrumento;
+        const ubicacionMinuta = buscarEnMinutas(nMinuta, anioBuscado);
+        if (ubicacionMinuta) {
+          listaResultados.push({ etiqueta: "Minuta Anexa", ubicacion: ubicacionMinuta });
+        }
+      }
+    } 
+    else if (documento.includes("No contencioso")) {
+      const nRef = numMinuta > 0 ? numMinuta : numInstrumento;
+      listaResultados.push({ etiqueta: "Expediente Principal", ubicacion: `Expediente No Contencioso (Ref: ${nRef || numFolio})` });
+      
+      if (incluye.includes("Minuta")) {
+        const ubicacionMinuta = buscarEnMinutas(nRef, anioBuscado);
+        if (ubicacionMinuta) {
+          listaResultados.push({ etiqueta: "Minuta Anexa", ubicacion: ubicacionMinuta });
+        }
+      }
+      if (incluye.includes("Solicitud")) {
+        listaResultados.push({ etiqueta: "Carpeta Solicitud", ubicacion: `Carpeta Solicitud (${anioBuscado || "General"})` });
+      }
+    }
+
+    return listaResultados;
+  };
+
+  const calcularTomoRealUnico = (documento: string, incluye: string, anioBuscado: string, instrumento: string, minutaActa: string, folioStr: string) => {
     const numFolio = parseInt((folioStr || "").replace(/[,.]/g, '')) || 0;
     const numInstrumento = parseInt((instrumento || "").replace(/[,.]/g, '')) || 0;
     const numMinuta = parseInt((minutaActa || "").replace(/[,.]/g, '')) || 0;
     
     let resultados: string[] = [];
 
-    const buscarEnEscrituras = (folio: number) => {
-      if (folio === 0) return ""; 
-      const hallado = escriturasDB.find((e: any) => {
-        const coincideFolio = folio >= e.folioInicial && folio <= e.folioFinal;
-        const coincideAnio = anioBuscado ? e.anio.includes(anioBuscado) : true;
-        return coincideFolio && coincideAnio;
-      });
-      return hallado ? `Tomo ${hallado.tomo} (Escrituras ${hallado.anio})` : `[Folio no hallado]`;
-    };
-
-    const buscarEnMinutas = (num: number) => {
-      if (num === 0) return ""; 
-      const hallado = minutasDB.find((m: any) => 
-        num >= m.minutaInicial && num <= m.minutaFinal && (!anioBuscado || m.anio.includes(anioBuscado))
-      );
-      return hallado ? `Tomo ${hallado.tomo} (Minutas)` : `[Minuta no hallada]`;
-    };
-
     if (documento === "Escritura") {
-      resultados.push(buscarEnEscrituras(numFolio));
-      if (incluye === "Incluye Minuta") {
-        const nMinuta = numMinuta > 0 ? numMinuta : numInstrumento;
-        resultados.push(buscarEnMinutas(nMinuta));
-      }
+      resultados.push(buscarEnEscrituras(numFolio, anioBuscado));
     } 
     else if (documento.includes("Minuta") || documento.includes("Vehicular")) {
       const nMinuta = numMinuta > 0 ? numMinuta : numInstrumento;
-      resultados.push(buscarEnMinutas(nMinuta));
+      resultados.push(buscarEnMinutas(nMinuta, anioBuscado));
       if (incluye.includes("Acta")) {
         resultados.push(`Acta asociada (Inst. ${numInstrumento})`);
       }
@@ -188,12 +243,6 @@ export default function PanelPedidos() {
     else if (documento.includes("No contencioso")) {
       const nRef = numMinuta > 0 ? numMinuta : numInstrumento;
       resultados.push(`Expediente No Contencioso (Ref: ${nRef || numFolio})`);
-      if (incluye.includes("Minuta")) {
-        resultados.push(buscarEnMinutas(nRef));
-      }
-      if (incluye.includes("Solicitud")) {
-        resultados.push(`Carpeta Solicitud (${anioBuscado || "General"})`);
-      }
     }
     else {
       resultados.push(`Documento: ${documento}`);
@@ -205,6 +254,8 @@ export default function PanelPedidos() {
   const cambiarEstado = async (id: string | number) => {
     if (usuarioActual?.rol !== "OPERATIVO") return;
 
+    // Limpiar sufijos temporales de anexo si existen para actualizar el registro real en la BD
+    const idReal = String(id).split("-anexo")[0];
     const ahora = Date.now();
     const nombreOperador = usuarioActual ? usuarioActual.nombre : "Personal de Archivo";
 
@@ -243,7 +294,7 @@ export default function PanelPedidos() {
           tiempo_inicio: nuevoTiempoInicio,
           duracion_segundos: nuevaDuracion
         })
-        .eq("id", id);
+        .eq("id", idReal);
 
       if (error) {
         console.error("Error al actualizar estado en Supabase:", error);
@@ -251,7 +302,6 @@ export default function PanelPedidos() {
         return;
       }
 
-      // APAGADO INMEDIATO DE LA ALARMA LOCAL
       setAlarmaActiva(false);
       setPedidoCriticoActual(null);
 
@@ -265,16 +315,15 @@ export default function PanelPedidos() {
     if (usuarioActual?.rol !== "OPERATIVO") return;
 
     try {
-      // Creamos el ID único para este registro de salida
-      const nuevoIdSalida = `salida-${pedido.id}-${Date.now()}`;
+      const idBase = String(pedido.id).split("-anexo")[0];
+      const nuevoIdSalida = `salida-${idBase}-${Date.now()}`;
 
-      // Insertamos directamente en la tabla 'salidas' de Supabase
       const { error } = await supabase
         .from("salidas")
         .insert([
           {
             id: nuevoIdSalida,
-            pedido_id: Number(pedido.id),
+            pedido_id: Number(idBase) || null,
             tipo: "SALIDAS",
             tomo_exacto: pedido.tomoSugerido || pedido.tomo_sugerido || "Tomo Asignado",
             anio: pedido.anio || "2026",
@@ -299,7 +348,6 @@ export default function PanelPedidos() {
         return;
       }
 
-      // Redirigimos a la pantalla de salidas
       window.location.href = "/salidas";
     } catch (e) {
       console.error("Error de conexión al transferir a salidas:", e);
@@ -322,7 +370,6 @@ export default function PanelPedidos() {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 relative">
       
-      {/* ALERTA VISUAL Y SONORA ESTRICTAMENTE PARA OPERATIVOS */}
       {esOperativo && alarmaActiva && pedidoCriticoActual && (
         <div className="fixed inset-0 bg-red-950 bg-opacity-85 z-50 flex items-center justify-center p-4 animate-pulse">
           <div className="bg-white border-4 border-red-600 rounded-lg shadow-2xl w-full max-w-lg p-6 text-center">
@@ -410,7 +457,7 @@ export default function PanelPedidos() {
                 <th className="border border-gray-300 p-2">N° de Folio</th>
                 <th className="border border-gray-300 p-2">Instrumento</th>
                 <th className="border border-gray-300 p-2">N° de Minuta</th>
-                <th className="border border-gray-300 p-2 bg-indigo-900">Ubicación (Tomos Sugeridos)</th>
+                <th className="border border-gray-300 p-2 bg-indigo-900">Ubicación (Tomos Sugeridos / Desglosados)</th>
                 <th className="border border-gray-300 p-2">Atendido Por</th>
                 <th className="border border-gray-300 p-2">Abogado</th>
                 <th className="border border-gray-300 p-2">Destino</th>
@@ -448,7 +495,7 @@ export default function PanelPedidos() {
                     <td className="border border-gray-300 p-2">{item.minuta_acta}</td>
                     
                     <td className="border border-gray-300 p-2 font-bold text-indigo-900 bg-indigo-50">
-                      {item.tomoSugerido || item.tomo_sugerido || calcularTomoReal(item.documento, item.incluye, item.anio, item.instrumento || "", item.minuta_acta || "", item.folio || "")}
+                      {item.tomoSugerido || item.tomo_sugerido}
                     </td>
 
                     <td className="border border-gray-300 p-2 font-bold text-gray-700">
@@ -473,7 +520,6 @@ export default function PanelPedidos() {
                       </span>
                     </td>
 
-                    {/* LA COLUMNA DE ACCIÓN SE OCULTA POR COMPLETO PARA EXTERNOS */}
                     {esOperativo && (
                       <td className="border border-gray-300 p-2 align-middle">
                         <div className="flex flex-col items-center justify-center gap-1 w-full">

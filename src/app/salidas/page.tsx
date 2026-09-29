@@ -35,6 +35,9 @@ export default function RegistroEntradasSalidas() {
   const [usuarioActual, setUsuarioActual] = useState<{ nombre: string; rol: string } | null>(null);
   const [, setTick] = useState(0);
   
+  // Estado para bloquear botones y evitar doble clic (clics múltiples)
+  const [procesandoId, setProcesandoId] = useState<string | null>(null);
+  
   const [modalAbierto, setModalAbierto] = useState(false);
   const [registroActual, setRegistroActual] = useState<MovimientoTomo | null>(null);
   const [modalManualAbierto, setModalManualAbierto] = useState(false);
@@ -67,7 +70,6 @@ export default function RegistroEntradasSalidas() {
       }
 
       if (data) {
-        // Mapeamos los campos de la base de datos (snake_case) al formato del componente
         const formateados: MovimientoTomo[] = data.map((item: any) => ({
           id: item.id,
           pedido_id: item.pedido_id,
@@ -113,7 +115,6 @@ export default function RegistroEntradasSalidas() {
   }, []);
 
   const actualizarCampoLibreNube = async (id: string, campo: string, valor: string) => {
-    // Actualización local inmediata para fluidez
     setRegistros(prev => prev.map(r => r.id === id ? { ...r, [campo]: valor } : r));
 
     try {
@@ -126,7 +127,11 @@ export default function RegistroEntradasSalidas() {
     }
   };
 
+  // Función segura contra clics múltiples
   const iniciarAtencion = async (id: string) => {
+    if (procesandoId === id) return;
+    setProcesandoId(id);
+
     const ahora = Date.now();
     const horaTexto = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const nombreOperador = usuarioActual ? usuarioActual.nombre : "Personal de Archivo";
@@ -151,6 +156,8 @@ export default function RegistroEntradasSalidas() {
         .eq("id", id);
     } catch (e) {
       console.error("Error al iniciar atención en la nube:", e);
+    } finally {
+      setProcesandoId(null);
     }
   };
 
@@ -233,6 +240,7 @@ export default function RegistroEntradasSalidas() {
     let nuevaEntradaNube: any = null;
 
     if (registroActual.tipo === "SALIDAS") {
+      // Evaluamos si el motivo incluye anexos para generar múltiples espacios/filas independientes
       nuevaEntradaNube = {
         id: `entrada-${registroActual.id}-${Date.now()}`,
         pedido_id: registroActual.pedido_id || null,
@@ -255,7 +263,6 @@ export default function RegistroEntradasSalidas() {
     }
 
     try {
-      // 1. Actualizamos el registro actual en Supabase
       const estadoFinal = registroActual.tipo === "SALIDAS" ? "Entregado (Fuera)" : "Devuelto a Archivo Principal (BERTELLO)";
       
       await supabase
@@ -271,7 +278,6 @@ export default function RegistroEntradasSalidas() {
         })
         .eq("id", registroActual.id);
 
-      // 2. Si era salida, insertamos automáticamente el registro de retorno en Supabase
       if (nuevaEntradaNube) {
         await supabase.from("salidas").insert([nuevaEntradaNube]);
       }
@@ -280,7 +286,7 @@ export default function RegistroEntradasSalidas() {
       cargarSalidasNube();
 
       if (nuevaEntradaNube) {
-        alert("✅ Libro entregado con éxito. Se ha creado automáticamente la ficha de retorno en la Sección de Entradas en la nube.");
+        alert("✅ Libro entregado con éxito. Se ha desglosado y creado la ficha de retorno correspondiente en la nube.");
       } else {
         alert("✅ Ingreso a BERTELLO registrado con éxito en la nube.");
       }
@@ -492,8 +498,12 @@ export default function RegistroEntradasSalidas() {
 
                     <td className="border border-gray-300 p-2">
                       {item.tipo === "SALIDAS" && item.estado === "Pendiente de Entrega" && (
-                        <button onClick={() => iniciarAtencion(item.id)} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded text-[10px] shadow-sm cursor-pointer">
-                          Iniciar Atención
+                        <button 
+                          disabled={procesandoId === item.id}
+                          onClick={() => iniciarAtencion(item.id)} 
+                          className={`w-full text-white font-bold py-1 px-2 rounded text-[10px] shadow-sm cursor-pointer ${procesandoId === item.id ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'}`}
+                        >
+                          {procesandoId === item.id ? 'Procesando...' : 'Iniciar Atención'}
                         </button>
                       )}
                       {item.tipo === "SALIDAS" && item.estado === "En Atención" && (
@@ -506,8 +516,12 @@ export default function RegistroEntradasSalidas() {
                       )}
 
                       {item.tipo === "ENTRADAS" && item.estado === "Pendiente de Recepción" && (
-                        <button onClick={() => iniciarAtencion(item.id)} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded text-[10px] shadow-sm cursor-pointer">
-                          Iniciar Recepción
+                        <button 
+                          disabled={procesandoId === item.id}
+                          onClick={() => iniciarAtencion(item.id)} 
+                          className={`w-full text-white font-bold py-1 px-2 rounded text-[10px] shadow-sm cursor-pointer ${procesandoId === item.id ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'}`}
+                        >
+                          {procesandoId === item.id ? 'Procesando...' : 'Iniciar Recepción'}
                         </button>
                       )}
                       {item.tipo === "ENTRADAS" && item.estado === "En Atención" && (
