@@ -33,6 +33,7 @@ export default function PanelPedidos() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
   const [isMounted, setIsMounted] = useState(false);
   const [usuarioActual, setUsuarioActual] = useState<{ nombre: string; rol: string } | null>(null);
+  const [busqueda, setBusqueda] = useState("");
   
   const [pedidoCriticoActual, setPedidoCriticoActual] = useState<Pedido | null>(null);
   const [alarmaActiva, setAlarmaActiva] = useState(false);
@@ -76,7 +77,6 @@ export default function PanelPedidos() {
     }
   };
 
-  // Cada pedido mantiene UNA SOLA FILA, uniendo los tomos sugeridos en el texto
   const procesarYActualizarPedidos = (listaCruda: any[]) => {
     const listaConTomosUnificados = listaCruda.map((item: any) => {
       const tomoUnificado = calcularTomoCombinado(
@@ -165,7 +165,6 @@ export default function PanelPedidos() {
     return hallado ? `Tomo ${hallado.tomo} (Minutas)` : `[Minuta no hallada]`;
   };
 
-  // Calcula y une en un solo texto los tomos para mostrarlos en la única fila del panel
   const calcularTomoCombinado = (documento: string, incluye: string, anioBuscado: string, instrumento: string, minutaActa: string, folioStr: string) => {
     const numFolio = parseInt((folioStr || "").replace(/[,.]/g, '')) || 0;
     const numInstrumento = parseInt((instrumento || "").replace(/[,.]/g, '')) || 0;
@@ -255,14 +254,12 @@ export default function PanelPedidos() {
 
       setAlarmaActiva(false);
       setPedidoCriticoActual(null);
-
       cargarPedidosNube();
     } catch (err) {
       console.error("Error de conexión:", err);
     }
   };
 
-  // AL ENVIAR A SALIDAS: Si incluye algo, genera 2 filas independientes en la tabla de salidas
   const enviarA_Salidas = async (pedido: Pedido) => {
     if (usuarioActual?.rol !== "OPERATIVO") return;
 
@@ -386,7 +383,6 @@ export default function PanelPedidos() {
       }
     }
     else {
-      // Por defecto 1 solo registro
       registrosSalidaParaInsertar.push({
         id: `salida-${pedido.id}-${Date.now()}`,
         pedido_id: Number(pedido.id),
@@ -426,6 +422,19 @@ export default function PanelPedidos() {
     }
   };
 
+  const exportarExcel = () => {
+    let contenido = "ID\tSolicitante\tMotivo\tDocumento\tIncluye\tAño\tKardex\tFolio\tUbicación\tEstado\n";
+    pedidosFiltrados.forEach(p => {
+      contenido += `${p.id}\t${p.solicitante}\t${p.motivo}\t${p.documento}\t${p.incluye}\t${p.anio}\t${p.kardex}\t${p.folio}\t${p.tomoSugerido}\t${p.estado}\n`;
+    });
+    const blob = new Blob([contenido], { type: "application/vnd.ms-excel" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Reporte_Pedidos_${new Date().toISOString().split("T")[0]}.xls`;
+    a.click();
+  };
+
   const formatearTiempo = (segundos: number) => {
     if (!segundos || segundos === 0) return "-";
     const mins = Math.floor(segundos / 60);
@@ -437,6 +446,26 @@ export default function PanelPedidos() {
   if (!isMounted) return null;
 
   const esOperativo = usuarioActual?.rol === "OPERATIVO";
+
+  // Filtro de búsqueda y orden inteligente (pendientes / listos arriba)
+  const pedidosFiltrados = pedidos.filter(p => {
+    const texto = busqueda.toLowerCase();
+    return (
+      String(p.id).toLowerCase().includes(texto) ||
+      String(p.solicitante).toLowerCase().includes(texto) ||
+      String(p.kardex).toLowerCase().includes(texto) ||
+      String(p.anio).toLowerCase().includes(texto) ||
+      String(p.tomoSugerido).toLowerCase().includes(texto) ||
+      String(p.autoriza).toLowerCase().includes(texto) ||
+      String(p.documento).toLowerCase().includes(texto)
+    );
+  }).sort((a, b) => {
+    if (a.estado === "Pendiente" && b.estado !== "Pendiente") return -1;
+    if (b.estado === "Pendiente" && a.estado !== "Pendiente") return 1;
+    if (a.estado === "Listo para Recoger" && b.estado !== "Listo para Recoger") return -1;
+    if (b.estado === "Listo para Recoger" && a.estado !== "Listo para Recoger") return 1;
+    return 0;
+  });
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 relative">
@@ -467,7 +496,7 @@ export default function PanelPedidos() {
                 onClick={() => cambiarEstado(pedidoCriticoActual.id)}
                 className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded text-sm shadow-lg transition-transform transform active:scale-95 cursor-pointer animate-bounce"
               >
-                🛠️ Atender Pedido Ahora (Iniciar Atención)
+                🛠️️ Atender Pedido Ahora (Iniciar Atención)
               </button>
             </div>
             <p className="text-[10px] text-gray-400 mt-4">
@@ -488,6 +517,9 @@ export default function PanelPedidos() {
           </div>
           
           <div className="flex items-center gap-3 flex-wrap">
+            <button onClick={exportarExcel} className="bg-green-700 hover:bg-green-800 text-white font-medium py-2 px-4 rounded text-xs transition-colors shadow-sm cursor-pointer">
+              📥 Exportar a Excel
+            </button>
             <a href="/inventarios" className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded text-xs transition-colors shadow-sm">
               Consultar Inventarios 📊
             </a>
@@ -514,6 +546,22 @@ export default function PanelPedidos() {
           </div>
         </div>
 
+        {/* BARRA DE BÚSQUEDA GLOBAL */}
+        <div className="mb-4 flex items-center gap-2">
+          <input 
+            type="text" 
+            placeholder="🔍 Buscar por Kardex, Tomo, Año, Solicitante, Abogado o ID..." 
+            value={busqueda}
+            onChange={(e) => setBusqueda(e.target.value)}
+            className="w-full md:w-1/2 p-2 border border-gray-300 rounded text-xs outline-none focus:border-blue-600 text-gray-700 shadow-sm"
+          />
+          {busqueda && (
+            <button onClick={() => setBusqueda("")} className="bg-gray-200 px-3 py-2 rounded text-xs text-gray-600 hover:bg-gray-300">
+              Limpiar
+            </button>
+          )}
+        </div>
+
         <div className="overflow-x-auto pb-4">
           <table className="w-full text-center border-collapse text-[11px] border border-gray-300">
             <thead className="bg-[#243c5a] text-white">
@@ -538,14 +586,14 @@ export default function PanelPedidos() {
               </tr>
             </thead>
             <tbody>
-              {pedidos.length === 0 && (
+              {pedidosFiltrados.length === 0 && (
                 <tr>
                   <td colSpan={esOperativo ? 17 : 16} className="p-8 text-gray-400 font-medium text-center">
-                    No hay solicitudes registradas actualmente en la nube.
+                    No se encontraron registros coincidentes.
                   </td>
                 </tr>
               )}
-              {pedidos.map((item) => {
+              {pedidosFiltrados.map((item) => {
                 let rowStyle = "hover:bg-gray-50 transition-colors";
                 if (item.estado === "Pendiente") rowStyle = "bg-red-50 animate-pulse transition-colors"; 
                 else if (item.estado === "En Proceso") rowStyle = "bg-yellow-50 transition-colors"; 

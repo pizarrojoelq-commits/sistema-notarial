@@ -33,11 +33,10 @@ export default function RegistroEntradasSalidas() {
   const [registros, setRegistros] = useState<MovimientoTomo[]>([]);
   const [isMounted, setIsMounted] = useState(false);
   const [usuarioActual, setUsuarioActual] = useState<{ nombre: string; rol: string } | null>(null);
+  const [busqueda, setBusqueda] = useState("");
   const [, setTick] = useState(0);
   
-  // Estado para bloquear botones y evitar doble clic (clics múltiples)
   const [procesandoId, setProcesandoId] = useState<string | null>(null);
-  
   const [modalAbierto, setModalAbierto] = useState(false);
   const [registroActual, setRegistroActual] = useState<MovimientoTomo | null>(null);
   const [modalManualAbierto, setModalManualAbierto] = useState(false);
@@ -127,7 +126,6 @@ export default function RegistroEntradasSalidas() {
     }
   };
 
-  // Función segura contra clics múltiples
   const iniciarAtencion = async (id: string) => {
     if (procesandoId === id) return;
     setProcesandoId(id);
@@ -240,7 +238,6 @@ export default function RegistroEntradasSalidas() {
     let nuevaEntradaNube: any = null;
 
     if (registroActual.tipo === "SALIDAS") {
-      // Evaluamos si el motivo incluye anexos para generar múltiples espacios/filas independientes
       nuevaEntradaNube = {
         id: `entrada-${registroActual.id}-${Date.now()}`,
         pedido_id: registroActual.pedido_id || null,
@@ -349,9 +346,40 @@ export default function RegistroEntradasSalidas() {
     }
   };
 
+  const exportarExcel = () => {
+    let contenido = "Tomo\tAño\tMotivo\tAbogado\tResponsable\tAtendido Por\tFecha\tEstado\tObservaciones\n";
+    registrosFiltrados.forEach(r => {
+      contenido += `${r.tomo_exacto}\t${r.anio}\t${r.motivo}\t${r.abogado_solicita}\t${r.persona_responsable}\t${r.atendido_por}\t${r.fecha_operacion}\t${r.estado}\t${r.observaciones}\n`;
+    });
+    const blob = new Blob([contenido], { type: "application/vnd.ms-excel" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Reporte_${seccionActiva}_${new Date().toISOString().split("T")[0]}.xls`;
+    a.click();
+  };
+
   if (!isMounted) return null;
 
-  const registrosFiltrados = registros.filter(r => r.tipo === seccionActiva).slice().reverse();
+  // Filtrado de búsqueda global y ordenamiento automático (pendientes / en atención arriba)
+  const registrosFiltrados = registros.filter(r => {
+    if (r.tipo !== seccionActiva) return false;
+    const texto = busqueda.toLowerCase();
+    return (
+      String(r.tomo_exacto).toLowerCase().includes(texto) ||
+      String(r.anio).toLowerCase().includes(texto) ||
+      String(r.abogado_solicita).toLowerCase().includes(texto) ||
+      String(r.persona_responsable).toLowerCase().includes(texto) ||
+      String(r.motivo).toLowerCase().includes(texto) ||
+      String(r.observaciones).toLowerCase().includes(texto)
+    );
+  }).sort((a, b) => {
+    if (a.estado.includes("Pendiente") && !b.estado.includes("Pendiente")) return -1;
+    if (!a.estado.includes("Pendiente") && b.estado.includes("Pendiente")) return 1;
+    if (a.estado === "En Atención" && b.estado !== "En Atención") return -1;
+    if (b.estado === "En Atención" && a.estado !== "En Atención") return 1;
+    return 0;
+  });
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
@@ -367,6 +395,9 @@ export default function RegistroEntradasSalidas() {
           </div>
           
           <div className="flex items-center gap-3 flex-wrap">
+            <button onClick={exportarExcel} className="bg-green-700 hover:bg-green-800 text-white font-medium py-2 px-4 rounded text-xs transition-colors shadow-sm cursor-pointer">
+              📥 Exportar a Excel
+            </button>
             <a href="/inventarios" className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded text-xs transition-colors shadow-sm">
               Consultar Inventarios 📊
             </a>
@@ -392,19 +423,37 @@ export default function RegistroEntradasSalidas() {
         </div>
 
         {/* Pestañas de Navegación: Salidas vs Entradas */}
-        <div className="flex border-b mb-6">
-          <button 
-            onClick={() => setSeccionActiva("SALIDAS")}
-            className={`py-2 px-6 font-bold text-sm border-b-2 transition-colors cursor-pointer ${seccionActiva === "SALIDAS" ? "border-blue-600 text-blue-600 bg-blue-50/50" : "border-transparent text-gray-500 hover:text-gray-700"}`}
-          >
-            📤 Sección de Salidas ({registros.filter(r => r.tipo === "SALIDAS").length})
-          </button>
-          <button 
-            onClick={() => setSeccionActiva("ENTRADAS")}
-            className={`py-2 px-6 font-bold text-sm border-b-2 transition-colors cursor-pointer ${seccionActiva === "ENTRADAS" ? "border-blue-600 text-blue-600 bg-blue-50/50" : "border-transparent text-gray-500 hover:text-gray-700"}`}
-          >
-            📥 Sección de Entradas - Retorno a BERTELLO ({registros.filter(r => r.tipo === "ENTRADAS").length})
-          </button>
+        <div className="flex border-b mb-6 justify-between items-center flex-wrap gap-4">
+          <div className="flex">
+            <button 
+              onClick={() => setSeccionActiva("SALIDAS")}
+              className={`py-2 px-6 font-bold text-sm border-b-2 transition-colors cursor-pointer ${seccionActiva === "SALIDAS" ? "border-blue-600 text-blue-600 bg-blue-50/50" : "border-transparent text-gray-500 hover:text-gray-700"}`}
+            >
+              📤 Sección de Salidas ({registros.filter(r => r.tipo === "SALIDAS").length})
+            </button>
+            <button 
+              onClick={() => setSeccionActiva("ENTRADAS")}
+              className={`py-2 px-6 font-bold text-sm border-b-2 transition-colors cursor-pointer ${seccionActiva === "ENTRADAS" ? "border-blue-600 text-blue-600 bg-blue-50/50" : "border-transparent text-gray-500 hover:text-gray-700"}`}
+            >
+              📥 Sección de Entradas - Retorno a BERTELLO ({registros.filter(r => r.tipo === "ENTRADAS").length})
+            </button>
+          </div>
+
+          {/* BARRA DE BÚSQUEDA GLOBAL */}
+          <div className="flex items-center gap-2">
+            <input 
+              type="text" 
+              placeholder="🔍 Buscar por tomo, año, abogado, responsable..." 
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
+              className="p-2 border border-gray-300 rounded text-xs outline-none focus:border-blue-600 text-gray-700 w-64 shadow-sm"
+            />
+            {busqueda && (
+              <button onClick={() => setBusqueda("")} className="bg-gray-200 px-3 py-2 rounded text-xs text-gray-600 hover:bg-gray-300">
+                Limpiar
+              </button>
+            )}
+          </div>
         </div>
 
         {/* TABLA DINÁMICA */}
@@ -439,7 +488,7 @@ export default function RegistroEntradasSalidas() {
             </thead>
             <tbody>
               {registrosFiltrados.length === 0 && (
-                <tr><td colSpan={14} className="p-6 text-gray-400 font-medium">No hay registros en esta sección.</td></tr>
+                <tr><td colSpan={14} className="p-6 text-gray-400 font-medium">No hay registros coincidentes.</td></tr>
               )}
               {registrosFiltrados.map((item) => {
                 let rowColor = "hover:bg-gray-50";
