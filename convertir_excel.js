@@ -1,44 +1,48 @@
 const XLSX = require('xlsx');
 const { createClient } = require('@supabase/supabase-js');
 
-// Configura tus credenciales de Supabase
-const supabaseUrl = 'https://cfmoluhhmzblnzlnefqw.supabase.co';
-const supabaseAnonKey ='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmbW9sdWhobXpibG56bG5lZnF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzNTA2MzksImV4cCI6MjEwNTkyNjYzOX0.h24L0N_tzbouCl6NR3yw0ljvxr-vIF8GscpeLTl3fqc';
-
+// Credenciales directas de tu proyecto de Supabase
+const supabaseUrl = 'https://cfmoluhhmzblnzlefqw.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmbW9sdWhobXpibG56bG5lZnF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzNTA2MzksImV4cCI6MjEwNTkyNjYzOX0.h24L0N_tzbouCl6NR3yw0ljvxr-vIF8GscpeLTl3fqc';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-async function procesarYSubirExcel(filePath, tipoInventario) {
-  const workbook = XLSX.readFile(filePath);
-  const sheetName = workbook.SheetNames[0];
-  const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+async function procesarExcel(filePath, categoria) {
+  try {
+    const workbook = XLSX.readFile(filePath);
+    const sheetName = workbook.SheetNames[0];
+    const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
-  console.log(`Procesando ${tipoInventario} (${data.length} filas)...`);
+    console.log(`Subiendo ${categoria} (${data.length} registros)...`);
 
-  for (let row of data) {
-    // Mapeo adaptado según la estructura de tus imágenes
-    let item = {
-      tipo: tipoInventario,
-      tomo: row['TOMO'] || row['ANEXO'] || row['ARCHIVADOR'] || '1',
-      anio: String(row['AÑO'] || ''),
-      rango: String(row['RANGO DE FOLIOS'] || row['RANGO DE MINUTAS'] || row['RANGO DE SOLICITUD'] || row['RANGO DE ACTA'] || ''),
-      estado: (row['ESTADO'] || 'DISPONIBLE').toUpperCase()
-    };
+    for (let row of data) {
+      let item = {
+        categoria: categoria,
+        tomo: String(row['TOMO'] || row['ANEXO'] || '-'),
+        archivador: String(row['ARCHIVADOR'] || row['N° ARCHIVADOR'] || '1'),
+        anio: String(row['AÑO'] || row['AÑO DE REGISTRO'] || ''),
+        rango: String(row['RANGO DE FOLIOS'] || row['RANGO DE MINUTAS'] || row['RANGO DE SOLICITUD'] || row['RANGO DE ACTA'] || ''),
+        estado: (row['ESTADO'] || 'DISPONIBLE').toUpperCase()
+      };
 
-    const { error } = await supabase.from('inventarios').insert([item]);
-    if (error) {
-      console.error(`Error al insertar en ${tipoInventario}:`, error.message);
+      const { error } = await supabase.from('inventarios').insert([item]);
+      if (error) {
+        console.error(`Error al insertar en ${categoria}:`, error.message);
+      }
     }
+    console.log(`✅ ${categoria} procesado con éxito.`);
+  } catch (err) {
+    console.error(`No se pudo leer el archivo para ${categoria}:`, err.message);
   }
-  console.log(`✅ ${tipoInventario} subido y sincronizado con éxito.`);
 }
 
-// Ejecución de ejemplo para tus archivos
 async function ejecutar() {
-  await procesarYSubirExcel('./inventario_no_contenciosos.xlsx', 'No Contenciosos');
-  await procesarYSubirExcel('./inventario_vehiculares.xlsx', 'Transferencias Vehiculares');
-  await procesarYSubirExcel('./actas_vehiculares.xlsx', 'Actas de Transferencias Vehiculares'); // Incluye archivador
-  await procesarYSubirExcel('./minutario_no_contenciosos.xlsx', 'Minutario No Contenciosos');
-  await procesarYSubirExcel('./anexos_no_contenciosos.xlsx', 'Anexos Solicitudes No Contenciosos');
+  // Asegúrate de colocar tus archivos dentro de una carpeta llamada data-excel o ajusta las rutas según donde los tengas
+  await procesarExcel('./data-excel/inventario_escrituras.xlsx', 'Escrituras');
+  await procesarExcel('./data-excel/inventario_minutas.xlsx', 'Minutas');
+  await procesarExcel('./data-excel/inventario_vehiculares.xlsx', 'Transferencias Vehiculares');
+  await procesarExcel('./data-excel/actas_vehiculares.xlsx', 'Actas Transferencias Vehiculares');
+  await procesarExcel('./data-excel/no_contenciosos.xlsx', 'Asuntos No Contenciosos');
+  console.log('🎉 ¡Carga de inventarios finalizada!');
 }
 
 ejecutar();
