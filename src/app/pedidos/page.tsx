@@ -83,15 +83,18 @@ export default function PanelPedidos() {
     return !isNaN(min) && !isNaN(max) && numBuscado >= min && numBuscado <= max;
   };
 
+  // BÚSQUEDA ESTRICTAMENTE AISLADA POR CADA TIPO DE DOCUMENTO
   const calcularTomoNubeDinamico = async (documento: string, incluye: string, anioBuscado: string, instrumento: string, minutaActa: string, folioStr: string) => {
     const numFolio = parseInt((folioStr || "").replace(/[,.]/g, '')) || 0;
     const numInstrumento = parseInt((instrumento || "").replace(/[,.]/g, '')) || 0;
     const numMinuta = parseInt((minutaActa || "").replace(/[,.]/g, '')) || 0;
     
     let resultados: string[] = [];
+    const docLower = (documento || "").toLowerCase();
+    const incluyeLower = (incluye || "").toLowerCase();
 
-    // 1. ESCRITURAS
-    if (documento === "Escritura") {
+    // 1. CASO: ESCRITURA
+    if (docLower.includes("escritura")) {
       if (numFolio === 0) {
         resultados.push("[Folio 0: Buscar manualmente]");
       } else {
@@ -107,7 +110,7 @@ export default function PanelPedidos() {
         }
       }
 
-      if (incluye === "Incluye Minuta") {
+      if (incluyeLower.includes("minuta")) {
         const nMinuta = numMinuta > 0 ? numMinuta : numInstrumento;
         if (nMinuta > 0) {
           let queryMin = supabase.from("inv_minutas").select("*");
@@ -123,11 +126,10 @@ export default function PanelPedidos() {
         }
       }
     } 
-    // 2. TRANSFERENCIAS VEHICULARES Y ACTAS VEHICULARES
-    else if (documento.includes("Vehicular") || documento.includes("vehicular")) {
+    // 2. CASO: TRANSFERENCIAS VEHICULARES
+    else if (docLower.includes("vehicular") || docLower.includes("transferencia")) {
       const nRef = numMinuta > 0 ? numMinuta : (numFolio > 0 ? numFolio : numInstrumento);
       
-      // Buscar en Tomos de Transferencias Vehiculares
       let queryVeh = supabase.from("inv_vehiculares").select("*");
       if (anioBuscado) queryVeh = queryVeh.eq("AÑO", anioBuscado);
       const { data: dataVeh } = await queryVeh;
@@ -139,7 +141,7 @@ export default function PanelPedidos() {
         resultados.push(`[Vehicular Ref: ${nRef} no hallado]`);
       }
 
-      if (incluye.includes("Acta") || incluye.includes("acta")) {
+      if (incluyeLower.includes("acta")) {
         let queryActa = supabase.from("inv_actas_vehiculares").select("*");
         if (anioBuscado) queryActa = queryActa.eq("AÑO", anioBuscado);
         const { data: dataActa } = await queryActa;
@@ -148,12 +150,12 @@ export default function PanelPedidos() {
         if (halladoActa) {
           resultados.push(`Acta Archivador/Tomo ${halladoActa.ACTA || halladoActa.archivador || '1'} (Actas Vehiculares)`);
         } else {
-          resultados.push(`Acta asociada (Ref: ${nRef})`);
+          resultados.push(`[Acta Ref: ${nRef} no hallada]`);
         }
       }
     }
-    // 3. MINUTAS
-    else if (documento.includes("Minuta")) {
+    // 3. CASO: MINUTAS SOLAS
+    else if (docLower.includes("minuta")) {
       const nMinuta = numMinuta > 0 ? numMinuta : numInstrumento;
       if (nMinuta > 0) {
         let queryMin = supabase.from("inv_minutas").select("*");
@@ -166,42 +168,51 @@ export default function PanelPedidos() {
         } else {
           resultados.push(`[Minuta ${nMinuta} no hallada]`);
         }
+      } else {
+        resultados.push("[Minuta 0: Buscar manualmente]");
       }
     } 
-    // 4. NO CONTENCIOSOS
-    else if (documento.includes("No contencioso")) {
+    // 4. CASO: ASUNTOS / NO CONTENCIOSOS (Y SUS SUB-OPCIONES EXCLUSIVAS)
+    else if (docLower.includes("no contencioso") || docLower.includes("no contenciosos")) {
       const nRef = numMinuta > 0 ? numMinuta : (numFolio > 0 ? numFolio : numInstrumento);
-      
-      let queryNC = supabase.from("inv_no_contenciosos").select("*");
-      if (anioBuscado) queryNC = queryNC.eq("AÑO", anioBuscado);
-      const { data: dataNC } = await queryNC;
 
-      let halladoNC = dataNC?.find((nc: any) => perteneceAlRango(nRef, nc["RANGO DE FOLIOS"] || nc.rango));
-      if (halladoNC) {
-        resultados.push(`Tomo ${halladoNC.TOMO || halladoNC.tomo} (No Contenciosos)`);
-      } else {
-        resultados.push(`Expediente No Contencioso (Ref: ${nRef})`);
-      }
-
-      if (incluye.includes("Minuta") && nRef > 0) {
-        let queryMinNC = supabase.from("inv_minutario_no_contenciosos").select("*");
-        if (anioBuscado) queryMinNC = queryMinNC.eq("AÑO", anioBuscado);
-        const { data: dataMinNC } = await queryMinNC;
-        let halladoMinNC = dataMinNC?.find((m: any) => perteneceAlRango(nRef, m["RANGO DE MINUTAS"] || m.rango));
-        if (halladoMinNC) {
-          resultados.push(`Tomo ${halladoMinNC.TOMO || halladoMinNC.tomo} (Minutario No Contenciosos)`);
-        }
-      }
-
-      if (incluye.includes("Solicitud")) {
+      // Si el documento principal o la selección pide específicamente SOLICITUD
+      if (docLower.includes("solicitud") || incluyeLower.includes("solicitud")) {
         let querySol = supabase.from("inv_solicitudes_no_contenciosos").select("*");
         if (anioBuscado) querySol = querySol.eq("AÑO", anioBuscado);
         const { data: dataSol } = await querySol;
+
         let halladoSol = dataSol?.find((s: any) => perteneceAlRango(nRef, s["RANGO DE SOLICITUD"] || s.rango));
         if (halladoSol) {
-          resultados.push(`Carpeta Solicitud Anexo ${halladoSol.ANEXO || halladoSol.anexo || '1'} (${anioBuscado})`);
+          resultados.push(`Solicitud Anexo ${halladoSol.ANEXO || halladoSol.anexo || '1'} (No Contenciosos)`);
         } else {
-          resultados.push(`Carpeta Solicitud (${anioBuscado || "General"})`);
+          resultados.push(`[Solicitud No Contenciosa Ref: ${nRef} no hallada]`);
+        }
+      } 
+      // Si el documento o la selección pide MINUTA DE NO CONTENCIOSO
+      else if (docLower.includes("minuta") || incluyeLower.includes("minuta")) {
+        let queryMinNC = supabase.from("inv_minutario_no_contenciosos").select("*");
+        if (anioBuscado) queryMinNC = queryMinNC.eq("AÑO", anioBuscado);
+        const { data: dataMinNC } = await queryMinNC;
+
+        let halladoMinNC = dataMinNC?.find((m: any) => perteneceAlRango(nRef, m["RANGO DE MINUTAS"] || m.rango));
+        if (halladoMinNC) {
+          resultados.push(`Tomo ${halladoMinNC.TOMO || halladoMinNC.tomo} (Minutario No Contenciosos)`);
+        } else {
+          resultados.push(`[Minutario No Contencioso Ref: ${nRef} no hallado]`);
+        }
+      } 
+      // Si es el expediente principal de No Contencioso
+      else {
+        let queryNC = supabase.from("inv_no_contenciosos").select("*");
+        if (anioBuscado) queryNC = queryNC.eq("AÑO", anioBuscado);
+        const { data: dataNC } = await queryNC;
+
+        let halladoNC = dataNC?.find((nc: any) => perteneceAlRango(nRef, nc["RANGO DE FOLIOS"] || nc.rango));
+        if (halladoNC) {
+          resultados.push(`Tomo ${halladoNC.TOMO || halladoNC.tomo} (No Contenciosos)`);
+        } else {
+          resultados.push(`Expediente No Contencioso (Ref: ${nRef})`);
         }
       }
     }
@@ -455,7 +466,7 @@ export default function PanelPedidos() {
                 onClick={() => cambiarEstado(pedidoCriticoActual.id)}
                 className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded text-sm shadow-lg transition-transform transform active:scale-95 cursor-pointer animate-bounce"
               >
-                🛠️️ Atender Pedido Ahora (Iniciar Atención)
+                🛠️ Atender Pedido Ahora (Iniciar Atención)
               </button>
             </div>
             <p className="text-[10px] text-gray-400 mt-4">
