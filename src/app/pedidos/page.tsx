@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import escriturasDB from "../../data/escrituras_db.json";
-import minutasDB from "../../data/minutas_db.json";
 
 interface Pedido {
   id: string | number;
@@ -62,7 +60,7 @@ export default function PanelPedidos() {
       const { data, error } = await supabase
         .from("pedidos")
         .select("*")
-        .order("id", { ascending: true }); // ORDEN CRONOLÓGICO ESTRICTO DE LLEGADA
+        .order("id", { ascending: true });
 
       if (error) {
         console.error("Error al cargar pedidos de Supabase:", error);
@@ -70,24 +68,124 @@ export default function PanelPedidos() {
       }
 
       if (data) {
-        procesarYActualizarPedidos(data);
+        await procesarYActualizarPedidos(data);
       }
     } catch (err) {
       console.error("Error de conexión al cargar:", err);
     }
   };
 
-  const procesarYActualizarPedidos = (listaCruda: any[]) => {
-    const listaConTomosUnificados = listaCruda.map((item: any) => {
-      const tomoUnificado = calcularTomoCombinado(
-        item.documento, item.incluye, item.anio, item.instrumento || "", item.minuta_acta || "", item.folio || ""
-      );
-      return { 
-        ...item, 
-        tomoSugerido: tomoUnificado, 
-        tomo_sugerido: tomoUnificado 
-      };
-    });
+  // Función auxiliar para evaluar si un número está dentro de un rango de texto (ej: "501-1000")
+  const perteneceAlRango = (numBuscado: number, textoRango: string) => {
+    if (!textoRango || !textoRango.includes('-')) return false;
+    const partes = textoRango.split('-');
+    const min = parseInt(partes[0].trim());
+    const max = parseInt(partes[1].trim());
+    return !isNaN(min) && !isNaN(max) && numBuscado >= min && numBuscado <= max;
+  };
+
+  // Búsqueda dinámica y asíncrona en las tablas de inventario en la nube de Supabase
+  const calcularTomoNubeDinamico = async (documento: string, incluye: string, anioBuscado: string, instrumento: string, minutaActa: string, folioStr: string) => {
+    const numFolio = parseInt((folioStr || "").replace(/[,.]/g, '')) || 0;
+    const numInstrumento = parseInt((instrumento || "").replace(/[,.]/g, '')) || 0;
+    const numMinuta = parseInt((minutaActa || "").replace(/[,.]/g, '')) || 0;
+    
+    let resultados: string[] = [];
+
+    if (documento === "Escritura") {
+      if (numFolio === 0) {
+        resultados.push("[Folio 0: Buscar manualmente en archivo]");
+      } else {
+        // Consultar inv_escrituras en la nube
+        let query = supabase.from("inv_escrituras").select("*");
+        if (anioBuscado) query = query.eq("AÑO", anioBuscado);
+        const { data } = await query;
+
+        let hallado = data?.find((e: any) => perteneceAlRango(numFolio, e["RANGO DE FOLIOS"] || e.rango));
+        if (hallado) {
+          resultados.push(`Tomo ${hallado.TOMO || hallado.tomo} (Escrituras ${hallado.AÑO || hallado.anio || anioBuscado})`);
+        } else {
+          resultados.push("[Folio no hallado en inventario]");
+        }
+      }
+
+      if (incluye === "Incluye Minuta") {
+        const nMinuta = numMinuta > 0 ? numMinuta : numInstrumento;
+        if (nMinuta === 0) {
+          resultados.push("[Minuta 0: Buscar manualmente]");
+        } else {
+          let queryMin = supabase.from("inv_minutas").select("*");
+          if (anioBuscado) queryMin = queryMin.eq("AÑO", anioBuscado);
+          const { data: dataMin } = await queryMin;
+
+          let halladoMin = dataMin?.find((m: any) => perteneceAlRango(nMinuta, m["RANGO DE MINUTAS"] || m.rango));
+          if (halladoMin) {
+            resultados.push(`Tomo ${halladoMin.TOMO || halladoMin.tomo} (Minutas)`);
+          } else {
+            resultados.push("[Minuta anexa no hallada]");
+          }
+        }
+      }
+    } 
+    else if (documento.includes("Minuta") || documento.includes("Vehicular")) {
+      const nMinuta = numMinuta > 0 ? numMinuta : numInstrumento;
+      if (nMinuta === 0) {
+        resultados.push("[Minuta/Instrumento 0: Buscar manualmente]");
+      } else {
+        let queryMin = supabase.from("inv_minutas").select("*");
+        if (anioBuscado) queryMin = queryMin.eq("AÑO", anioBuscado);
+        const { data: dataMin } = await queryMin;
+
+        let halladoMin = dataMin?.find((m: any) => perteneceAlRango(nMinuta, m["RANGO DE MINUTAS"] || m.rango));
+        if (halladoMin) {
+          resultados.push(`Tomo ${halladoMin.TOMO || halladoMin.tomo} (Minutas)`);
+        } else {
+          resultados.push("[Minuta no hallada en inventario]");
+        }
+      }
+
+      if (incluye.includes("Acta")) {
+        resultados.push(`Acta asociada (Inst. ${numInstrumento})`);
+      }
+    } 
+    else if (documento.includes("No contencioso")) {
+      const nRef = numMinuta > 0 ? numMinuta : numInstrumento;
+      resultados.push(`Expediente No Contencioso (Ref: ${nRef || numFolio})`);
+      if (incluye.includes("Minuta") && nRef > 0) {
+        let queryMin = supabase.from("inv_minutario_no_contenciosos").select("*");
+        if (anioBuscado) queryMin = queryMin.eq("AÑO", anioBuscado);
+        const { data: dataMin } = await queryMin;
+        let halladoMin = dataMin?.find((m: any) => perteneceAlRango(nRef, m["RANGO DE MINUTAS"] || m.rango));
+        if (halladoMin) {
+          resultados.push(`Tomo ${halladoMin.TOMO || halladoMin.tomo} (Minutario No Contenciosos)`);
+        } else {
+          resultados.push("[Minuta No Contenciosa no hallada]");
+        }
+      }
+      if (incluye.includes("Solicitud")) {
+        resultados.push(`Carpeta Solicitud (${anioBuscado || "General"})`);
+      }
+    }
+    else {
+      resultados.push(`Documento: ${documento}`);
+    }
+
+    return resultados.filter(Boolean).join(" + ");
+  };
+
+  const procesarYActualizarPedidos = async (listaCruda: any[]) => {
+    const listaConTomosUnificados = await Promise.all(
+      listaCruda.map(async (item: any) => {
+        const tomoUnificado = await calcularTomoNubeDinamico(
+          item.documento, item.incluye, item.anio, item.instrumento || "", item.minuta_acta || "", item.folio || ""
+        );
+        return { 
+          ...item, 
+          tomoSugerido: tomoUnificado, 
+          tomo_sugerido: tomoUnificado 
+        };
+      })
+    );
 
     setPedidos(listaConTomosUnificados);
 
@@ -145,62 +243,6 @@ export default function PanelPedidos() {
     } catch (e) {
       console.error("No se pudo reproducir el archivo de audio:", e);
     }
-  };
-
-  const buscarEnEscrituras = (folio: number, anioBuscado: string) => {
-    if (folio === 0) return ""; 
-    const hallado = escriturasDB.find((e: any) => {
-      const coincideFolio = folio >= e.folioInicial && folio <= e.folioFinal;
-      const coincideAnio = anioBuscado ? e.anio.includes(anioBuscado) : true;
-      return coincideFolio && coincideAnio;
-    });
-    return hallado ? `Tomo ${hallado.tomo} (Escrituras ${hallado.anio})` : `[Folio no hallado]`;
-  };
-
-  const buscarEnMinutas = (num: number, anioBuscado: string) => {
-    if (num === 0) return ""; 
-    const hallado = minutasDB.find((m: any) => 
-      num >= m.minutaInicial && num <= m.minutaFinal && (!anioBuscado || m.anio.includes(anioBuscado))
-    );
-    return hallado ? `Tomo ${hallado.tomo} (Minutas)` : `[Minuta no hallada]`;
-  };
-
-  const calcularTomoCombinado = (documento: string, incluye: string, anioBuscado: string, instrumento: string, minutaActa: string, folioStr: string) => {
-    const numFolio = parseInt((folioStr || "").replace(/[,.]/g, '')) || 0;
-    const numInstrumento = parseInt((instrumento || "").replace(/[,.]/g, '')) || 0;
-    const numMinuta = parseInt((minutaActa || "").replace(/[,.]/g, '')) || 0;
-    
-    let resultados: string[] = [];
-
-    if (documento === "Escritura") {
-      resultados.push(buscarEnEscrituras(numFolio, anioBuscado));
-      if (incluye === "Incluye Minuta") {
-        const nMinuta = numMinuta > 0 ? numMinuta : numInstrumento;
-        resultados.push(buscarEnMinutas(nMinuta, anioBuscado));
-      }
-    } 
-    else if (documento.includes("Minuta") || documento.includes("Vehicular")) {
-      const nMinuta = numMinuta > 0 ? numMinuta : numInstrumento;
-      resultados.push(buscarEnMinutas(nMinuta, anioBuscado));
-      if (incluye.includes("Acta")) {
-        resultados.push(`Acta asociada (Inst. ${numInstrumento})`);
-      }
-    } 
-    else if (documento.includes("No contencioso")) {
-      const nRef = numMinuta > 0 ? numMinuta : numInstrumento;
-      resultados.push(`Expediente No Contencioso (Ref: ${nRef || numFolio})`);
-      if (incluye.includes("Minuta")) {
-        resultados.push(buscarEnMinutas(nRef, anioBuscado));
-      }
-      if (incluye.includes("Solicitud")) {
-        resultados.push(`Carpeta Solicitud (${anioBuscado || "General"})`);
-      }
-    }
-    else {
-      resultados.push(`Documento: ${documento}`);
-    }
-
-    return resultados.filter(Boolean).join(" + ");
   };
 
   const cambiarEstado = async (id: string | number) => {
@@ -263,147 +305,30 @@ export default function PanelPedidos() {
   const enviarA_Salidas = async (pedido: Pedido) => {
     if (usuarioActual?.rol !== "OPERATIVO") return;
 
-    const numFolio = parseInt((pedido.folio || "").replace(/[,.]/g, '')) || 0;
-    const numInstrumento = parseInt((pedido.instrumento || "").replace(/[,.]/g, '')) || 0;
-    const numMinuta = parseInt((pedido.minuta_acta || "").replace(/[,.]/g, '')) || 0;
     const anioBuscado = pedido.anio || "2026";
     const operadorActual = usuarioActual ? usuarioActual.nombre : "Archivo";
 
     let registrosSalidaParaInsertar: any[] = [];
 
-    if (pedido.documento === "Escritura") {
-      const tomoEscritura = buscarEnEscrituras(numFolio, anioBuscado);
-      registrosSalidaParaInsertar.push({
-        id: `salida-${pedido.id}-esc-${Date.now()}`,
-        pedido_id: Number(pedido.id),
-        tipo: "SALIDAS",
-        tomo_exacto: tomoEscritura || "Tomo Escritura",
-        anio: anioBuscado,
-        motivo: pedido.motivo || "Préstamo de Tomo Físico",
-        abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
-        persona_responsable: "",
-        atendido_por: operadorActual,
-        fecha_operacion: "",
-        hora_ingreso_persona: "",
-        hora_salida_persona: "",
-        tiempo_atencion_segundos: 0,
-        tiempo_inicio_timestamp: null,
-        observaciones: `Escritura principal. Solicitante: ${pedido.solicitante}`,
-        firma_digital: "",
-        estado: "Pendiente de Entrega"
-      });
-
-      if (pedido.incluye === "Incluye Minuta") {
-        const nMinuta = numMinuta > 0 ? numMinuta : numInstrumento;
-        const tomoMinuta = buscarEnMinutas(nMinuta, anioBuscado);
-        registrosSalidaParaInsertar.push({
-          id: `salida-${pedido.id}-min-${Date.now()}`,
-          pedido_id: Number(pedido.id),
-          tipo: "SALIDAS",
-          tomo_exacto: tomoMinuta || "Tomo Minuta Anexa",
-          anio: anioBuscado,
-          motivo: pedido.motivo || "Préstamo de Tomo Físico",
-          abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
-          persona_responsable: "",
-          atendido_por: operadorActual,
-          fecha_operacion: "",
-          hora_ingreso_persona: "",
-          hora_salida_persona: "",
-          tiempo_atencion_segundos: 0,
-          tiempo_inicio_timestamp: null,
-          observaciones: `Minuta anexa asociada. Solicitante: ${pedido.solicitante}`,
-          firma_digital: "",
-          estado: "Pendiente de Entrega"
-        });
-      }
-    } 
-    else if (pedido.documento.includes("No contencioso")) {
-      const nRef = numMinuta > 0 ? numMinuta : numInstrumento;
-      registrosSalidaParaInsertar.push({
-        id: `salida-${pedido.id}-exp-${Date.now()}`,
-        pedido_id: Number(pedido.id),
-        tipo: "SALIDAS",
-        tomo_exacto: `Expediente No Contencioso (Ref: ${nRef || numFolio})`,
-        anio: anioBuscado,
-        motivo: pedido.motivo || "Préstamo de Tomo Físico",
-        abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
-        persona_responsable: "",
-        atendido_por: operadorActual,
-        fecha_operacion: "",
-        hora_ingreso_persona: "",
-        hora_salida_persona: "",
-        tiempo_atencion_segundos: 0,
-        tiempo_inicio_timestamp: null,
-        observaciones: `Expediente principal. Solicitante: ${pedido.solicitante}`,
-        firma_digital: "",
-        estado: "Pendiente de Entrega"
-      });
-
-      if (pedido.incluye.includes("Minuta")) {
-        const tomoMinuta = buscarEnMinutas(nRef, anioBuscado);
-        registrosSalidaParaInsertar.push({
-          id: `salida-${pedido.id}-min-${Date.now()}`,
-          pedido_id: Number(pedido.id),
-          tipo: "SALIDAS",
-          tomo_exacto: tomoMinuta || "Tomo Minuta Anexa",
-          anio: anioBuscado,
-          motivo: pedido.motivo || "Préstamo de Tomo Físico",
-          abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
-          persona_responsable: "",
-          atendido_por: operadorActual,
-          fecha_operacion: "",
-          hora_ingreso_persona: "",
-          hora_salida_persona: "",
-          tiempo_atencion_segundos: 0,
-          tiempo_inicio_timestamp: null,
-          observaciones: `Minuta anexa. Solicitante: ${pedido.solicitante}`,
-          firma_digital: "",
-          estado: "Pendiente de Entrega"
-        });
-      }
-      if (pedido.incluye.includes("Solicitud")) {
-        registrosSalidaParaInsertar.push({
-          id: `salida-${pedido.id}-sol-${Date.now()}`,
-          pedido_id: Number(pedido.id),
-          tipo: "SALIDAS",
-          tomo_exacto: `Carpeta Solicitud (${anioBuscado})`,
-          anio: anioBuscado,
-          motivo: pedido.motivo || "Préstamo de Tomo Físico",
-          abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
-          persona_responsable: "",
-          atendido_por: operadorActual,
-          fecha_operacion: "",
-          hora_ingreso_persona: "",
-          hora_salida_persona: "",
-          tiempo_atencion_segundos: 0,
-          tiempo_inicio_timestamp: null,
-          observaciones: `Carpeta de solicitud anexa. Solicitante: ${pedido.solicitante}`,
-          firma_digital: "",
-          estado: "Pendiente de Entrega"
-        });
-      }
-    }
-    else {
-      registrosSalidaParaInsertar.push({
-        id: `salida-${pedido.id}-${Date.now()}`,
-        pedido_id: Number(pedido.id),
-        tipo: "SALIDAS",
-        tomo_exacto: pedido.tomoSugerido || "Tomo Asignado",
-        anio: anioBuscado,
-        motivo: pedido.motivo || "Préstamo de Tomo Físico",
-        abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
-        persona_responsable: "",
-        atendido_por: operadorActual,
-        fecha_operacion: "",
-        hora_ingreso_persona: "",
-        hora_salida_persona: "",
-        tiempo_atencion_segundos: 0,
-        tiempo_inicio_timestamp: null,
-        observaciones: `Solicitante: ${pedido.solicitante}`,
-        firma_digital: "",
-        estado: "Pendiente de Entrega"
-      });
-    }
+    registrosSalidaParaInsertar.push({
+      id: `salida-${pedido.id}-${Date.now()}`,
+      pedido_id: Number(pedido.id),
+      tipo: "SALIDAS",
+      tomo_exacto: pedido.tomoSugerido || pedido.tomo_sugerido || "Tomo Asignado",
+      anio: anioBuscado,
+      motivo: pedido.motivo || "Préstamo de Tomo Físico",
+      abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
+      persona_responsable: "",
+      atendido_por: operadorActual,
+      fecha_operacion: "",
+      hora_ingreso_persona: "",
+      hora_salida_persona: "",
+      tiempo_atencion_segundos: 0,
+      tiempo_inicio_timestamp: null,
+      observaciones: `Solicitante: ${pedido.solicitante}`,
+      firma_digital: "",
+      estado: "Pendiente de Entrega"
+    });
 
     try {
       const { error } = await supabase
@@ -448,7 +373,6 @@ export default function PanelPedidos() {
 
   const esOperativo = usuarioActual?.rol === "OPERATIVO";
 
-  // ORDEN CRONOLÓGICO NATURAL (Orden de llegada puro, sin alterarse por el estado)
   const pedidosFiltrados = pedidos.filter(p => {
     const texto = busqueda.toLowerCase();
     return (
@@ -461,7 +385,7 @@ export default function PanelPedidos() {
       String(p.documento).toLowerCase().includes(texto) ||
       String(p.escaneado_por || "").toLowerCase().includes(texto)
     );
-  }); // Sin .sort() forzado para mantener el orden exacto de llegada
+  });
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 relative">
@@ -542,7 +466,6 @@ export default function PanelPedidos() {
           </div>
         </div>
 
-        {/* BARRA DE BÚSQUEDA GLOBAL */}
         <div className="mb-4 flex items-center gap-2">
           <input 
             type="text" 
