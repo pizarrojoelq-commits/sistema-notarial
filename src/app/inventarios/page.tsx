@@ -29,7 +29,6 @@ export default function ControlInventarioTomos() {
     try {
       let listaCompleta: ItemInventario[] = [];
 
-      // Mapeo exacto de las 7 tablas con sus nombres de columnas reales en Supabase
       const tablas = [
         { nombre: 'inv_escrituras', cat: 'Escrituras', campoTomo: 'TOMO', campoAnio: 'AÑO', campoRango: 'RANGO DE FOLIOS' },
         { nombre: 'inv_minutas', cat: 'Minutas', campoTomo: 'TOMO', campoAnio: 'AÑO', campoRango: 'RANGO DE MINUTAS' },
@@ -41,24 +40,53 @@ export default function ControlInventarioTomos() {
       ];
 
       for (let t of tablas) {
-        // Usamos .range(0, 4999) para saltar el límite de 1000 filas de Supabase y traer todo completo
-        const { data, error } = await supabase
-          .from(t.nombre)
-          .select("*")
-          .range(0, 4999);
+        // Carga paginada en bloques de 1000 para traer TODOS los registros sin importar si son 2,000 o 5,000
+        let registrosTabla: any[] = [];
+        let inicio = 0;
+        let tamanoPagina = 1000;
+        let continuar = true;
 
-        if (!error && data) {
-          const formateados = data.map((item: any) => ({
+        while (continuar) {
+          const { data, error } = await supabase
+            .from(t.nombre)
+            .select("*")
+            .range(inicio, inicio + tamanoPagina - 1);
+
+          if (error || !data || data.length === 0) {
+            continuar = false;
+          } else {
+            registrosTabla = [...registrosTabla, ...data];
+            if (data.length < tamanoPagina) {
+              continuar = false;
+            } else {
+              inicio += tamanoPagina;
+            }
+          }
+        }
+
+        // Mapeo seguro que detecta correctamente el valor 1, 0 o texto sin omitir nada
+        const formateados = registrosTabla.map((item: any) => {
+          const valorTomo = item[t.campoTomo] !== undefined && item[t.campoTomo] !== null ? String(item[t.campoTomo]) : 
+                            item.tomo !== undefined ? String(item.tomo) : 
+                            item.anexo !== undefined ? String(item.anexo) : 
+                            item.archivador !== undefined ? String(item.archivador) : '-';
+
+          const valorAnio = item[t.campoAnio] !== undefined ? String(item[t.campoAnio]) : (item.anio || '');
+          const valorRango = item[t.campoRango] !== undefined ? String(item[t.campoRango]) : (item.rango || '');
+          const valorEstado = String(item.ESTADO || item.estado || 'DISPONIBLE').toUpperCase();
+
+          return {
             id: `${t.nombre}-${item.id || Math.random()}`,
             categoria: t.cat,
-            tomo: String(item[t.campoTomo] || item.tomo || item.anexo || item.archivador || '-'),
-            archivador: t.cat.includes('Actas') ? String(item[t.campoTomo] || '-') : String(item.archivador || '1'),
-            anio: String(item[t.campoAnio] || item.anio || ''),
-            rango: String(item[t.campoRango] || item.rango || ''),
-            estado: String(item.ESTADO || item.estado || 'DISPONIBLE').toUpperCase()
-          }));
-          listaCompleta = [...listaCompleta, ...formateados];
-        }
+            tomo: valorTomo,
+            archivador: '1',
+            anio: valorAnio,
+            rango: valorRango,
+            estado: valorEstado
+          };
+        });
+
+        listaCompleta = [...listaCompleta, ...formateados];
       }
 
       setInventario(listaCompleta);
@@ -69,12 +97,10 @@ export default function ControlInventarioTomos() {
 
   if (!isMounted) return null;
 
-  // Estadísticas y Reportes en tiempo real
   const totalRegistros = inventario.length;
   const disponibles = inventario.filter(i => i.estado.includes("DISPONIBLE")).length;
   const noDisponibles = totalRegistros - disponibles;
 
-  // Filtrado avanzado
   const inventarioFiltrado = inventario.filter(item => {
     const texto = busqueda.toLowerCase();
     const coincideTexto = 
@@ -93,7 +119,6 @@ export default function ControlInventarioTomos() {
     <div className="min-h-screen bg-gray-50 py-8 px-4">
       <div className="w-full max-w-[95%] mx-auto bg-white shadow-md rounded-sm overflow-hidden p-6">
         
-        {/* Encabezado */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-6 mb-6 gap-4">
           <div>
             <h1 className="text-2xl font-bold text-[#243c5a]">Inventario General y Disponibilidad de Tomos Físicos</h1>
@@ -111,7 +136,6 @@ export default function ControlInventarioTomos() {
           </div>
         </div>
 
-        {/* TARJETAS DE REPORTE */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-blue-50 border border-blue-200 p-4 rounded shadow-sm text-center">
             <p className="text-xs text-blue-800 font-bold uppercase">Total Registrados</p>
@@ -127,7 +151,6 @@ export default function ControlInventarioTomos() {
           </div>
         </div>
 
-        {/* CONTROLES DE FILTRADO Y BÚSQUEDA */}
         <div className="bg-slate-50 p-4 border rounded mb-6 flex flex-col md:flex-row gap-4 justify-between items-center">
           <div className="flex flex-wrap gap-2 w-full md:w-auto">
             <input 
@@ -174,7 +197,6 @@ export default function ControlInventarioTomos() {
           ) : null}
         </div>
 
-        {/* TABLA DE INVENTARIO */}
         <div className="overflow-x-auto pb-4">
           <table className="w-full text-center border-collapse text-[11px] border border-gray-300">
             <thead className="bg-[#243c5a] text-white">
