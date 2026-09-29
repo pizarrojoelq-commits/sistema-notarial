@@ -36,15 +36,14 @@ async function procesarExcel(filePath, categoria) {
 }
 
 async function ejecutar() {
-  // Asegúrate de que estos archivos estén en la misma carpeta raíz o en una carpeta data-excel
-  // Aquí apuntan directamente a la raíz con los nombres exactos de tu captura:
-  await procesarExcel('./inventario_escrituras.xlsx', 'Escrituras');
-  await procesarExcel('./INVENTARIO DE MINUTAS.xlsx', 'Minutas');
-  await procesarExcel('./INVENTARIO DE TRANFERENCIAS VEHICULARES.xlsx', 'Transferencias Vehiculares');
-  await procesarExcel('./Inventario DE ACTAS DE Trasferencias vehiculares.xlsx', 'Actas Transferencias Vehiculares');
-  await procesarExcel('./INVENTARIO DE NO CONTENCIOSOS.xlsx', 'Asuntos No Contenciosos');
-  await procesarExcel('./MINUTARIO DE ASUNTOS NO CONTENCIOSO.xlsx', 'Minutario No Contenciosos');
-  await procesarExcel('./SOLICITUDES DE ASUNTOS NO CONTENCIOSOS.xlsx', 'Solicitudes No Contenciosos');
+  // Apuntando correctamente a la carpeta data-excel y con los nombres exactos:
+  await procesarExcel('./data-excel/inventario_escrituras.xlsx', 'Escrituras');
+  await procesarExcel('./data-excel/INVENTARIO DE MINUTAS.xlsx', 'Minutas');
+  await procesarExcel('./data-excel/INVENTARIO DE TRANFERENCIAS VEHICULARES.xlsx', 'Transferencias Vehiculares');
+  await procesarExcel('./data-excel/Inventario DE ACTAS DE Trasferencias vehiculares.xlsx', 'Actas Transferencias Vehiculares');
+  await procesarExcel('./data-excel/INVENTARIO DE NO CONTENCIOSOS.xlsx', 'Asuntos No Contenciosos');
+  await procesarExcel('./data-excel/MINUTARIO DE ASUNTOS NO CONTENCIOSO.xlsx', 'Minutario No Contenciosos');
+  await procesarExcel('./data-excel/SOLICITUDES DE ASUNTOS NO CONTENCIOSOS.xlsx', 'Solicitudes No Contenciosos');
   
   console.log('🎉 ¡Carga masiva de inventarios finalizada!');
 }
