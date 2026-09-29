@@ -76,39 +76,20 @@ export default function PanelPedidos() {
     }
   };
 
-  // Lógica de desglose inteligente de tomos múltiples por documentos anexos
+  // Cada pedido mantiene UNA SOLA FILA, uniendo los tomos sugeridos en el texto
   const procesarYActualizarPedidos = (listaCruda: any[]) => {
-    const listaExpandida: any[] = [];
-
-    listaCruda.forEach((item: any) => {
-      const tomosDesglosados = calcularTomosDesglosados(
+    const listaConTomosUnificados = listaCruda.map((item: any) => {
+      const tomoUnificado = calcularTomoCombinado(
         item.documento, item.incluye, item.anio, item.instrumento || "", item.minuta_acta || "", item.folio || ""
       );
-
-      // Si el pedido se desglosa en múltiples tomos/documentos físicos independientes
-      if (tomosDesglosados.length > 1) {
-        tomosDesglosados.forEach((tomoInfo, index) => {
-          listaExpandida.push({
-            ...item,
-            id: `${item.id}-anexo${index + 1}`,
-            documento: `${item.documento} (${tomoInfo.etiqueta})`,
-            tomoSugerido: tomoInfo.ubicacion,
-            tomo_sugerido: tomoInfo.ubicacion
-          });
-        });
-      } else {
-        const unicaUbicacion = tomosDesglosados.length === 1 ? tomosDesglosados[0].ubicacion : calcularTomoRealUnico(
-          item.documento, item.incluye, item.anio, item.instrumento || "", item.minuta_acta || "", item.folio || ""
-        );
-        listaExpandida.push({ 
-          ...item, 
-          tomoSugerido: unicaUbicacion, 
-          tomo_sugerido: unicaUbicacion 
-        });
-      }
+      return { 
+        ...item, 
+        tomoSugerido: tomoUnificado, 
+        tomo_sugerido: tomoUnificado 
+      };
     });
 
-    setPedidos(listaExpandida);
+    setPedidos(listaConTomosUnificados);
 
     const sesion = localStorage.getItem("usuarioLogueado");
     const usuarioObj = sesion ? JSON.parse(sesion) : null;
@@ -116,7 +97,7 @@ export default function PanelPedidos() {
     const esExterno = usuarioObj && (usuarioObj.rol === "EXTERNO" || usuarioObj.nombre.includes("Cinthia") || usuarioObj.nombre.includes("Enrique"));
     const esOperativo = usuarioObj && usuarioObj.rol === "OPERATIVO" && !esExterno;
 
-    const primerPendiente = listaExpandida.find(p => p.estado === "Pendiente");
+    const primerPendiente = listaConTomosUnificados.find(p => p.estado === "Pendiente");
     
     if (primerPendiente && esOperativo) {
       setPedidoCriticoActual(primerPendiente);
@@ -184,46 +165,8 @@ export default function PanelPedidos() {
     return hallado ? `Tomo ${hallado.tomo} (Minutas)` : `[Minuta no hallada]`;
   };
 
-  // Función que desglosa en múltiples elementos independientes si hay anexos
-  const calcularTomosDesglosados = (documento: string, incluye: string, anioBuscado: string, instrumento: string, minutaActa: string, folioStr: string) => {
-    const numFolio = parseInt((folioStr || "").replace(/[,.]/g, '')) || 0;
-    const numInstrumento = parseInt((instrumento || "").replace(/[,.]/g, '')) || 0;
-    const numMinuta = parseInt((minutaActa || "").replace(/[,.]/g, '')) || 0;
-    
-    let listaResultados: { etiqueta: string; ubicacion: string }[] = [];
-
-    if (documento === "Escritura") {
-      const ubicacionEscritura = buscarEnEscrituras(numFolio, anioBuscado);
-      if (ubicacionEscritura) {
-        listaResultados.push({ etiqueta: "Escritura / Tomo Principal", ubicacion: ubicacionEscritura });
-      }
-      if (incluye === "Incluye Minuta") {
-        const nMinuta = numMinuta > 0 ? numMinuta : numInstrumento;
-        const ubicacionMinuta = buscarEnMinutas(nMinuta, anioBuscado);
-        if (ubicacionMinuta) {
-          listaResultados.push({ etiqueta: "Minuta Anexa", ubicacion: ubicacionMinuta });
-        }
-      }
-    } 
-    else if (documento.includes("No contencioso")) {
-      const nRef = numMinuta > 0 ? numMinuta : numInstrumento;
-      listaResultados.push({ etiqueta: "Expediente Principal", ubicacion: `Expediente No Contencioso (Ref: ${nRef || numFolio})` });
-      
-      if (incluye.includes("Minuta")) {
-        const ubicacionMinuta = buscarEnMinutas(nRef, anioBuscado);
-        if (ubicacionMinuta) {
-          listaResultados.push({ etiqueta: "Minuta Anexa", ubicacion: ubicacionMinuta });
-        }
-      }
-      if (incluye.includes("Solicitud")) {
-        listaResultados.push({ etiqueta: "Carpeta Solicitud", ubicacion: `Carpeta Solicitud (${anioBuscado || "General"})` });
-      }
-    }
-
-    return listaResultados;
-  };
-
-  const calcularTomoRealUnico = (documento: string, incluye: string, anioBuscado: string, instrumento: string, minutaActa: string, folioStr: string) => {
+  // Calcula y une en un solo texto los tomos para mostrarlos en la única fila del panel
+  const calcularTomoCombinado = (documento: string, incluye: string, anioBuscado: string, instrumento: string, minutaActa: string, folioStr: string) => {
     const numFolio = parseInt((folioStr || "").replace(/[,.]/g, '')) || 0;
     const numInstrumento = parseInt((instrumento || "").replace(/[,.]/g, '')) || 0;
     const numMinuta = parseInt((minutaActa || "").replace(/[,.]/g, '')) || 0;
@@ -232,6 +175,10 @@ export default function PanelPedidos() {
 
     if (documento === "Escritura") {
       resultados.push(buscarEnEscrituras(numFolio, anioBuscado));
+      if (incluye === "Incluye Minuta") {
+        const nMinuta = numMinuta > 0 ? numMinuta : numInstrumento;
+        resultados.push(buscarEnMinutas(nMinuta, anioBuscado));
+      }
     } 
     else if (documento.includes("Minuta") || documento.includes("Vehicular")) {
       const nMinuta = numMinuta > 0 ? numMinuta : numInstrumento;
@@ -243,6 +190,12 @@ export default function PanelPedidos() {
     else if (documento.includes("No contencioso")) {
       const nRef = numMinuta > 0 ? numMinuta : numInstrumento;
       resultados.push(`Expediente No Contencioso (Ref: ${nRef || numFolio})`);
+      if (incluye.includes("Minuta")) {
+        resultados.push(buscarEnMinutas(nRef, anioBuscado));
+      }
+      if (incluye.includes("Solicitud")) {
+        resultados.push(`Carpeta Solicitud (${anioBuscado || "General"})`);
+      }
     }
     else {
       resultados.push(`Documento: ${documento}`);
@@ -254,8 +207,6 @@ export default function PanelPedidos() {
   const cambiarEstado = async (id: string | number) => {
     if (usuarioActual?.rol !== "OPERATIVO") return;
 
-    // Limpiar sufijos temporales de anexo si existen para actualizar el registro real en la BD
-    const idReal = String(id).split("-anexo")[0];
     const ahora = Date.now();
     const nombreOperador = usuarioActual ? usuarioActual.nombre : "Personal de Archivo";
 
@@ -294,7 +245,7 @@ export default function PanelPedidos() {
           tiempo_inicio: nuevoTiempoInicio,
           duracion_segundos: nuevaDuracion
         })
-        .eq("id", idReal);
+        .eq("id", id);
 
       if (error) {
         console.error("Error al actualizar estado en Supabase:", error);
@@ -311,40 +262,160 @@ export default function PanelPedidos() {
     }
   };
 
+  // AL ENVIAR A SALIDAS: Si incluye algo, genera 2 filas independientes en la tabla de salidas
   const enviarA_Salidas = async (pedido: Pedido) => {
     if (usuarioActual?.rol !== "OPERATIVO") return;
 
-    try {
-      const idBase = String(pedido.id).split("-anexo")[0];
-      const nuevoIdSalida = `salida-${idBase}-${Date.now()}`;
+    const numFolio = parseInt((pedido.folio || "").replace(/[,.]/g, '')) || 0;
+    const numInstrumento = parseInt((pedido.instrumento || "").replace(/[,.]/g, '')) || 0;
+    const numMinuta = parseInt((pedido.minuta_acta || "").replace(/[,.]/g, '')) || 0;
+    const anioBuscado = pedido.anio || "2026";
 
+    let registrosSalidaParaInsertar: any[] = [];
+
+    if (pedido.documento === "Escritura") {
+      const tomoEscritura = buscarEnEscrituras(numFolio, anioBuscado);
+      registrosSalidaParaInsertar.push({
+        id: `salida-${pedido.id}-esc-${Date.now()}`,
+        pedido_id: Number(pedido.id),
+        tipo: "SALIDAS",
+        tomo_exacto: tomoEscritura || "Tomo Escritura",
+        anio: anioBuscado,
+        motivo: pedido.motivo || "Préstamo de Tomo Físico",
+        abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
+        persona_responsable: "",
+        atendido_por: usuarioActual ? usuarioActual.nombre : "Archivo",
+        fecha_operacion: "",
+        hora_ingreso_persona: "",
+        hora_salida_persona: "",
+        tiempo_atencion_segundos: 0,
+        tiempo_inicio_timestamp: null,
+        observaciones: `Escritura principal. Solicitante: ${pedido.solicitante}`,
+        firma_digital: "",
+        estado: "Pendiente de Entrega"
+      });
+
+      if (pedido.incluye === "Incluye Minuta") {
+        const nMinuta = numMinuta > 0 ? numMinuta : numInstrumento;
+        const tomoMinuta = buscarEnMinutas(nMinuta, anioBuscado);
+        registrosSalidaParaInsertar.push({
+          id: `salida-${pedido.id}-min-${Date.now()}`,
+          pedido_id: Number(pedido.id),
+          tipo: "SALIDAS",
+          tomo_exacto: tomoMinuta || "Tomo Minuta Anexa",
+          anio: anioBuscado,
+          motivo: pedido.motivo || "Préstamo de Tomo Físico",
+          abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
+          persona_responsable: "",
+          atendido_por: usuarioActual ? usuarioActual.nombre : "Archivo",
+          fecha_operacion: "",
+          hora_ingreso_persona: "",
+          hora_salida_persona: "",
+          tiempo_atencion_segundos: 0,
+          tiempo_inicio_timestamp: null,
+          observaciones: `Minuta anexa asociada. Solicitante: ${pedido.solicitante}`,
+          firma_digital: "",
+          estado: "Pendiente de Entrega"
+        });
+      }
+    } 
+    else if (pedido.documento.includes("No contencioso")) {
+      const nRef = numMinuta > 0 ? numMinuta : numInstrumento;
+      registrosSalidaParaInsertar.push({
+        id: `salida-${pedido.id}-exp-${Date.now()}`,
+        pedido_id: Number(pedido.id),
+        tipo: "SALIDAS",
+        tomo_exacto: `Expediente No Contencioso (Ref: ${nRef || numFolio})`,
+        anio: anioBuscado,
+        motivo: pedido.motivo || "Préstamo de Tomo Físico",
+        abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
+        persona_responsable: "",
+        atendido_por: usuarioActual ? usuarioActual.nombre : "Archivo",
+        fecha_operacion: "",
+        hora_ingreso_persona: "",
+        hora_salida_persona: "",
+        tiempo_atencion_segundos: 0,
+        tiempo_inicio_timestamp: null,
+        observaciones: `Expediente principal. Solicitante: ${pedido.solicitante}`,
+        firma_digital: "",
+        estado: "Pendiente de Entrega"
+      });
+
+      if (pedido.incluye.includes("Minuta")) {
+        const tomoMinuta = buscarEnMinutas(nRef, anioBuscado);
+        registrosSalidaParaInsertar.push({
+          id: `salida-${pedido.id}-min-${Date.now()}`,
+          pedido_id: Number(pedido.id),
+          tipo: "SALIDAS",
+          tomo_exacto: tomoMinuta || "Tomo Minuta Anexa",
+          anio: anioBuscado,
+          motivo: pedido.motivo || "Préstamo de Tomo Físico",
+          abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
+          persona_responsable: "",
+          atendido_por: usuarioActual ? usuarioActual.nombre : "Archivo",
+          fecha_operacion: "",
+          hora_ingreso_persona: "",
+          hora_salida_persona: "",
+          tiempo_atencion_segundos: 0,
+          tiempo_inicio_timestamp: null,
+          observaciones: `Minuta anexa. Solicitante: ${pedido.solicitante}`,
+          firma_digital: "",
+          estado: "Pendiente de Entrega"
+        });
+      }
+      if (pedido.incluye.includes("Solicitud")) {
+        registrosSalidaParaInsertar.push({
+          id: `salida-${pedido.id}-sol-${Date.now()}`,
+          pedido_id: Number(pedido.id),
+          tipo: "SALIDAS",
+          tomo_exacto: `Carpeta Solicitud (${anioBuscado})`,
+          anio: anioBuscado,
+          motivo: pedido.motivo || "Préstamo de Tomo Físico",
+          abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
+          persona_responsable: "",
+          atendido_por: usuarioActual ? usuarioActual.nombre : "Archivo",
+          fecha_operacion: "",
+          hora_ingreso_persona: "",
+          hora_salida_persona: "",
+          tiempo_atencion_segundos: 0,
+          tiempo_inicio_timestamp: null,
+          observaciones: `Carpeta de solicitud anexa. Solicitante: ${pedido.solicitante}`,
+          firma_digital: "",
+          estado: "Pendiente de Entrega"
+        });
+      }
+    }
+    else {
+      // Por defecto 1 solo registro
+      registrosSalidaParaInsertar.push({
+        id: `salida-${pedido.id}-${Date.now()}`,
+        pedido_id: Number(pedido.id),
+        tipo: "SALIDAS",
+        tomo_exacto: pedido.tomoSugerido || "Tomo Asignado",
+        anio: anioBuscado,
+        motivo: pedido.motivo || "Préstamo de Tomo Físico",
+        abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
+        persona_responsable: "",
+        atendido_por: usuarioActual ? usuarioActual.nombre : "Archivo",
+        fecha_operacion: "",
+        hora_ingreso_persona: "",
+        hora_salida_persona: "",
+        tiempo_atencion_segundos: 0,
+        tiempo_inicio_timestamp: null,
+        observaciones: `Solicitante: ${pedido.solicitante}`,
+        firma_digital: "",
+        estado: "Pendiente de Entrega"
+      });
+    }
+
+    try {
       const { error } = await supabase
         .from("salidas")
-        .insert([
-          {
-            id: nuevoIdSalida,
-            pedido_id: Number(idBase) || null,
-            tipo: "SALIDAS",
-            tomo_exacto: pedido.tomoSugerido || pedido.tomo_sugerido || "Tomo Asignado",
-            anio: pedido.anio || "2026",
-            motivo: pedido.motivo || "Préstamo de Tomo Físico",
-            abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
-            persona_responsable: "",
-            atendido_por: usuarioActual ? usuarioActual.nombre : "Archivo",
-            fecha_operacion: "",
-            hora_ingreso_persona: "",
-            hora_salida_persona: "",
-            tiempo_atencion_segundos: 0,
-            tiempo_inicio_timestamp: null,
-            observaciones: `Derivado desde Panel de Pedidos. Solicitante: ${pedido.solicitante}. Obs: ${pedido.observaciones || "Ninguna"}`,
-            firma_digital: "",
-            estado: "Pendiente de Entrega"
-          }
-        ]);
+        .insert(registrosSalidaParaInsertar);
 
       if (error) {
-        console.error("Error al registrar salida en Supabase:", error);
-        alert("No se pudo transferir el tomo a salidas en la nube.");
+        console.error("Error al registrar salidas en Supabase:", error);
+        alert("No se pudo transferir a salidas en la nube.");
         return;
       }
 
@@ -387,7 +458,7 @@ export default function PanelPedidos() {
               <p><strong>Documento:</strong> {pedidoCriticoActual.documento} - <span className="text-purple-700 font-bold">{pedidoCriticoActual.incluye}</span></p>
               <p><strong>Año / Referencia:</strong> {pedidoCriticoActual.anio} | Kardex: {pedidoCriticoActual.kardex || "S/N"}</p>
               <p className="font-bold text-indigo-900 bg-indigo-50 p-1 rounded">
-                Ubicación Sugerida: {pedidoCriticoActual.tomoSugerido || pedidoCriticoActual.tomo_sugerido || "Pendiente de cruce"}
+                Ubicación Sugerida: {pedidoCriticoActual.tomoSugerido || pedidoCriticoActual.tomo_sugerido}
               </p>
             </div>
 
@@ -457,7 +528,7 @@ export default function PanelPedidos() {
                 <th className="border border-gray-300 p-2">N° de Folio</th>
                 <th className="border border-gray-300 p-2">Instrumento</th>
                 <th className="border border-gray-300 p-2">N° de Minuta</th>
-                <th className="border border-gray-300 p-2 bg-indigo-900">Ubicación (Tomos Sugeridos / Desglosados)</th>
+                <th className="border border-gray-300 p-2 bg-indigo-900">Ubicación (Tomos Sugeridos)</th>
                 <th className="border border-gray-300 p-2">Atendido Por</th>
                 <th className="border border-gray-300 p-2">Abogado</th>
                 <th className="border border-gray-300 p-2">Destino</th>
