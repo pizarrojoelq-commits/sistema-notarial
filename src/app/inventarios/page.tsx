@@ -10,7 +10,7 @@ interface ItemInventario {
   archivador: string;
   anio: string;
   rango: string;
-  estado: "DISPONIBLE" | "NO DISPONIBLE";
+  estado: string;
 }
 
 export default function ControlInventarioTomos() {
@@ -22,37 +22,54 @@ export default function ControlInventarioTomos() {
 
   useEffect(() => {
     setIsMounted(true);
-    cargarInventarioNube();
+    cargarTodoElInventarioNube();
   }, []);
 
-  const cargarInventarioNube = async () => {
+  const cargarTodoElInventarioNube = async () => {
     try {
-      const { data, error } = await supabase
-        .from("inventarios")
-        .select("*")
-        .order("id", { ascending: true });
+      let listaCompleta: ItemInventario[] = [];
 
-      if (error) {
-        console.error("Error al cargar inventario:", error);
-        return;
+      // Consultamos cada tabla especializada que creamos en Supabase
+      const tablas = [
+        { nombre: 'inv_escrituras', cat: 'Escrituras', campoTomo: 'TOMO', campoAnio: 'AÑO', campoRango: 'RANGO DE FOLIOS' },
+        { nombre: 'inv_minutas', cat: 'Minutas', campoTomo: 'TOMO', campoAnio: 'AÑO', campoRango: 'RANGO DE MINUTAS' },
+        { nombre: 'inv_vehiculares', cat: 'Transferencias Vehiculares', campoTomo: 'TOMO', campoAnio: 'AÑO', campoRango: 'RANGO DE FOLIOS' },
+        { nombre: 'inv_actas_vehiculares', cat: 'Actas Transferencias Vehiculares', campoTomo: 'ARCHIVADOR', campoAnio: 'AÑO', campoRango: 'RANGO DE ACTA' },
+        { nombre: 'inv_no_contenciosos', cat: 'Asuntos No Contenciosos', campoTomo: 'TOMO', campoAnio: 'AÑO', campoRango: 'RANGO DE FOLIOS' },
+        { nombre: 'inv_minutario_no_contenciosos', cat: 'Minutario No Contenciosos', campoTomo: 'TOMO', campoAnio: 'AÑO', campoRango: 'RANGO DE MINUTAS' },
+        { nombre: 'inv_solicitudes_no_contenciosos', cat: 'Solicitudes No Contenciosos', campoTomo: 'ANEXO', campoAnio: 'AÑO', campoRango: 'RANGO DE SOLICITUD' },
+      ];
+
+      for (let t of tablas) {
+        const { data, error } = await supabase.from(t.nombre).select("*");
+        if (!error && data) {
+          const formateados = data.map((item: any) => ({
+            id: `${t.nombre}-${item.id}`,
+            categoria: t.cat,
+            tomo: String(item[t.campoTomo] || item.tomo || item.anexo || item.archivador || '-'),
+            archivador: String(item.archivador || '1'),
+            anio: String(item[t.campoAnio] || item.anio || ''),
+            rango: String(item[t.campoRango] || item.rango || ''),
+            estado: String(item.ESTADO || item.estado || 'DISPONIBLE').toUpperCase()
+          }));
+          listaCompleta = [...listaCompleta, ...formateados];
+        }
       }
 
-      if (data) {
-        setInventario(data);
-      }
+      setInventario(listaCompleta);
     } catch (e) {
-      console.error("Error de conexión:", e);
+      console.error("Error al conectar con las tablas de inventario:", e);
     }
   };
 
   if (!isMounted) return null;
 
   // Estadísticas y Reportes en tiempo real
-  const totalTomos = inventario.length;
-  const tomosDisponibles = inventario.filter(i => i.estado === "DISPONIBLE").length;
-  const tomosNoDisponibles = inventario.filter(i => i.estado === "NO DISPONIBLE").length;
+  const totalRegistros = inventario.length;
+  const disponibles = inventario.filter(i => i.estado.includes("DISPONIBLE")).length;
+  const noDisponibles = totalRegistros - disponibles;
 
-  // Filtrado avanzado por texto, categoría y estado
+  // Filtrado avanzado
   const inventarioFiltrado = inventario.filter(item => {
     const texto = busqueda.toLowerCase();
     const coincideTexto = 
@@ -62,7 +79,7 @@ export default function ControlInventarioTomos() {
       String(item.rango).toLowerCase().includes(texto);
 
     const coincideCat = filtroCategoria === "TODAS" || item.categoria === filtroCategoria;
-    const coincideEst = filtroEstado === "TODOS" || item.estado === filtroEstado;
+    const coincideEst = filtroEstado === "TODOS" || item.estado.includes(filtroEstado);
 
     return coincideTexto && coincideCat && coincideEst;
   });
@@ -76,7 +93,7 @@ export default function ControlInventarioTomos() {
           <div>
             <h1 className="text-2xl font-bold text-[#243c5a]">Inventario General y Disponibilidad de Tomos Físicos</h1>
             <p className="text-sm text-gray-500 mt-1">
-              Monitoreo en tiempo real de libros, archivadores, escrituras, minutas, actas y no contenciosos.
+              Monitoreo en tiempo real de libros, archivadores, escrituras, minutas, actas y no contenciosos desde la nube.
             </p>
           </div>
           <div className="flex gap-2">
@@ -89,19 +106,19 @@ export default function ControlInventarioTomos() {
           </div>
         </div>
 
-        {/* TARJETAS DE REPORTE Y ESTADÍSTICAS */}
+        {/* TARJETAS DE REPORTE */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-blue-50 border border-blue-200 p-4 rounded shadow-sm text-center">
             <p className="text-xs text-blue-800 font-bold uppercase">Total Registrados</p>
-            <p className="text-2xl font-black text-blue-900 mt-1">{totalTomos}</p>
+            <p className="text-2xl font-black text-blue-900 mt-1">{totalRegistros}</p>
           </div>
           <div className="bg-green-50 border border-green-200 p-4 rounded shadow-sm text-center">
             <p className="text-xs text-green-800 font-bold uppercase">Disponibles en Archivo</p>
-            <p className="text-2xl font-black text-green-700 mt-1">{tomosDisponibles}</p>
+            <p className="text-2xl font-black text-green-700 mt-1">{disponibles}</p>
           </div>
           <div className="bg-red-50 border border-red-200 p-4 rounded shadow-sm text-center">
             <p className="text-xs text-red-800 font-bold uppercase">No Disponibles (Fuera / Préstamo)</p>
-            <p className="text-2xl font-black text-red-700 mt-1">{tomosNoDisponibles}</p>
+            <p className="text-2xl font-black text-red-700 mt-1">{noDisponibles}</p>
           </div>
         </div>
 
@@ -127,6 +144,8 @@ export default function ControlInventarioTomos() {
               <option value="Transferencias Vehiculares">Transferencias Vehiculares</option>
               <option value="Actas Transferencias Vehiculares">Actas Transferencias Vehiculares</option>
               <option value="Asuntos No Contenciosos">Asuntos No Contenciosos</option>
+              <option value="Minutario No Contenciosos">Minutario No Contenciosos</option>
+              <option value="Solicitudes No Contenciosos">Solicitudes No Contenciosos</option>
             </select>
 
             <select 
@@ -143,7 +162,7 @@ export default function ControlInventarioTomos() {
           {busqueda || filtroCategoria !== "TODAS" || filtroEstado !== "TODOS" ? (
             <button 
               onClick={() => { setBusqueda(""); setFiltroCategoria("TODAS"); setFiltroEstado("TODOS"); }}
-              className="text-xs text-red-600 hover:underline font-semibold"
+              className="text-xs text-red-600 hover:underline font-semibold cursor-pointer"
             >
               Limpiar filtros
             </button>
@@ -173,7 +192,7 @@ export default function ControlInventarioTomos() {
                 </tr>
               )}
               {inventarioFiltrado.map((item) => (
-                <tr key={item.id} className={item.estado === "DISPONIBLE" ? "hover:bg-gray-50" : "bg-red-50 text-red-950 font-semibold"}>
+                <tr key={item.id} className={item.estado.includes("DISPONIBLE") ? "hover:bg-gray-50" : "bg-red-50 text-red-950 font-semibold"}>
                   <td className="border border-gray-300 p-2 font-bold">{item.id}</td>
                   <td className="border border-gray-300 p-2">{item.categoria}</td>
                   <td className="border border-gray-300 p-2 font-bold">{item.tomo}</td>
@@ -181,7 +200,7 @@ export default function ControlInventarioTomos() {
                   <td className="border border-gray-300 p-2">{item.anio}</td>
                   <td className="border border-gray-300 p-2">{item.rango}</td>
                   <td className="border border-gray-300 p-2 font-bold">
-                    <span className={`px-2 py-1 rounded text-[10px] text-white ${item.estado === "DISPONIBLE" ? "bg-green-600" : "bg-red-600 animate-pulse"}`}>
+                    <span className={`px-2 py-1 rounded text-[10px] text-white ${item.estado.includes("DISPONIBLE") ? "bg-green-600" : "bg-red-600"}`}>
                       {item.estado}
                     </span>
                   </td>
