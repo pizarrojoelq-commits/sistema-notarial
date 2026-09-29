@@ -30,58 +30,74 @@ export default function ControlInventarioTomos() {
       let listaCompleta: ItemInventario[] = [];
 
       const tablas = [
-        { nombre: 'inv_escrituras', cat: 'Escrituras', campoTomo: 'TOMO', campoAnio: 'AÑO', campoRango: 'RANGO DE FOLIOS' },
-        { nombre: 'inv_minutas', cat: 'Minutas', campoTomo: 'TOMO', campoAnio: 'AÑO', campoRango: 'RANGO DE MINUTAS' },
-        { nombre: 'inv_vehiculares', cat: 'Transferencias Vehiculares', campoTomo: 'TOMO', campoAnio: 'AÑO', campoRango: 'RANGO DE FOLIOS' },
-        { nombre: 'inv_actas_vehiculares', cat: 'Actas Transferencias Vehiculares', campoTomo: 'ACTA', campoAnio: 'AÑO', campoRango: 'RANGO DE ACTAS' },
-        { nombre: 'inv_no_contenciosos', cat: 'Asuntos No Contenciosos', campoTomo: 'TOMO', campoAnio: 'AÑO', campoRango: 'RANGO DE FOLIOS' },
-        { nombre: 'inv_minutario_no_contenciosos', cat: 'Minutario No Contenciosos', campoTomo: 'TOMO', campoAnio: 'AÑO', campoRango: 'RANGO DE MINUTAS' },
-        { nombre: 'inv_solicitudes_no_contenciosos', cat: 'Solicitudes No Contenciosos', campoTomo: 'ANEXO', campoAnio: 'AÑO', campoRango: 'RANGO DE SOLICITUD' },
+        { nombre: 'inv_escrituras', cat: 'Escrituras' },
+        { nombre: 'inv_minutas', cat: 'Minutas' },
+        { nombre: 'inv_vehiculares', cat: 'Transferencias Vehiculares' },
+        { nombre: 'inv_actas_vehiculares', cat: 'Actas Transferencias Vehiculares' },
+        { nombre: 'inv_no_contenciosos', cat: 'Asuntos No Contenciosos' },
+        { nombre: 'inv_minutario_no_contenciosos', cat: 'Minutario No Contenciosos' },
+        { nombre: 'inv_solicitudes_no_contenciosos', cat: 'Solicitudes No Contenciosos' },
       ];
 
       for (let t of tablas) {
-        // Carga paginada en bloques de 1000 para traer TODOS los registros sin importar si son 2,000 o 5,000
         let registrosTabla: any[] = [];
         let inicio = 0;
-        let tamanoPagina = 1000;
-        let continuar = true;
+        let limite = 1000;
+        let hayMasDatos = true;
 
-        while (continuar) {
+        // Paginación segura y robusta para tablas grandes (como minutas con más de 2300 filas)
+        while (hayMasDatos) {
           const { data, error } = await supabase
             .from(t.nombre)
             .select("*")
-            .range(inicio, inicio + tamanoPagina - 1);
+            .range(inicio, inicio + limite - 1);
 
-          if (error || !data || data.length === 0) {
-            continuar = false;
-          } else {
+          if (error) {
+            console.error(`Error al cargar ${t.nombre}:`, error.message);
+            break;
+          }
+
+          if (data && data.length > 0) {
             registrosTabla = [...registrosTabla, ...data];
-            if (data.length < tamanoPagina) {
-              continuar = false;
+            if (data.length < limite) {
+              hayMasDatos = false; // Ya se trajeron todos los registros
             } else {
-              inicio += tamanoPagina;
+              inicio += limite;
             }
+          } else {
+            hayMasDatos = false;
           }
         }
 
-        // Mapeo seguro que detecta correctamente el valor 1, 0 o texto sin omitir nada
-        const formateados = registrosTabla.map((item: any) => {
-          const valorTomo = item[t.campoTomo] !== undefined && item[t.campoTomo] !== null ? String(item[t.campoTomo]) : 
-                            item.tomo !== undefined ? String(item.tomo) : 
-                            item.anexo !== undefined ? String(item.anexo) : 
-                            item.archivador !== undefined ? String(item.archivador) : '-';
+        // Mapeo exhaustivo para detectar cualquier nombre de columna sin perder el número 1 o 0
+        const formateados = registrosTabla.map((item: any, index: number) => {
+          const valorTomo = 
+            item['TOMO'] ?? item['Tomo'] ?? item['tomo'] ?? 
+            item['ACTA'] ?? item['Acta'] ?? item['acta'] ?? 
+            item['MINUTA'] ?? item['Minuta'] ?? item['minuta'] ??
+            item['ANEXO'] ?? item['Anexo'] ?? item['anexo'] ?? 
+            item['ARCHIVADOR'] ?? item['Archivador'] ?? item['archivador'] ?? '-';
 
-          const valorAnio = item[t.campoAnio] !== undefined ? String(item[t.campoAnio]) : (item.anio || '');
-          const valorRango = item[t.campoRango] !== undefined ? String(item[t.campoRango]) : (item.rango || '');
-          const valorEstado = String(item.ESTADO || item.estado || 'DISPONIBLE').toUpperCase();
+          const valorAnio = 
+            item['AÑO'] ?? item['Año'] ?? item['año'] ?? 
+            item['ANO'] ?? item['Ano'] ?? item['ano'] ?? '';
+
+          const valorRango = 
+            item['RANGO DE FOLIOS'] ?? item['Rango de Folios'] ?? item['rango de folios'] ?? 
+            item['RANGO DE MINUTAS'] ?? item['Rango de Minutas'] ?? item['rango de minutas'] ?? 
+            item['RANGO DE ACTAS'] ?? item['Rango de Actas'] ?? item['rango de actas'] ?? 
+            item['RANGO DE SOLICITUD'] ?? item['Rango de Solicitud'] ?? item['rango de solicitud'] ?? 
+            item['rango'] ?? '';
+
+          const valorEstado = String(item['ESTADO'] ?? item['Estado'] ?? item['estado'] ?? 'DISPONIBLE').toUpperCase();
 
           return {
-            id: `${t.nombre}-${item.id || Math.random()}`,
+            id: `${t.nombre}-${item.id || index + 1}`,
             categoria: t.cat,
-            tomo: valorTomo,
+            tomo: String(valorTomo),
             archivador: '1',
-            anio: valorAnio,
-            rango: valorRango,
+            anio: String(valorAnio),
+            rango: String(valorRango),
             estado: valorEstado
           };
         });
