@@ -261,9 +261,50 @@ export default function PanelPedidos() {
     }
   };
 
-  const enviarA_Salidas = (pedido: Pedido) => {
+  const enviarA_Salidas = async (pedido: Pedido) => {
     if (usuarioActual?.rol !== "OPERATIVO") return;
-    window.location.href = "/salidas";
+
+    try {
+      // Creamos el ID único para este registro de salida
+      const nuevoIdSalida = `salida-${pedido.id}-${Date.now()}`;
+
+      // Insertamos directamente en la tabla 'salidas' de Supabase
+      const { error } = await supabase
+        .from("salidas")
+        .insert([
+          {
+            id: nuevoIdSalida,
+            pedido_id: Number(pedido.id),
+            tipo: "SALIDAS",
+            tomo_exacto: pedido.tomoSugerido || pedido.tomo_sugerido || "Tomo Asignado",
+            anio: pedido.anio || "2026",
+            motivo: pedido.motivo || "Préstamo de Tomo Físico",
+            abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
+            persona_responsable: "",
+            atendido_por: usuarioActual ? usuarioActual.nombre : "Archivo",
+            fecha_operacion: "",
+            hora_ingreso_persona: "",
+            hora_salida_persona: "",
+            tiempo_atencion_segundos: 0,
+            tiempo_inicio_timestamp: null,
+            observaciones: `Derivado desde Panel de Pedidos. Solicitante: ${pedido.solicitante}. Obs: ${pedido.observaciones || "Ninguna"}`,
+            firma_digital: "",
+            estado: "Pendiente de Entrega"
+          }
+        ]);
+
+      if (error) {
+        console.error("Error al registrar salida en Supabase:", error);
+        alert("No se pudo transferir el tomo a salidas en la nube.");
+        return;
+      }
+
+      // Redirigimos a la pantalla de salidas
+      window.location.href = "/salidas";
+    } catch (e) {
+      console.error("Error de conexión al transferir a salidas:", e);
+      window.location.href = "/salidas";
+    }
   };
 
   const formatearTiempo = (segundos: number) => {

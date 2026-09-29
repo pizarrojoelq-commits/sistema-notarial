@@ -1,24 +1,25 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { supabase } from "@/lib/supabase";
 
 interface MovimientoTomo {
   id: string;
-  pedidoId?: number;
+  pedido_id?: number;
   tipo: "SALIDAS" | "ENTRADAS";
-  tomoExacto: string; 
+  tomo_exacto: string; 
   anio: string;
   motivo: string;
-  abogadoSolicita: string; 
-  personaResponsable: string;
-  atendidoPor: string; 
-  fechaOperacion: string;    
-  horaIngresoPersona: string; 
-  horaSalidaPersona: string;  
-  tiempoAtencionSegundos: number; 
-  tiempoInicioTimestamp?: number; 
+  abogado_solicita: string; 
+  persona_responsable: string;
+  atendido_por: string; 
+  fecha_operacion: string;    
+  hora_ingreso_persona: string; 
+  hora_salida_persona: string;  
+  tiempo_atencion_segundos: number; 
+  tiempo_inicio_timestamp?: number | null; 
   observaciones: string;
-  firmaDigital: string; 
+  firma_digital: string; 
   estado: 
     | "Pendiente de Entrega" 
     | "Pendiente de Recepción"
@@ -43,24 +44,63 @@ export default function RegistroEntradasSalidas() {
 
   useEffect(() => {
     setIsMounted(true);
+    const sesion = localStorage.getItem("usuarioLogueado");
+    if (!sesion) {
+      window.location.href = "/login";
+      return;
+    } else {
+      setUsuarioActual(JSON.parse(sesion));
+    }
+
+    cargarSalidasNube();
+  }, []);
+
+  const cargarSalidasNube = async () => {
     try {
-      const sesion = localStorage.getItem("usuarioLogueado");
-      if (!sesion) {
-        window.location.href = "/login";
+      const { data, error } = await supabase
+        .from("salidas")
+        .select("*");
+
+      if (error) {
+        console.error("Error al cargar salidas de Supabase:", error);
         return;
-      } else {
-        setUsuarioActual(JSON.parse(sesion));
       }
 
-      const guardados = localStorage.getItem("movimientosTomos");
-      if (guardados) {
-        setRegistros(JSON.parse(guardados));
+      if (data) {
+        // Mapeamos los campos de la base de datos (snake_case) al formato del componente
+        const formateados: MovimientoTomo[] = data.map((item: any) => ({
+          id: item.id,
+          pedido_id: item.pedido_id,
+          tipo: item.tipo,
+          tomo_exacto: item.tomo_exacto,
+          anio: item.anio,
+          motivo: item.motivo,
+          abogado_solicita: item.abogado_solicita,
+          persona_responsable: item.persona_responsable || "",
+          atendido_por: item.atendido_por || "",
+          fecha_operacion: item.fecha_operacion || "",
+          hora_ingreso_persona: item.hora_ingreso_persona || "",
+          hora_salida_persona: item.hora_salida_persona || "",
+          tiempo_atencion_segundos: item.tiempo_atencion_segundos || 0,
+          tiempo_inicio_timestamp: item.tiempo_inicio_timestamp || null,
+          observaciones: item.observaciones || "",
+          firma_digital: item.firma_digital || "",
+          estado: item.estado
+        }));
+        setRegistros(formateados);
       }
     } catch (e) {
-      console.error("Error al inicializar almacenamiento:", e);
-      setRegistros([]);
+      console.error("Error de conexión al cargar salidas:", e);
     }
-  }, []);
+  };
+
+  useEffect(() => {
+    if (!isMounted) return;
+    const intervaloMonitoreo = setInterval(() => {
+      cargarSalidasNube();
+    }, 5000); 
+    return () => clearInterval(intervaloMonitoreo);
+  }, [isMounted]);
 
   const cerrarSesion = () => {
     localStorage.removeItem("usuarioLogueado");
@@ -72,45 +112,53 @@ export default function RegistroEntradasSalidas() {
     return () => clearInterval(timer);
   }, []);
 
-  const guardarRegistros = (nuevos: MovimientoTomo[]) => {
-    setRegistros(nuevos);
+  const actualizarCampoLibreNube = async (id: string, campo: string, valor: string) => {
+    // Actualización local inmediata para fluidez
+    setRegistros(prev => prev.map(r => r.id === id ? { ...r, [campo]: valor } : r));
+
     try {
-      localStorage.setItem("movimientosTomos", JSON.stringify(nuevos));
+      await supabase
+        .from("salidas")
+        .update({ [campo]: valor })
+        .eq("id", id);
     } catch (e) {
-      console.error("Error al guardar registros:", e);
+      console.error("Error actualizando campo en la nube:", e);
     }
   };
 
-  const actualizarCampoLibre = (id: string, campo: keyof MovimientoTomo, valor: string) => {
-    const actualizados = registros.map(r => r.id === id ? { ...r, [campo]: valor } : r);
-    guardarRegistros(actualizados);
-  };
-
-  const iniciarAtencion = (id: string) => {
+  const iniciarAtencion = async (id: string) => {
     const ahora = Date.now();
     const horaTexto = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     const nombreOperador = usuarioActual ? usuarioActual.nombre : "Personal de Archivo";
 
-    const actualizados = registros.map(r => {
-      if (r.id === id) {
-        return { 
-          ...r, 
-          estado: "En Atención" as const, 
-          tiempoInicioTimestamp: ahora,
-          horaIngresoPersona: horaTexto,
-          atendidoPor: nombreOperador 
-        };
-      }
-      return r;
-    });
-    guardarRegistros(actualizados);
+    setRegistros(prev => prev.map(r => r.id === id ? {
+      ...r,
+      estado: "En Atención" as const,
+      tiempo_inicio_timestamp: ahora,
+      hora_ingreso_persona: horaTexto,
+      atendido_por: nombreOperador
+    } : r));
+
+    try {
+      await supabase
+        .from("salidas")
+        .update({
+          estado: "En Atención",
+          tiempo_inicio_timestamp: ahora,
+          hora_ingreso_persona: horaTexto,
+          atendido_por: nombreOperador
+        })
+        .eq("id", id);
+    } catch (e) {
+      console.error("Error al iniciar atención en la nube:", e);
+    }
   };
 
   const calcularTiempoAtencion = (r: MovimientoTomo) => {
-    if (r.estado === "En Atención" && r.tiempoInicioTimestamp) {
-      return Math.floor((Date.now() - r.tiempoInicioTimestamp) / 1000);
+    if (r.estado === "En Atención" && r.tiempo_inicio_timestamp) {
+      return Math.floor((Date.now() - r.tiempo_inicio_timestamp) / 1000);
     }
-    return r.tiempoAtencionSegundos || 0;
+    return r.tiempo_atencion_segundos || 0;
   };
 
   const formatearTiempo = (segundos: number) => {
@@ -169,7 +217,7 @@ export default function RegistroEntradasSalidas() {
     setTimeout(() => limpiarFirma(), 100); 
   };
 
-  const confirmarProceso = (e: React.FormEvent) => {
+  const confirmarProceso = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!registroActual) return;
 
@@ -182,66 +230,67 @@ export default function RegistroEntradasSalidas() {
     const personaNombre = (document.getElementById("persona") as HTMLInputElement).value;
     const obsTexto = (document.getElementById("obs") as HTMLInputElement).value;
 
-    let copiaEntrada: MovimientoTomo | null = null;
+    let nuevaEntradaNube: any = null;
 
-    const actualizados = registros.map(r => {
-      if (r.id === registroActual.id) {
-        if (r.tipo === "SALIDAS") {
-          copiaEntrada = {
-            id: `entrada-${r.id}-${Date.now()}`,
-            pedidoId: r.pedidoId,
-            tipo: "ENTRADAS",
-            tomoExacto: r.tomoExacto,
-            anio: r.anio,
-            motivo: r.motivo,
-            abogadoSolicita: r.abogadoSolicita,
-            personaResponsable: "", 
-            atendidoPor: "",
-            fechaOperacion: "",    
-            horaIngresoPersona: "",
-            horaSalidaPersona: "",
-            tiempoAtencionSegundos: 0,
-            observaciones: `Esperando retorno a BERTELLO (Salida previa atendida por ${r.atendidoPor || 'Archivo'})`,
-            firmaDigital: "",
-            estado: "Pendiente de Recepción"
-          };
+    if (registroActual.tipo === "SALIDAS") {
+      nuevaEntradaNube = {
+        id: `entrada-${registroActual.id}-${Date.now()}`,
+        pedido_id: registroActual.pedido_id || null,
+        tipo: "ENTRADAS",
+        tomo_exacto: registroActual.tomo_exacto,
+        anio: registroActual.anio,
+        motivo: registroActual.motivo,
+        abogado_solicita: registroActual.abogado_solicita,
+        persona_responsable: "",
+        atendido_por: "",
+        fecha_operacion: "",
+        hora_ingreso_persona: "",
+        hora_salida_persona: "",
+        tiempo_atencion_segundos: 0,
+        tiempo_inicio_timestamp: null,
+        observaciones: `Esperando retorno a BERTELLO (Salida previa atendida por ${registroActual.atendido_por || 'Archivo'})`,
+        firma_digital: "",
+        estado: "Pendiente de Recepción"
+      };
+    }
 
-          return {
-            ...r,
-            personaResponsable: personaNombre,
-            fechaOperacion: fechaActual,
-            horaSalidaPersona: horaTexto,
-            tiempoAtencionSegundos: duracion,
-            observaciones: obsTexto,
-            firmaDigital: firmaDataUrl,
-            estado: "Entregado (Fuera)" as const
-          };
-        } else {
-          return {
-            ...r,
-            personaResponsable: personaNombre,
-            fechaOperacion: fechaActual,
-            horaSalidaPersona: horaTexto,
-            tiempoAtencionSegundos: duracion,
-            observaciones: obsTexto,
-            firmaDigital: firmaDataUrl,
-            estado: "Devuelto a Archivo Principal (BERTELLO)" as const
-          };
-        }
+    try {
+      // 1. Actualizamos el registro actual en Supabase
+      const estadoFinal = registroActual.tipo === "SALIDAS" ? "Entregado (Fuera)" : "Devuelto a Archivo Principal (BERTELLO)";
+      
+      await supabase
+        .from("salidas")
+        .update({
+          persona_responsable: personaNombre,
+          fecha_operacion: fechaActual,
+          hora_salida_persona: horaTexto,
+          tiempo_atencion_segundos: duracion,
+          observaciones: obsTexto,
+          firma_digital: firmaDataUrl,
+          estado: estadoFinal
+        })
+        .eq("id", registroActual.id);
+
+      // 2. Si era salida, insertamos automáticamente el registro de retorno en Supabase
+      if (nuevaEntradaNube) {
+        await supabase.from("salidas").insert([nuevaEntradaNube]);
       }
-      return r;
-    });
 
-    const listaFinal = copiaEntrada ? [...actualizados, copiaEntrada] : actualizados;
-    guardarRegistros(listaFinal);
-    setModalAbierto(false);
+      setModalAbierto(false);
+      cargarSalidasNube();
 
-    if (copiaEntrada) {
-      alert("✅ Libro entregado con éxito. Se ha creado automáticamente la ficha de retorno en la Sección de Entradas para cuando vuelva a BERTELLO.");
+      if (nuevaEntradaNube) {
+        alert("✅ Libro entregado con éxito. Se ha creado automáticamente la ficha de retorno en la Sección de Entradas en la nube.");
+      } else {
+        alert("✅ Ingreso a BERTELLO registrado con éxito en la nube.");
+      }
+    } catch (err) {
+      console.error("Error al confirmar proceso en la nube:", err);
+      alert("Error al guardar en la nube.");
     }
   };
 
-  const agregarManual = (e: React.FormEvent) => {
+  const agregarManual = async (e: React.FormEvent) => {
     e.preventDefault();
     const tomo = (document.getElementById("manTomo") as HTMLInputElement).value;
     const anio = (document.getElementById("manAnio") as HTMLInputElement).value;
@@ -253,29 +302,49 @@ export default function RegistroEntradasSalidas() {
     const nuevo: MovimientoTomo = {
       id: `manual-${Date.now()}`,
       tipo: tipo,
-      tomoExacto: tomo,
+      tomo_exacto: tomo,
       anio: anio,
       motivo: motivo || "Ingreso manual",
-      abogadoSolicita: abogado || "General",
-      personaResponsable: "",
-      atendidoPor: nombreOperador,
-      fechaOperacion: "",
-      horaIngresoPersona: "",
-      horaSalidaPersona: "",
-      tiempoAtencionSegundos: 0,
+      abogado_solicita: abogado || "General",
+      persona_responsable: "",
+      atendido_por: nombreOperador,
+      fecha_operacion: "",
+      hora_ingreso_persona: "",
+      hora_salida_persona: "",
+      tiempo_atencion_segundos: 0,
       observaciones: "Registrado manualmente",
-      firmaDigital: "",
+      firma_digital: "",
       estado: tipo === "SALIDAS" ? "Pendiente de Entrega" : "Pendiente de Recepción"
     };
 
-    // Colocamos el nuevo registro al inicio con [nuevo, ...registros]
-    guardarRegistros([nuevo, ...registros]);
-    setModalManualAbierto(false);
+    try {
+      await supabase.from("salidas").insert([{
+        id: nuevo.id,
+        tipo: nuevo.tipo,
+        tomo_exacto: nuevo.tomo_exacto,
+        anio: nuevo.anio,
+        motivo: nuevo.motivo,
+        abogado_solicita: nuevo.abogado_solicita,
+        persona_responsable: nuevo.persona_responsable,
+        atendido_por: nuevo.atendido_por,
+        fecha_operacion: nuevo.fecha_operacion,
+        hora_ingreso_persona: nuevo.hora_ingreso_persona,
+        hora_salida_persona: nuevo.hora_salida_persona,
+        tiempo_atencion_segundos: nuevo.tiempo_atencion_segundos,
+        observaciones: nuevo.observaciones,
+        firma_digital: nuevo.firma_digital,
+        estado: nuevo.estado
+      }]);
+
+      setModalManualAbierto(false);
+      cargarSalidasNube();
+    } catch (err) {
+      console.error("Error al agregar registro manual:", err);
+    }
   };
 
   if (!isMounted) return null;
 
-  // Filtramos y aplicamos .slice().reverse() para que los últimos pedidos creados salgan ARRIBA
   const registrosFiltrados = registros.filter(r => r.tipo === seccionActiva).slice().reverse();
 
   return (
@@ -285,9 +354,9 @@ export default function RegistroEntradasSalidas() {
         {/* Encabezado y Control de Sesión */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-6 mb-6 gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-[#243c5a]">Control de Entrada y Salida de Tomos Físicos</h1>
+            <h1 className="text-2xl font-bold text-[#243c5a]">Control de Entrada y Salida de Tomos Físicos (Nube)</h1>
             <p className="text-sm text-gray-500 mt-1">
-              Despacho en mostrador, cronómetro de atención, copiado automático a BERTELLO y firma digital.
+              Despacho en mostrador, cronómetro de atención, sincronización en la nube y firma digital.
             </p>
           </div>
           
@@ -379,8 +448,8 @@ export default function RegistroEntradasSalidas() {
                     <td className="border border-gray-300 p-1">
                       <input 
                         type="text" 
-                        value={item.tomoExacto} 
-                        onChange={(e) => actualizarCampoLibre(item.id, "tomoExacto", e.target.value)}
+                        value={item.tomo_exacto} 
+                        onChange={(e) => actualizarCampoLibreNube(item.id, "tomo_exacto", e.target.value)}
                         className="w-full text-center font-bold bg-transparent border-b border-dashed border-gray-400 outline-none"
                       />
                     </td>
@@ -388,22 +457,22 @@ export default function RegistroEntradasSalidas() {
                       <input 
                         type="text" 
                         value={item.anio} 
-                        onChange={(e) => actualizarCampoLibre(item.id, "anio", e.target.value)}
+                        onChange={(e) => actualizarCampoLibreNube(item.id, "anio", e.target.value)}
                         className="w-full text-center bg-transparent border-b border-dashed border-gray-400 outline-none"
                       />
                     </td>
                     <td className="border border-gray-300 p-2">{item.motivo}</td>
-                    <td className="border border-gray-300 p-2 font-semibold">{item.abogadoSolicita}</td>
-                    <td className="border border-gray-300 p-2 font-semibold text-gray-800">{item.personaResponsable || "-"}</td>
+                    <td className="border border-gray-300 p-2 font-semibold">{item.abogado_solicita}</td>
+                    <td className="border border-gray-300 p-2 font-semibold text-gray-800">{item.persona_responsable || "-"}</td>
                     
                     <td className="border border-gray-300 p-2 font-bold text-indigo-900 bg-indigo-50/50">
-                      {item.atendidoPor || "-"}
+                      {item.atendido_por || "-"}
                     </td>
 
-                    <td className="border border-gray-300 p-2 font-bold">{item.fechaOperacion || "-"}</td>
+                    <td className="border border-gray-300 p-2 font-bold">{item.fecha_operacion || "-"}</td>
                     
-                    <td className="border border-gray-300 p-2">{item.horaIngresoPersona || "-"}</td>
-                    <td className="border border-gray-300 p-2">{item.horaSalidaPersona || "-"}</td>
+                    <td className="border border-gray-300 p-2">{item.hora_ingreso_persona || "-"}</td>
+                    <td className="border border-gray-300 p-2">{item.hora_salida_persona || "-"}</td>
                     <td className="border border-gray-300 p-2 font-bold text-indigo-800">
                       {formatearTiempo(calcularTiempoAtencion(item))}
                     </td>
@@ -452,8 +521,8 @@ export default function RegistroEntradasSalidas() {
                     </td>
 
                     <td className="border border-gray-300 p-1 bg-white">
-                      {item.firmaDigital ? (
-                        <img src={item.firmaDigital} alt="Firma" className="h-10 mx-auto object-contain border rounded bg-gray-50" />
+                      {item.firma_digital ? (
+                        <img src={item.firma_digital} alt="Firma" className="h-10 mx-auto object-contain border rounded bg-gray-50" />
                       ) : (
                         <span className="text-gray-400 text-[10px]">Sin firma</span>
                       )}
@@ -471,7 +540,7 @@ export default function RegistroEntradasSalidas() {
             <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
               <h2 className="text-lg font-bold text-gray-800 mb-2">
                 {registroActual?.tipo === "SALIDAS" ? "Despacho de Tomo: " : "Recepción a BERTELLO: "} 
-                {registroActual?.tomoExacto}
+                {registroActual?.tomo_exacto}
               </h2>
               <p className="text-xs text-gray-500 mb-4">
                 Tiempo de atención registrado: <span className="font-bold text-indigo-700">{formatearTiempo(calcularTiempoAtencion(registroActual!))}</span>
@@ -520,7 +589,7 @@ export default function RegistroEntradasSalidas() {
         {modalManualAbierto && (
           <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
-              <h2 className="text-lg font-bold text-gray-800 mb-4">Agregar Tomo Manual</h2>
+              <h2 className="text-lg font-bold text-gray-800 mb-4">Agregar Tomo Manual (Nube)</h2>
               <form onSubmit={agregarManual}>
                 <div className="mb-3">
                   <label className="block text-xs font-bold text-gray-700 mb-1">Sección Destino:</label>
@@ -547,7 +616,7 @@ export default function RegistroEntradasSalidas() {
                 </div>
                 <div className="flex justify-end gap-2">
                   <button type="button" onClick={() => setModalManualAbierto(false)} className="bg-gray-300 px-4 py-2 rounded text-xs font-bold text-gray-700 cursor-pointer">Cancelar</button>
-                  <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded text-xs font-bold cursor-pointer">Guardar Registro</button>
+                  <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded text-xs font-bold cursor-pointer">Guardar en Nube</button>
                 </div>
               </form>
             </div>
