@@ -62,7 +62,7 @@ export default function PanelPedidos() {
       const { data, error } = await supabase
         .from("pedidos")
         .select("*")
-        .order("id", { ascending: false });
+        .order("id", { ascending: true }); // ORDEN CRONOLÓGICO ESTRICTO DE LLEGADA
 
       if (error) {
         console.error("Error al cargar pedidos de Supabase:", error);
@@ -267,6 +267,7 @@ export default function PanelPedidos() {
     const numInstrumento = parseInt((pedido.instrumento || "").replace(/[,.]/g, '')) || 0;
     const numMinuta = parseInt((pedido.minuta_acta || "").replace(/[,.]/g, '')) || 0;
     const anioBuscado = pedido.anio || "2026";
+    const operadorActual = usuarioActual ? usuarioActual.nombre : "Archivo";
 
     let registrosSalidaParaInsertar: any[] = [];
 
@@ -281,7 +282,7 @@ export default function PanelPedidos() {
         motivo: pedido.motivo || "Préstamo de Tomo Físico",
         abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
         persona_responsable: "",
-        atendido_por: usuarioActual ? usuarioActual.nombre : "Archivo",
+        atendido_por: operadorActual,
         fecha_operacion: "",
         hora_ingreso_persona: "",
         hora_salida_persona: "",
@@ -304,7 +305,7 @@ export default function PanelPedidos() {
           motivo: pedido.motivo || "Préstamo de Tomo Físico",
           abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
           persona_responsable: "",
-          atendido_por: usuarioActual ? usuarioActual.nombre : "Archivo",
+          atendido_por: operadorActual,
           fecha_operacion: "",
           hora_ingreso_persona: "",
           hora_salida_persona: "",
@@ -327,7 +328,7 @@ export default function PanelPedidos() {
         motivo: pedido.motivo || "Préstamo de Tomo Físico",
         abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
         persona_responsable: "",
-        atendido_por: usuarioActual ? usuarioActual.nombre : "Archivo",
+        atendido_por: operadorActual,
         fecha_operacion: "",
         hora_ingreso_persona: "",
         hora_salida_persona: "",
@@ -349,7 +350,7 @@ export default function PanelPedidos() {
           motivo: pedido.motivo || "Préstamo de Tomo Físico",
           abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
           persona_responsable: "",
-          atendido_por: usuarioActual ? usuarioActual.nombre : "Archivo",
+          atendido_por: operadorActual,
           fecha_operacion: "",
           hora_ingreso_persona: "",
           hora_salida_persona: "",
@@ -370,7 +371,7 @@ export default function PanelPedidos() {
           motivo: pedido.motivo || "Préstamo de Tomo Físico",
           abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
           persona_responsable: "",
-          atendido_por: usuarioActual ? usuarioActual.nombre : "Archivo",
+          atendido_por: operadorActual,
           fecha_operacion: "",
           hora_ingreso_persona: "",
           hora_salida_persona: "",
@@ -392,7 +393,7 @@ export default function PanelPedidos() {
         motivo: pedido.motivo || "Préstamo de Tomo Físico",
         abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
         persona_responsable: "",
-        atendido_por: usuarioActual ? usuarioActual.nombre : "Archivo",
+        atendido_por: operadorActual,
         fecha_operacion: "",
         hora_ingreso_persona: "",
         hora_salida_persona: "",
@@ -423,9 +424,9 @@ export default function PanelPedidos() {
   };
 
   const exportarExcel = () => {
-    let contenido = "ID\tSolicitante\tMotivo\tDocumento\tIncluye\tAño\tKardex\tFolio\tUbicación\tEstado\n";
+    let contenido = "ID\tSolicitante\tMotivo\tDocumento\tIncluye\tAño\tKardex\tFolio\tUbicación\tAtendido Por\tEstado\n";
     pedidosFiltrados.forEach(p => {
-      contenido += `${p.id}\t${p.solicitante}\t${p.motivo}\t${p.documento}\t${p.incluye}\t${p.anio}\t${p.kardex}\t${p.folio}\t${p.tomoSugerido}\t${p.estado}\n`;
+      contenido += `${p.id}\t${p.solicitante}\t${p.motivo}\t${p.documento}\t${p.incluye}\t${p.anio}\t${p.kardex}\t${p.folio}\t${p.tomoSugerido}\t${p.escaneado_por || "-"}\t${p.estado}\n`;
     });
     const blob = new Blob([contenido], { type: "application/vnd.ms-excel" });
     const url = URL.createObjectURL(blob);
@@ -447,7 +448,7 @@ export default function PanelPedidos() {
 
   const esOperativo = usuarioActual?.rol === "OPERATIVO";
 
-  // Filtro de búsqueda y orden inteligente (pendientes / listos arriba)
+  // ORDEN CRONOLÓGICO NATURAL (Orden de llegada puro, sin alterarse por el estado)
   const pedidosFiltrados = pedidos.filter(p => {
     const texto = busqueda.toLowerCase();
     return (
@@ -457,15 +458,10 @@ export default function PanelPedidos() {
       String(p.anio).toLowerCase().includes(texto) ||
       String(p.tomoSugerido).toLowerCase().includes(texto) ||
       String(p.autoriza).toLowerCase().includes(texto) ||
-      String(p.documento).toLowerCase().includes(texto)
+      String(p.documento).toLowerCase().includes(texto) ||
+      String(p.escaneado_por || "").toLowerCase().includes(texto)
     );
-  }).sort((a, b) => {
-    if (a.estado === "Pendiente" && b.estado !== "Pendiente") return -1;
-    if (b.estado === "Pendiente" && a.estado !== "Pendiente") return 1;
-    if (a.estado === "Listo para Recoger" && b.estado !== "Listo para Recoger") return -1;
-    if (b.estado === "Listo para Recoger" && a.estado !== "Listo para Recoger") return 1;
-    return 0;
-  });
+  }); // Sin .sort() forzado para mantener el orden exacto de llegada
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 relative">
@@ -496,7 +492,7 @@ export default function PanelPedidos() {
                 onClick={() => cambiarEstado(pedidoCriticoActual.id)}
                 className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded text-sm shadow-lg transition-transform transform active:scale-95 cursor-pointer animate-bounce"
               >
-                🛠️️ Atender Pedido Ahora (Iniciar Atención)
+                🛠️ Atender Pedido Ahora (Iniciar Atención)
               </button>
             </div>
             <p className="text-[10px] text-gray-400 mt-4">
@@ -550,7 +546,7 @@ export default function PanelPedidos() {
         <div className="mb-4 flex items-center gap-2">
           <input 
             type="text" 
-            placeholder="🔍 Buscar por Kardex, Tomo, Año, Solicitante, Abogado o ID..." 
+            placeholder="🔍 Buscar por Kardex, Tomo, Año, Solicitante, Abogado, Atendido Por o ID..." 
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             className="w-full md:w-1/2 p-2 border border-gray-300 rounded text-xs outline-none focus:border-blue-600 text-gray-700 shadow-sm"
@@ -633,9 +629,6 @@ export default function PanelPedidos() {
                         "bg-green-600 text-white"
                       }`}>
                         {item.estado.toUpperCase()}
-                        {item.estado === "En Proceso" && " ⏳"}
-                        {item.estado === "Listo para Recoger" && " 📦"}
-                        {(item.estado === "Atendido" || item.estado === "Entregado") && " ✓"}
                       </span>
                     </td>
 

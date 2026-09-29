@@ -126,20 +126,21 @@ export default function RegistroEntradasSalidas() {
     }
   };
 
+  // INICIAR ATENCIÓN: Asigna explícitamente al operador logueado actual (Independiente del pedido)
   const iniciarAtencion = async (id: string) => {
     if (procesandoId === id) return;
     setProcesandoId(id);
 
     const ahora = Date.now();
     const horaTexto = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const nombreOperador = usuarioActual ? usuarioActual.nombre : "Personal de Archivo";
+    const nombreOperadorActual = usuarioActual ? usuarioActual.nombre : "Personal de Archivo";
 
     setRegistros(prev => prev.map(r => r.id === id ? {
       ...r,
       estado: "En Atención" as const,
       tiempo_inicio_timestamp: ahora,
       hora_ingreso_persona: horaTexto,
-      atendido_por: nombreOperador
+      atendido_por: nombreOperadorActual
     } : r));
 
     try {
@@ -149,7 +150,7 @@ export default function RegistroEntradasSalidas() {
           estado: "En Atención",
           tiempo_inicio_timestamp: ahora,
           hora_ingreso_persona: horaTexto,
-          atendido_por: nombreOperador
+          atendido_por: nombreOperadorActual
         })
         .eq("id", id);
     } catch (e) {
@@ -236,6 +237,7 @@ export default function RegistroEntradasSalidas() {
     const obsTexto = (document.getElementById("obs") as HTMLInputElement).value;
 
     let nuevaEntradaNube: any = null;
+    const operadorActual = usuarioActual ? usuarioActual.nombre : "Archivo";
 
     if (registroActual.tipo === "SALIDAS") {
       nuevaEntradaNube = {
@@ -247,13 +249,13 @@ export default function RegistroEntradasSalidas() {
         motivo: registroActual.motivo,
         abogado_solicita: registroActual.abogado_solicita,
         persona_responsable: "",
-        atendido_por: "",
+        atendido_por: "", 
         fecha_operacion: "",
         hora_ingreso_persona: "",
         hora_salida_persona: "",
         tiempo_atencion_segundos: 0,
         tiempo_inicio_timestamp: null,
-        observaciones: `Esperando retorno a BERTELLO (Salida previa atendida por ${registroActual.atendido_por || 'Archivo'})`,
+        observaciones: `Esperando retorno a BERTELLO`,
         firma_digital: "",
         estado: "Pendiente de Recepción"
       };
@@ -271,7 +273,8 @@ export default function RegistroEntradasSalidas() {
           tiempo_atencion_segundos: duracion,
           observaciones: obsTexto,
           firma_digital: firmaDataUrl,
-          estado: estadoFinal
+          estado: estadoFinal,
+          atendido_por: registroActual.atendido_por || operadorActual
         })
         .eq("id", registroActual.id);
 
@@ -283,9 +286,9 @@ export default function RegistroEntradasSalidas() {
       cargarSalidasNube();
 
       if (nuevaEntradaNube) {
-        alert("✅ Libro entregado con éxito. Se ha desglosado y creado la ficha de retorno correspondiente en la nube.");
+        alert("✅ Libro entregado con éxito y registrado al operador actual.");
       } else {
-        alert("✅ Ingreso a BERTELLO registrado con éxito en la nube.");
+        alert("✅ Ingreso a BERTELLO registrado con éxito.");
       }
     } catch (err) {
       console.error("Error al confirmar proceso en la nube:", err);
@@ -361,7 +364,7 @@ export default function RegistroEntradasSalidas() {
 
   if (!isMounted) return null;
 
-  // Filtrado de búsqueda global y ordenamiento automático (pendientes / en atención arriba)
+  // ORDEN CRONOLÓGICO NATURAL (Orden de llegada exacto) y filtro global por texto o "atendido por"
   const registrosFiltrados = registros.filter(r => {
     if (r.tipo !== seccionActiva) return false;
     const texto = busqueda.toLowerCase();
@@ -370,16 +373,18 @@ export default function RegistroEntradasSalidas() {
       String(r.anio).toLowerCase().includes(texto) ||
       String(r.abogado_solicita).toLowerCase().includes(texto) ||
       String(r.persona_responsable).toLowerCase().includes(texto) ||
+      String(r.atendido_por).toLowerCase().includes(texto) ||
       String(r.motivo).toLowerCase().includes(texto) ||
       String(r.observaciones).toLowerCase().includes(texto)
     );
-  }).sort((a, b) => {
-    if (a.estado.includes("Pendiente") && !b.estado.includes("Pendiente")) return -1;
-    if (!a.estado.includes("Pendiente") && b.estado.includes("Pendiente")) return 1;
-    if (a.estado === "En Atención" && b.estado !== "En Atención") return -1;
-    if (b.estado === "En Atención" && a.estado !== "En Atención") return 1;
-    return 0;
-  });
+  }); // Sin .sort() forzado para conservar el orden puro de llegada
+
+  // Indicador de productividad: cuenta cuántos atendió cada persona en la sección activa
+  const conteoPorOperador = registrosFiltrados.reduce((acc: { [key: string]: number }, curr) => {
+    const op = curr.atendido_por || "Sin asignar";
+    acc[op] = (acc[op] || 0) + 1;
+    return acc;
+  }, {});
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
@@ -422,6 +427,16 @@ export default function RegistroEntradasSalidas() {
           </div>
         </div>
 
+        {/* INDICADOR DE PRODUCTIVIDAD POR OPERADOR */}
+        <div className="bg-indigo-50 border border-indigo-100 p-3 rounded mb-4 flex items-center gap-4 flex-wrap text-xs">
+          <span className="font-bold text-indigo-900">📊 Indicador de Atención por Personal ({seccionActiva}):</span>
+          {Object.entries(conteoPorOperador).map(([nombreOp, total]) => (
+            <span key={nombreOp} className="bg-white px-3 py-1 rounded border shadow-xs text-gray-700">
+              <strong>{nombreOp}:</strong> <span className="text-blue-600 font-bold">{total}</span>
+            </span>
+          ))}
+        </div>
+
         {/* Pestañas de Navegación: Salidas vs Entradas */}
         <div className="flex border-b mb-6 justify-between items-center flex-wrap gap-4">
           <div className="flex">
@@ -439,14 +454,14 @@ export default function RegistroEntradasSalidas() {
             </button>
           </div>
 
-          {/* BARRA DE BÚSQUEDA GLOBAL */}
+          {/* BARRA DE BÚSQUEDA GLOBAL (Filtrar también por "Atendido Por") */}
           <div className="flex items-center gap-2">
             <input 
               type="text" 
-              placeholder="🔍 Buscar por tomo, año, abogado, responsable..." 
+              placeholder="🔍 Buscar por tomo, año, abogado, atendido por..." 
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
-              className="p-2 border border-gray-300 rounded text-xs outline-none focus:border-blue-600 text-gray-700 w-64 shadow-sm"
+              className="p-2 border border-gray-300 rounded text-xs outline-none focus:border-blue-600 text-gray-700 w-72 shadow-sm"
             />
             {busqueda && (
               <button onClick={() => setBusqueda("")} className="bg-gray-200 px-3 py-2 rounded text-xs text-gray-600 hover:bg-gray-300">
