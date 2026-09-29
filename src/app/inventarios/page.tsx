@@ -29,25 +29,30 @@ export default function ControlInventarioTomos() {
     try {
       let listaCompleta: ItemInventario[] = [];
 
-      // Consultamos cada tabla especializada que creamos en Supabase
+      // Mapeo exacto de las 7 tablas con sus nombres de columnas reales en Supabase
       const tablas = [
         { nombre: 'inv_escrituras', cat: 'Escrituras', campoTomo: 'TOMO', campoAnio: 'AÑO', campoRango: 'RANGO DE FOLIOS' },
         { nombre: 'inv_minutas', cat: 'Minutas', campoTomo: 'TOMO', campoAnio: 'AÑO', campoRango: 'RANGO DE MINUTAS' },
         { nombre: 'inv_vehiculares', cat: 'Transferencias Vehiculares', campoTomo: 'TOMO', campoAnio: 'AÑO', campoRango: 'RANGO DE FOLIOS' },
-        { nombre: 'inv_actas_vehiculares', cat: 'Actas Transferencias Vehiculares', campoTomo: 'ARCHIVADOR', campoAnio: 'AÑO', campoRango: 'RANGO DE ACTA' },
+        { nombre: 'inv_actas_vehiculares', cat: 'Actas Transferencias Vehiculares', campoTomo: 'ACTA', campoAnio: 'AÑO', campoRango: 'RANGO DE ACTAS' },
         { nombre: 'inv_no_contenciosos', cat: 'Asuntos No Contenciosos', campoTomo: 'TOMO', campoAnio: 'AÑO', campoRango: 'RANGO DE FOLIOS' },
         { nombre: 'inv_minutario_no_contenciosos', cat: 'Minutario No Contenciosos', campoTomo: 'TOMO', campoAnio: 'AÑO', campoRango: 'RANGO DE MINUTAS' },
         { nombre: 'inv_solicitudes_no_contenciosos', cat: 'Solicitudes No Contenciosos', campoTomo: 'ANEXO', campoAnio: 'AÑO', campoRango: 'RANGO DE SOLICITUD' },
       ];
 
       for (let t of tablas) {
-        const { data, error } = await supabase.from(t.nombre).select("*");
+        // Usamos .range(0, 4999) para saltar el límite de 1000 filas de Supabase y traer todo completo
+        const { data, error } = await supabase
+          .from(t.nombre)
+          .select("*")
+          .range(0, 4999);
+
         if (!error && data) {
           const formateados = data.map((item: any) => ({
-            id: `${t.nombre}-${item.id}`,
+            id: `${t.nombre}-${item.id || Math.random()}`,
             categoria: t.cat,
             tomo: String(item[t.campoTomo] || item.tomo || item.anexo || item.archivador || '-'),
-            archivador: String(item.archivador || '1'),
+            archivador: t.cat.includes('Actas') ? String(item[t.campoTomo] || '-') : String(item.archivador || '1'),
             anio: String(item[t.campoAnio] || item.anio || ''),
             rango: String(item[t.campoRango] || item.rango || ''),
             estado: String(item.ESTADO || item.estado || 'DISPONIBLE').toUpperCase()
@@ -127,7 +132,7 @@ export default function ControlInventarioTomos() {
           <div className="flex flex-wrap gap-2 w-full md:w-auto">
             <input 
               type="text" 
-              placeholder="🔍 Buscar Tomo, Archivador, Año o Rango..." 
+              placeholder="🔍 Buscar Tomo, Acta, Año o Rango..." 
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
               className="p-2 border rounded text-xs w-full md:w-72 bg-white text-gray-700 outline-none focus:border-blue-600"
@@ -176,8 +181,7 @@ export default function ControlInventarioTomos() {
               <tr>
                 <th className="border border-gray-300 p-2">ID</th>
                 <th className="border border-gray-300 p-2">Categoría</th>
-                <th className="border border-gray-300 p-2">N° Tomo / Anexo</th>
-                <th className="border border-gray-300 p-2">Archivador</th>
+                <th className="border border-gray-300 p-2">N° Tomo / Acta / Anexo</th>
                 <th className="border border-gray-300 p-2">Año</th>
                 <th className="border border-gray-300 p-2">Rango (Folios / Minutas / Actas)</th>
                 <th className="border border-gray-300 p-2">Estado Actual</th>
@@ -186,7 +190,7 @@ export default function ControlInventarioTomos() {
             <tbody>
               {inventarioFiltrado.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="p-8 text-gray-400 font-medium text-center">
+                  <td colSpan={6} className="p-8 text-gray-400 font-medium text-center">
                     No se encontraron registros en el inventario.
                   </td>
                 </tr>
@@ -196,9 +200,8 @@ export default function ControlInventarioTomos() {
                   <td className="border border-gray-300 p-2 font-bold">{item.id}</td>
                   <td className="border border-gray-300 p-2">{item.categoria}</td>
                   <td className="border border-gray-300 p-2 font-bold">{item.tomo}</td>
-                  <td className="border border-gray-300 p-2">{item.archivador}</td>
                   <td className="border border-gray-300 p-2">{item.anio}</td>
-                  <td className="border border-gray-300 p-2">{item.rango}</td>
+                  <td className="border border-gray-300 p-2 font-semibold text-indigo-900">{item.rango}</td>
                   <td className="border border-gray-300 p-2 font-bold">
                     <span className={`px-2 py-1 rounded text-[10px] text-white ${item.estado.includes("DISPONIBLE") ? "bg-green-600" : "bg-red-600"}`}>
                       {item.estado}
