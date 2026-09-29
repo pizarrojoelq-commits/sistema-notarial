@@ -1,7 +1,7 @@
 const XLSX = require('xlsx');
 const { createClient } = require('@supabase/supabase-js');
 
-// Credenciales directas de tu proyecto de Supabase
+// Credenciales de tu proyecto de Supabase
 const supabaseUrl = 'https://cfmoluhhmzblnzlefqw.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmbW9sdWhobXpibG56bG5lZnF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAzNTA2MzksImV4cCI6MjEwNTkyNjYzOX0.h24L0N_tzbouCl6NR3yw0ljvxr-vIF8GscpeLTl3fqc';
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -17,7 +17,7 @@ async function procesarExcel(filePath, categoria) {
     for (let row of data) {
       let item = {
         categoria: categoria,
-        tomo: String(row['TOMO'] || row['ANEXO'] || '-'),
+        tomo: String(row['TOMO'] || row['ANEXO'] || row['ARCHIVADOR'] || '-'),
         archivador: String(row['ARCHIVADOR'] || row['N° ARCHIVADOR'] || '1'),
         anio: String(row['AÑO'] || row['AÑO DE REGISTRO'] || ''),
         rango: String(row['RANGO DE FOLIOS'] || row['RANGO DE MINUTAS'] || row['RANGO DE SOLICITUD'] || row['RANGO DE ACTA'] || ''),
@@ -31,18 +31,22 @@ async function procesarExcel(filePath, categoria) {
     }
     console.log(`✅ ${categoria} procesado con éxito.`);
   } catch (err) {
-    console.error(`No se pudo leer el archivo para ${categoria}:`, err.message);
+    console.error(`No se pudo leer el archivo para [${categoria}]:`, err.message);
   }
 }
 
 async function ejecutar() {
-  // Asegúrate de colocar tus archivos dentro de una carpeta llamada data-excel o ajusta las rutas según donde los tengas
-  await procesarExcel('./data-excel/inventario_escrituras.xlsx', 'Escrituras');
-  await procesarExcel('./data-excel/inventario_minutas.xlsx', 'Minutas');
-  await procesarExcel('./data-excel/inventario_vehiculares.xlsx', 'Transferencias Vehiculares');
-  await procesarExcel('./data-excel/actas_vehiculares.xlsx', 'Actas Transferencias Vehiculares');
-  await procesarExcel('./data-excel/no_contenciosos.xlsx', 'Asuntos No Contenciosos');
-  console.log('🎉 ¡Carga de inventarios finalizada!');
+  // Asegúrate de que estos archivos estén en la misma carpeta raíz o en una carpeta data-excel
+  // Aquí apuntan directamente a la raíz con los nombres exactos de tu captura:
+  await procesarExcel('./inventario_escrituras.xlsx', 'Escrituras');
+  await procesarExcel('./INVENTARIO DE MINUTAS.xlsx', 'Minutas');
+  await procesarExcel('./INVENTARIO DE TRANFERENCIAS VEHICULARES.xlsx', 'Transferencias Vehiculares');
+  await procesarExcel('./Inventario DE ACTAS DE Trasferencias vehiculares.xlsx', 'Actas Transferencias Vehiculares');
+  await procesarExcel('./INVENTARIO DE NO CONTENCIOSOS.xlsx', 'Asuntos No Contenciosos');
+  await procesarExcel('./MINUTARIO DE ASUNTOS NO CONTENCIOSO.xlsx', 'Minutario No Contenciosos');
+  await procesarExcel('./SOLICITUDES DE ASUNTOS NO CONTENCIOSOS.xlsx', 'Solicitudes No Contenciosos');
+  
+  console.log('🎉 ¡Carga masiva de inventarios finalizada!');
 }
 
 ejecutar();
