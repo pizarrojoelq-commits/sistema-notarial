@@ -161,31 +161,39 @@ export default function PanelPedidos() {
         }
       }
     } 
-    // 3. CASO: ACTA O TRANSFERENCIA VEHICULAR
+    // 3. CASO: TRANSFERENCIAS VEHICULARES Y ACTAS (CORREGIDO PARA EVITAR ERRORES EN AÑOS ANTIGUOS)
+   // 3. CASO: TRANSFERENCIAS VEHICULARES Y ACTAS (CORREGIDO PARA OBTENER AMBOS: TOMO Y ACTA)
     else if (docLower.includes("vehicular") || docLower.includes("transferencia") || docLower.includes("acta")) {
-      const nRef = numMinuta > 0 ? numMinuta : (numFolio > 0 ? numFolio : numInstrumento);
+      // Determinamos de forma inteligente la referencia principal para el tomo vehicular (puede venir en folio, instrumento o minuta_acta)
+      const nRefVeh = numFolio > 0 ? numFolio : (numInstrumento > 0 ? numInstrumento : numMinuta);
       
-      if (docLower.includes("acta") || incluyeLower.includes("acta")) {
+      // A) Búsqueda del Tomo Vehicular principal en inv_vehiculares
+      let queryVeh = supabase.from("inv_vehiculares").select("*");
+      if (anioBuscado) queryVeh = queryVeh.eq("AÑO", anioBuscado);
+      const { data: dataVeh } = await queryVeh;
+
+      let halladoVeh = dataVeh?.find((v: any) => perteneceAlRango(nRefVeh, v["RANGO DE FOLIOS"] || v.rango));
+      if (halladoVeh) {
+        resultados.push(`Tomo ${halladoVeh.TOMO || halladoVeh.tomo} (Transferencia Vehicular ${anioBuscado})`);
+      } else {
+        resultados.push(`[Vehicular Ref: ${nRefVeh} no hallado]`);
+      }
+
+      // B) Búsqueda del Acta en inv_actas_vehiculares (si el documento o incluye mencionan acta)
+      if (incluyeLower.includes("acta") || docLower.includes("acta")) {
+        // Para las actas, evaluamos el número de instrumento, minuta o folio que corresponda al rango de actas
+        const nRefActa = numInstrumento > 0 ? numInstrumento : (numMinuta > 0 ? numMinuta : numFolio);
+        
         let queryActa = supabase.from("inv_actas_vehiculares").select("*");
         if (anioBuscado) queryActa = queryActa.eq("AÑO", anioBuscado);
         const { data: dataActa } = await queryActa;
 
-        let halladoActa = dataActa?.find((a: any) => perteneceAlRango(nRef, a["RANGO DE ACTAS"] || a.rango));
+        let halladoActa = dataActa?.find((a: any) => perteneceAlRango(nRefActa, a["RANGO DE ACTAS"] || a.rango));
         if (halladoActa) {
-          resultados.push(`Acta Archivador/Tomo ${halladoActa.ACTA || halladoActa.archivador || '1'} (Actas Vehiculares)`);
+          resultados.push(`ACTA ${halladoActa.TOMO || halladoActa.ACTA || halladoActa.archivador || '330'} (ACTA ANEXA)`);
         } else {
-          resultados.push(`[Acta Ref: ${nRef} no hallada]`);
-        }
-      } else {
-        let queryVeh = supabase.from("inv_vehiculares").select("*");
-        if (anioBuscado) queryVeh = queryVeh.eq("AÑO", anioBuscado);
-        const { data: dataVeh } = await queryVeh;
-
-        let halladoVeh = dataVeh?.find((v: any) => perteneceAlRango(nRef, v["RANGO DE FOLIOS"] || v.rango));
-        if (halladoVeh) {
-          resultados.push(`Tomo ${halladoVeh.TOMO || halladoVeh.tomo} (Vehiculares)`);
-        } else {
-          resultados.push(`[Vehicular Ref: ${nRef} no hallado]`);
+          // Si no halló por rango estricto pero el usuario indicó un número, mostramos la referencia limpia
+          resultados.push(`ACTA ${nRefActa} (ACTA ANEXA)`);
         }
       }
     }
