@@ -82,7 +82,7 @@ export default function PanelPedidos() {
     const max = parseInt(partes[1].trim());
     return !isNaN(min) && !isNaN(max) && numBuscado >= min && numBuscado <= max;
   };
- // LÓGICA DE BÚSQUEDA 100% CORREGIDA: MINUTAS Y SOLICITUDES PURAS USAN ESTRICTAMENTE N° DE MINUTA/ACTA/SOLICITUD
+ // LÓGICA DE BÚSQUEDA 100% CORREGIDA Y LIMPIA
   const calcularTomoNubeDinamico = async (documento: string, incluye: string, anioBuscado: string, instrumento: string, minutaActa: string, folioStr: string) => {
     const numFolio = parseInt((folioStr || "").replace(/[,.]/g, '')) || 0;
     const numInstrumento = parseInt((instrumento || "").replace(/[,.]/g, '')) || 0;
@@ -94,16 +94,21 @@ export default function PanelPedidos() {
     let resultados: string[] = [];
     const docLower = (documento || "").toLowerCase().trim();
     const incluyeLower = (incluye || "").toLowerCase().trim();
-    // 1. CASO: SOLICITUD PURA DE NO CONTENCIOSO (USA ESTRICTAMENTE EL INDICADOR N° DE SOLICITUD)
+
+    // 1. CASO: SOLICITUD PURA DE NO CONTENCIOSO
     if ((docLower.includes("solicitud") || docLower.includes("solicitudes")) && (docLower.includes("no contencioso") || docLower.includes("no contenciosos"))) {
       if (nRefIndicador === 0) {
         resultados.push("[Solicitud de No Contencioso sin N°: Buscar manualmente]");
       } else {
-        let querySol = supabase.from("inv_solicitudes_no_contenciosos").select("*");
-        if (anioBuscado) querySol = querySol.eq("AÑO", anioBuscado);
-        const { data: dataSol } = await querySol;
+        const { data: dataSol } = await supabase.from("inv_solicitudes_no_contenciosos").select("*");
 
-        let halladoSol = dataSol?.find((s: any) => perteneceAlRango(nRefIndicador, s["RANGO DE SOLICITUD"] || s.rango));
+        let halladoSol = dataSol?.find((s: any) => {
+          const coincideRef = perteneceAlRango(nRefIndicador, s["RANGO DE SOLICITUD"] || s.rango);
+          const anioFila = String(s["AÑO"] || s.anio || "");
+          const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
+          return coincideRef && coincideAnio;
+        });
+
         if (halladoSol) {
           const valorTomoAnexo = halladoSol.TOMO || halladoSol.tomo || halladoSol.ANEXO || halladoSol.anexo || nRefIndicador;
           resultados.push(`Tomo ${valorTomoAnexo} (Solicitudes No Contenciosos)`);
@@ -112,23 +117,27 @@ export default function PanelPedidos() {
         }
       }
     }
-    // 2. CASO: MINUTA PURA DE NO CONTENCIOSO (USA ESTRICTAMENTE EL INDICADOR N° DE MINUTA)
+    // 2. CASO: MINUTA PURA DE NO CONTENCIOSO
     else if (docLower.includes("minuta") && (docLower.includes("no contencioso") || docLower.includes("no contenciosos"))) {
       if (nRefIndicador === 0) {
         resultados.push("[Minuta de No Contencioso sin N°: Buscar manualmente]");
       } else {
-        let queryMinNC = supabase.from("inv_minutario_no_contenciosos").select("*");
-        if (anioBuscado) queryMinNC = queryMinNC.eq("AÑO", anioBuscado);
-        const { data: dataMinNC } = await queryMinNC;
+        const { data: dataMinNC } = await supabase.from("inv_minutario_no_contenciosos").select("*");
+        
+        let halladoMinNC = dataMinNC?.find((m: any) => {
+          const coincideRef = perteneceAlRango(nRefIndicador, m["RANGO DE MINUTAS"] || m.rango);
+          const anioFila = String(m["AÑO"] || m.anio || "");
+          const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
+          return coincideRef && coincideAnio;
+        });
 
-        let halladoMinNC = dataMinNC?.find((m: any) => perteneceAlRango(nRefIndicador, m["RANGO DE MINUTAS"] || m.rango));
         if (halladoMinNC) {
           resultados.push(`Tomo ${halladoMinNC.TOMO || halladoMinNC.tomo} (Minutario No Contenciosos)`);
         } else {
           resultados.push(`[Minutario No Contencioso Ref: ${nRefIndicador} no hallado]`);
         }
       }
-    } 
+    }
     // 3. CASO: MINUTA PURA ORDINARIA / DE ESCRITURA
     else if (docLower.includes("minuta")) {
       const nRefMinuta = nRefIndicador > 0 ? nRefIndicador : numFolio;
