@@ -161,8 +161,7 @@ export default function PanelPedidos() {
         }
       }
     } 
-    // 3. CASO: TRANSFERENCIAS VEHICULARES Y ACTAS (CORREGIDO PARA EVITAR ERRORES EN AÑOS ANTIGUOS)
-   // 3. CASO: TRANSFERENCIAS VEHICULARES Y ACTAS (CORREGIDO PARA OBTENER AMBOS: TOMO Y ACTA)
+    // 3. CASO: TRANSFERENCIAS VEHICULARES Y ACTAS (CORREGIDO PARA OBTENER AMBOS: TOMO Y ACTA)
     else if (docLower.includes("vehicular") || docLower.includes("transferencia") || docLower.includes("acta")) {
       // Determinamos de forma inteligente la referencia principal para el tomo vehicular (puede venir en folio, instrumento o minuta_acta)
       const nRefVeh = numFolio > 0 ? numFolio : (numInstrumento > 0 ? numInstrumento : numMinuta);
