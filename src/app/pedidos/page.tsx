@@ -205,9 +205,8 @@ export default function PanelPedidos() {
         }
       }
     }
-    // 6. CASO: EXPEDIENTE NO CONTENCIOSO COMPLETO (TOMO PRINCIPAL POR FOLIO + ANEXO SOLICITUD O MINUTA)
+    // 7. CASO: EXPEDIENTE NO CONTENCIOSO COMPLETO (TOMO POR FOLIO + ANEXO SOLICITUD O MINUTA SI LO INCLUYE)
     else if (docLower.includes("no contencioso") || docLower.includes("no contenciosos")) {
-      // A) Tomo principal de No Contenciosos por Folio
       if (numFolio === 0) {
         resultados.push("[Folio No Contencioso 0: Buscar manualmente]");
       } else {
@@ -223,7 +222,6 @@ export default function PanelPedidos() {
         }
       }
 
-      // B) Si incluye Solicitud o Minuta, se busca el anexo usando el número de Minuta/Acta/Solicitud
       const nRefAdicional = numMinuta > 0 ? numMinuta : (numInstrumento > 0 ? numInstrumento : numFolio);
 
       if (incluyeLower.includes("solicitud")) {
