@@ -205,31 +205,49 @@ export default function PanelPedidos() {
         }
       }
     }
-    // 4. CASO: ASUNTOS / NO CONTENCIOSOS
+    // 6. CASO: EXPEDIENTE NO CONTENCIOSO COMPLETO (TOMO PRINCIPAL POR FOLIO + ANEXO SOLICITUD O MINUTA)
     else if (docLower.includes("no contencioso") || docLower.includes("no contenciosos")) {
-      const nRef = numMinuta > 0 ? numMinuta : (numFolio > 0 ? numFolio : numInstrumento);
-
-      if (incluyeLower.includes("solicitud") || docLower.includes("solicitud")) {
-        let querySol = supabase.from("inv_solicitudes_no_contenciosos").select("*");
-        if (anioBuscado) querySol = querySol.eq("AÑO", anioBuscado);
-        const { data: dataSol } = await querySol;
-
-        let halladoSol = dataSol?.find((s: any) => perteneceAlRango(nRef, s["RANGO DE SOLICITUD"] || s.rango));
-        if (halladoSol) {
-          resultados.push(`Solicitud Anexo ${halladoSol.ANEXO || halladoSol.anexo || '1'} (Solicitudes No Contenciosos)`);
-        } else {
-          resultados.push(`[Solicitud No Contenciosa Ref: ${nRef} no hallada]`);
-        }
+      // A) Tomo principal de No Contenciosos por Folio
+      if (numFolio === 0) {
+        resultados.push("[Folio No Contencioso 0: Buscar manualmente]");
       } else {
         let queryNC = supabase.from("inv_no_contenciosos").select("*");
         if (anioBuscado) queryNC = queryNC.eq("AÑO", anioBuscado);
         const { data: dataNC } = await queryNC;
 
-        let halladoNC = dataNC?.find((nc: any) => perteneceAlRango(nRef, nc["RANGO DE FOLIOS"] || nc.rango));
+        let halladoNC = dataNC?.find((nc: any) => perteneceAlRango(numFolio, nc["RANGO DE FOLIOS"] || nc.rango));
         if (halladoNC) {
-          resultados.push(`Tomo ${halladoNC.TOMO || halladoNC.tomo} (No Contenciosos)`);
+          resultados.push(`Tomo ${halladoNC.TOMO || halladoNC.tomo} (No Contenciosos ${anioBuscado})`);
         } else {
-          resultados.push(`Expediente No Contencioso (Ref: ${nRef})`);
+          resultados.push(`[Folio No Contencioso ${numFolio} no hallado]`);
+        }
+      }
+
+      // B) Si incluye Solicitud o Minuta, se busca el anexo usando el número de Minuta/Acta/Solicitud
+      const nRefAdicional = numMinuta > 0 ? numMinuta : (numInstrumento > 0 ? numInstrumento : numFolio);
+
+      if (incluyeLower.includes("solicitud")) {
+        let querySol = supabase.from("inv_solicitudes_no_contenciosos").select("*");
+        if (anioBuscado) querySol = querySol.eq("AÑO", anioBuscado);
+        const { data: dataSol } = await querySol;
+
+        let halladoSol = dataSol?.find((s: any) => perteneceAlRango(nRefAdicional, s["RANGO DE SOLICITUD"] || s.rango));
+        if (halladoSol) {
+          resultados.push(`Solicitud Anexo ${halladoSol.ANEXO || halladoSol.anexo || '1'} (Solicitudes No Contenciosos)`);
+        } else {
+          resultados.push(`[Solicitud No Contenciosa Ref: ${nRefAdicional} no hallada]`);
+        }
+      } 
+      else if (incluyeLower.includes("minuta") || incluyeLower.includes("minutario")) {
+        let queryMinNC = supabase.from("inv_minutario_no_contenciosos").select("*");
+        if (anioBuscado) queryMinNC = queryMinNC.eq("AÑO", anioBuscado);
+        const { data: dataMinNC } = await queryMinNC;
+
+        let halladoMinNC = dataMinNC?.find((m: any) => perteneceAlRango(nRefAdicional, m["RANGO DE MINUTAS"] || m.rango));
+        if (halladoMinNC) {
+          resultados.push(`Tomo ${halladoMinNC.TOMO || halladoMinNC.tomo} (Minutario No Contenciosos)`);
+        } else {
+          resultados.push(`[Minutario No Contencioso Ref: ${nRefAdicional} no hallado]`);
         }
       }
     }
