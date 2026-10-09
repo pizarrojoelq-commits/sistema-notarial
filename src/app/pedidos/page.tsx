@@ -82,12 +82,15 @@ export default function PanelPedidos() {
     const max = parseInt(partes[1].trim());
     return !isNaN(min) && !isNaN(max) && numBuscado >= min && numBuscado <= max;
   };
- // LÓGICA DE BÚSQUEDA 100% CORREGIDA: SEPARACIÓN DE FOLIO (PARA TOMO) E INSTRUMENTO/MINUTA (PARA ACTA)
+ // LÓGICA DE BÚSQUEDA CON DEPURACIÓN (CONSOLE.LOG)
   const calcularTomoNubeDinamico = async (documento: string, incluye: string, anioBuscado: string, instrumento: string, minutaActa: string, folioStr: string) => {
     const numFolio = parseInt((folioStr || "").replace(/[,.]/g, '')) || 0;
     const numInstrumento = parseInt((instrumento || "").replace(/[,.]/g, '')) || 0;
     const numMinuta = parseInt((minutaActa || "").replace(/[,.]/g, '')) || 0;
     
+    // Rastreo para ver qué llega exactamente desde el pedido
+    console.log("DEPURANDO PEDIDO:", { documento, incluye, anioBuscado, numFolio, numInstrumento, numMinuta });
+
     let resultados: string[] = [];
     const docLower = (documento || "").toLowerCase().trim();
     const incluyeLower = (incluye || "").toLowerCase().trim();
@@ -157,9 +160,8 @@ export default function PanelPedidos() {
         }
       }
     } 
-    // 3. CASO: TRANSFERENCIAS VEHICULARES Y ACTAS (CAMPOS ESTRICTAMENTE SEPARADOS)
+    // 3. CASO: TRANSFERENCIAS VEHICULARES Y ACTAS
     else if (docLower.includes("vehicular") || docLower.includes("transferencia") || docLower.includes("acta")) {
-      // A) El Tomo Vehicular se busca estrictamente usando el número de FOLIO (o instrumento de respaldo)
       const nRefVeh = numFolio > 0 ? numFolio : numInstrumento;
       let parteVehicular = "";
       let parteActa = "";
@@ -167,6 +169,8 @@ export default function PanelPedidos() {
       let queryVeh = supabase.from("inv_vehiculares").select("*");
       if (anioBuscado) queryVeh = queryVeh.eq("AÑO", anioBuscado);
       const { data: dataVeh } = await queryVeh;
+
+      console.log("Datos obtenidos de inv_vehiculares:", dataVeh);
 
       let halladoVeh = dataVeh?.find((v: any) => perteneceAlRango(nRefVeh, v["RANGO DE FOLIOS"] || v.rango));
       if (halladoVeh) {
@@ -177,13 +181,14 @@ export default function PanelPedidos() {
 
       resultados.push(parteVehicular);
 
-      // B) El Acta se busca estrictamente usando el número de INSTRUMENTO (o minuta_acta) en inv_actas_vehiculares
       if (incluyeLower.includes("acta") || docLower.includes("acta")) {
         const nRefActa = numInstrumento > 0 ? numInstrumento : numMinuta;
         
         let queryActa = supabase.from("inv_actas_vehiculares").select("*");
         if (anioBuscado) queryActa = queryActa.eq("AÑO", anioBuscado);
         const { data: dataActa } = await queryActa;
+
+        console.log("Datos obtenidos de inv_actas_vehiculares:", dataActa);
 
         let halladoActa = dataActa?.find((a: any) => perteneceAlRango(nRefActa, a["RANGO DE ACTAS"] || a.rango));
         if (halladoActa) {
