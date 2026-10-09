@@ -161,27 +161,23 @@ export default function PanelPedidos() {
         }
       }
     } 
-   // 3. CASO: TRANSFERENCIAS VEHICULARES Y ACTAS (UNIÓN OBLIGATORIA DE AMBOS)
+   // 3. CASO: TRANSFERENCIAS VEHICULARES Y ACTAS (CORREGIDO Y ESTRUCTURADO)
     else if (docLower.includes("vehicular") || docLower.includes("transferencia") || docLower.includes("acta")) {
       const nRefVeh = numFolio > 0 ? numFolio : (numInstrumento > 0 ? numInstrumento : numMinuta);
-      let parteVehicular = "";
-      let parteActa = "";
-
-      // A) Buscar el Tomo Vehicular en inv_vehiculares
+      
+      // A) Búsqueda del Tomo Vehicular principal
       let queryVeh = supabase.from("inv_vehiculares").select("*");
       if (anioBuscado) queryVeh = queryVeh.eq("AÑO", anioBuscado);
       const { data: dataVeh } = await queryVeh;
 
       let halladoVeh = dataVeh?.find((v: any) => perteneceAlRango(nRefVeh, v["RANGO DE FOLIOS"] || v.rango));
       if (halladoVeh) {
-        parteVehicular = `Tomo ${halladoVeh.TOMO || halladoVeh.tomo} (Transferencia Vehicular ${anioBuscado})`;
+        resultados.push(`Tomo ${halladoVeh.TOMO || halladoVeh.tomo} (Transferencia Vehicular ${anioBuscado})`);
       } else {
-        parteVehicular = `[Vehicular Ref: ${nRefVeh} no hallado]`;
+        resultados.push(`[Vehicular Ref: ${nRefVeh} no hallado]`);
       }
 
-      resultados.push(parteVehicular);
-
-      // B) Buscar el Acta en inv_actas_vehiculares si incluye acta
+      // B) Búsqueda del Acta Anexa (si incluye acta)
       if (incluyeLower.includes("acta") || docLower.includes("acta")) {
         const nRefActa = numMinuta > 0 ? numMinuta : (numInstrumento > 0 ? numInstrumento : numFolio);
         
@@ -191,13 +187,12 @@ export default function PanelPedidos() {
 
         let halladoActa = dataActa?.find((a: any) => perteneceAlRango(nRefActa, a["RANGO DE ACTAS"] || a.rango));
         if (halladoActa) {
-          parteActa = `ACTA ${halladoActa.TOMO || halladoActa.ACTA || halladoActa.archivador || '330'} (ACTA ANEXA)`;
+          resultados.push(`ACTA ${halladoActa.TOMO || halladoActa.ACTA || halladoActa.archivador || '330'} (ACTA ANEXA)`);
         } else {
-          parteActa = `ACTA ${nRefActa} (ACTA ANEXA)`;
+          resultados.push(`ACTA ${nRefActa} (ACTA ANEXA)`);
         }
-
-        resultados.push(parteActa);
       }
+    }
     // 4. CASO: ASUNTOS / NO CONTENCIOSOS
     else if (docLower.includes("no contencioso") || docLower.includes("no contenciosos")) {
       const nRef = numMinuta > 0 ? numMinuta : (numFolio > 0 ? numFolio : numInstrumento);
