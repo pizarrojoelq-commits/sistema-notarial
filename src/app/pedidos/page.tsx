@@ -94,7 +94,6 @@ export default function PanelPedidos() {
     let resultados: string[] = [];
     const docLower = (documento || "").toLowerCase().trim();
     const incluyeLower = (incluye || "").toLowerCase().trim();
-
     // 1. CASO: SOLICITUD PURA DE NO CONTENCIOSO (USA ESTRICTAMENTE EL INDICADOR N° DE SOLICITUD)
     if ((docLower.includes("solicitud") || docLower.includes("solicitudes")) && (docLower.includes("no contencioso") || docLower.includes("no contenciosos"))) {
       if (nRefIndicador === 0) {
@@ -106,7 +105,8 @@ export default function PanelPedidos() {
 
         let halladoSol = dataSol?.find((s: any) => perteneceAlRango(nRefIndicador, s["RANGO DE SOLICITUD"] || s.rango));
         if (halladoSol) {
-          resultados.push(`Solicitud Anexo ${halladoSol.ANEXO || halladoSol.anexo || '1'} (Solicitudes No Contenciosos)`);
+          const valorTomoAnexo = halladoSol.TOMO || halladoSol.tomo || halladoSol.ANEXO || halladoSol.anexo || nRefIndicador;
+          resultados.push(`Tomo ${valorTomoAnexo} (Solicitudes No Contenciosos)`);
         } else {
           resultados.push(`[Solicitud No Contenciosa Ref: ${nRefIndicador} no hallada]`);
         }
