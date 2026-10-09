@@ -82,7 +82,7 @@ export default function PanelPedidos() {
     const max = parseInt(partes[1].trim());
     return !isNaN(min) && !isNaN(max) && numBuscado >= min && numBuscado <= max;
   };
- // LÓGICA DE BÚSQUEDA 100% AISLADA Y RESPETANDO EL DOCUMENTO EXACTO SELECCIONADO
+ // LÓGICA DE BÚSQUEDA 100% CORREGIDA: SEPARACIÓN DE FOLIO (PARA TOMO) E INSTRUMENTO/MINUTA (PARA ACTA)
   const calcularTomoNubeDinamico = async (documento: string, incluye: string, anioBuscado: string, instrumento: string, minutaActa: string, folioStr: string) => {
     const numFolio = parseInt((folioStr || "").replace(/[,.]/g, '')) || 0;
     const numInstrumento = parseInt((instrumento || "").replace(/[,.]/g, '')) || 0;
@@ -92,9 +92,8 @@ export default function PanelPedidos() {
     const docLower = (documento || "").toLowerCase().trim();
     const incluyeLower = (incluye || "").toLowerCase().trim();
 
-    // 1. CASO ESPECÍFICO: MINUTA DE ESCRITURA O MINUTA SOLA (NO ES ESCRITURA PÚBLICA)
+    // 1. CASO ESPECÍFICO: MINUTA DE ESCRITURA O MINUTA SOLA
     if (docLower.includes("minuta")) {
-      // Validamos si es una minuta de no contencioso
       if (docLower.includes("no contencioso") || docLower.includes("no contenciosos")) {
         const nRef = numMinuta > 0 ? numMinuta : (numFolio > 0 ? numFolio : numInstrumento);
         let queryMinNC = supabase.from("inv_minutario_no_contenciosos").select("*");
@@ -107,9 +106,7 @@ export default function PanelPedidos() {
         } else {
           resultados.push(`[Minutario No Contencioso Ref: ${nRef} no hallado]`);
         }
-      } 
-      // Es una minuta de escritura u ordinaria -> BUSCA ÚNICAMENTE EN LA TABLA DE MINUTAS
-      else {
+      } else {
         const nMinuta = numMinuta > 0 ? numMinuta : (numInstrumento > 0 ? numInstrumento : numFolio);
         if (nMinuta === 0) {
           resultados.push("[Minuta 0: Buscar manualmente]");
@@ -144,7 +141,6 @@ export default function PanelPedidos() {
         }
       }
 
-      // Solo si dice explícitamente "Incluye Minuta", agregamos la minuta anexa
       if (incluyeLower.includes("incluye minuta") || incluyeLower === "incluye minuta") {
         const nMinuta = numMinuta > 0 ? numMinuta : numInstrumento;
         if (nMinuta > 0) {
@@ -161,25 +157,29 @@ export default function PanelPedidos() {
         }
       }
     } 
-   // 3. CASO: TRANSFERENCIAS VEHICULARES Y ACTAS (CORREGIDO Y ESTRUCTURADO)
+    // 3. CASO: TRANSFERENCIAS VEHICULARES Y ACTAS (CAMPOS ESTRICTAMENTE SEPARADOS)
     else if (docLower.includes("vehicular") || docLower.includes("transferencia") || docLower.includes("acta")) {
-      const nRefVeh = numFolio > 0 ? numFolio : (numInstrumento > 0 ? numInstrumento : numMinuta);
-      
-      // A) Búsqueda del Tomo Vehicular principal
+      // A) El Tomo Vehicular se busca estrictamente usando el número de FOLIO (o instrumento de respaldo)
+      const nRefVeh = numFolio > 0 ? numFolio : numInstrumento;
+      let parteVehicular = "";
+      let parteActa = "";
+
       let queryVeh = supabase.from("inv_vehiculares").select("*");
       if (anioBuscado) queryVeh = queryVeh.eq("AÑO", anioBuscado);
       const { data: dataVeh } = await queryVeh;
 
       let halladoVeh = dataVeh?.find((v: any) => perteneceAlRango(nRefVeh, v["RANGO DE FOLIOS"] || v.rango));
       if (halladoVeh) {
-        resultados.push(`Tomo ${halladoVeh.TOMO || halladoVeh.tomo} (Transferencia Vehicular ${anioBuscado})`);
+        parteVehicular = `Tomo ${halladoVeh.TOMO || halladoVeh.tomo} (Transferencia Vehicular ${anioBuscado})`;
       } else {
-        resultados.push(`[Vehicular Ref: ${nRefVeh} no hallado]`);
+        parteVehicular = `[Vehicular Folio Ref: ${nRefVeh} no hallado]`;
       }
 
-      // B) Búsqueda del Acta Anexa (si incluye acta)
+      resultados.push(parteVehicular);
+
+      // B) El Acta se busca estrictamente usando el número de INSTRUMENTO (o minuta_acta) en inv_actas_vehiculares
       if (incluyeLower.includes("acta") || docLower.includes("acta")) {
-        const nRefActa = numMinuta > 0 ? numMinuta : (numInstrumento > 0 ? numInstrumento : numFolio);
+        const nRefActa = numInstrumento > 0 ? numInstrumento : numMinuta;
         
         let queryActa = supabase.from("inv_actas_vehiculares").select("*");
         if (anioBuscado) queryActa = queryActa.eq("AÑO", anioBuscado);
@@ -187,10 +187,12 @@ export default function PanelPedidos() {
 
         let halladoActa = dataActa?.find((a: any) => perteneceAlRango(nRefActa, a["RANGO DE ACTAS"] || a.rango));
         if (halladoActa) {
-          resultados.push(`ACTA ${halladoActa.TOMO || halladoActa.ACTA || halladoActa.archivador || '330'} (ACTA ANEXA)`);
+          parteActa = `ACTA ${halladoActa.TOMO || halladoActa.ACTA || halladoActa.archivador || '330'} (ACTA ANEXA)`;
         } else {
-          resultados.push(`ACTA ${nRefActa} (ACTA ANEXA)`);
+          parteActa = `[Acta Instrumento Ref: ${nRefActa} no hallada]`;
         }
+
+        resultados.push(parteActa);
       }
     }
     // 4. CASO: ASUNTOS / NO CONTENCIOSOS
