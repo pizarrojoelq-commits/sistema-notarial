@@ -82,52 +82,72 @@ export default function PanelPedidos() {
     const max = parseInt(partes[1].trim());
     return !isNaN(min) && !isNaN(max) && numBuscado >= min && numBuscado <= max;
   };
- // LÓGICA DE BÚSQUEDA CON DEPURACIÓN (CONSOLE.LOG)
+ // LÓGICA DE BÚSQUEDA 100% CORREGIDA: MINUTAS Y SOLICITUDES PURAS USAN ESTRICTAMENTE N° DE MINUTA/ACTA/SOLICITUD
   const calcularTomoNubeDinamico = async (documento: string, incluye: string, anioBuscado: string, instrumento: string, minutaActa: string, folioStr: string) => {
     const numFolio = parseInt((folioStr || "").replace(/[,.]/g, '')) || 0;
     const numInstrumento = parseInt((instrumento || "").replace(/[,.]/g, '')) || 0;
     const numMinuta = parseInt((minutaActa || "").replace(/[,.]/g, '')) || 0;
     
-    // Rastreo para ver qué llega exactamente desde el pedido
-    console.log("DEPURANDO PEDIDO:", { documento, incluye, anioBuscado, numFolio, numInstrumento, numMinuta });
+    // Indicador unificado para N° de Minuta / Acta / Solicitud
+    const nRefIndicador = numMinuta > 0 ? numMinuta : (numInstrumento > 0 ? numInstrumento : 0);
 
     let resultados: string[] = [];
     const docLower = (documento || "").toLowerCase().trim();
     const incluyeLower = (incluye || "").toLowerCase().trim();
 
-    // 1. CASO ESPECÍFICO: MINUTA DE ESCRITURA O MINUTA SOLA
-    if (docLower.includes("minuta")) {
-      if (docLower.includes("no contencioso") || docLower.includes("no contenciosos")) {
-        const nRef = numMinuta > 0 ? numMinuta : (numFolio > 0 ? numFolio : numInstrumento);
+    // 1. CASO: SOLICITUD PURA DE NO CONTENCIOSO (USA ESTRICTAMENTE EL INDICADOR N° DE SOLICITUD)
+    if ((docLower.includes("solicitud") || docLower.includes("solicitudes")) && (docLower.includes("no contencioso") || docLower.includes("no contenciosos"))) {
+      if (nRefIndicador === 0) {
+        resultados.push("[Solicitud de No Contencioso sin N°: Buscar manualmente]");
+      } else {
+        let querySol = supabase.from("inv_solicitudes_no_contenciosos").select("*");
+        if (anioBuscado) querySol = querySol.eq("AÑO", anioBuscado);
+        const { data: dataSol } = await querySol;
+
+        let halladoSol = dataSol?.find((s: any) => perteneceAlRango(nRefIndicador, s["RANGO DE SOLICITUD"] || s.rango));
+        if (halladoSol) {
+          resultados.push(`Solicitud Anexo ${halladoSol.ANEXO || halladoSol.anexo || '1'} (Solicitudes No Contenciosos)`);
+        } else {
+          resultados.push(`[Solicitud No Contenciosa Ref: ${nRefIndicador} no hallada]`);
+        }
+      }
+    }
+    // 2. CASO: MINUTA PURA DE NO CONTENCIOSO (USA ESTRICTAMENTE EL INDICADOR N° DE MINUTA)
+    else if (docLower.includes("minuta") && (docLower.includes("no contencioso") || docLower.includes("no contenciosos"))) {
+      if (nRefIndicador === 0) {
+        resultados.push("[Minuta de No Contencioso sin N°: Buscar manualmente]");
+      } else {
         let queryMinNC = supabase.from("inv_minutario_no_contenciosos").select("*");
         if (anioBuscado) queryMinNC = queryMinNC.eq("AÑO", anioBuscado);
         const { data: dataMinNC } = await queryMinNC;
 
-        let halladoMinNC = dataMinNC?.find((m: any) => perteneceAlRango(nRef, m["RANGO DE MINUTAS"] || m.rango));
+        let halladoMinNC = dataMinNC?.find((m: any) => perteneceAlRango(nRefIndicador, m["RANGO DE MINUTAS"] || m.rango));
         if (halladoMinNC) {
           resultados.push(`Tomo ${halladoMinNC.TOMO || halladoMinNC.tomo} (Minutario No Contenciosos)`);
         } else {
-          resultados.push(`[Minutario No Contencioso Ref: ${nRef} no hallado]`);
-        }
-      } else {
-        const nMinuta = numMinuta > 0 ? numMinuta : (numInstrumento > 0 ? numInstrumento : numFolio);
-        if (nMinuta === 0) {
-          resultados.push("[Minuta 0: Buscar manualmente]");
-        } else {
-          let queryMin = supabase.from("inv_minutas").select("*");
-          if (anioBuscado) queryMin = queryMin.eq("AÑO", anioBuscado);
-          const { data: dataMin } = await queryMin;
-
-          let halladoMin = dataMin?.find((m: any) => perteneceAlRango(nMinuta, m["RANGO DE MINUTAS"] || m.rango));
-          if (halladoMin) {
-            resultados.push(`Tomo ${halladoMin.TOMO || halladoMin.tomo} (Minutas)`);
-          } else {
-            resultados.push(`[Minuta ${nMinuta} no hallada en Minutas]`);
-          }
+          resultados.push(`[Minutario No Contencioso Ref: ${nRefIndicador} no hallado]`);
         }
       }
     } 
-    // 2. CASO: ESCRITURA PÚBLICA (ESCRITURA)
+    // 3. CASO: MINUTA PURA ORDINARIA / DE ESCRITURA
+    else if (docLower.includes("minuta")) {
+      const nRefMinuta = nRefIndicador > 0 ? nRefIndicador : numFolio;
+      if (nRefMinuta === 0) {
+        resultados.push("[Minuta 0: Buscar manualmente]");
+      } else {
+        let queryMin = supabase.from("inv_minutas").select("*");
+        if (anioBuscado) queryMin = queryMin.eq("AÑO", anioBuscado);
+        const { data: dataMin } = await queryMin;
+
+        let halladoMin = dataMin?.find((m: any) => perteneceAlRango(nRefMinuta, m["RANGO DE MINUTAS"] || m.rango));
+        if (halladoMin) {
+          resultados.push(`Tomo ${halladoMin.TOMO || halladoMin.tomo} (Minutas)`);
+        } else {
+          resultados.push(`[Minuta ${nRefMinuta} no hallada en Minutas]`);
+        }
+      }
+    } 
+    // 4. CASO: ESCRITURA PÚBLICA (ESCRITURA)
     else if (docLower === "escritura" || docLower.includes("escritura pública") || docLower.includes("escritura")) {
       if (numFolio === 0) {
         resultados.push("[Folio 0: Buscar manualmente]");
@@ -145,7 +165,7 @@ export default function PanelPedidos() {
       }
 
       if (incluyeLower.includes("incluye minuta") || incluyeLower === "incluye minuta") {
-        const nMinuta = numMinuta > 0 ? numMinuta : numInstrumento;
+        const nMinuta = nRefIndicador > 0 ? nRefIndicador : numFolio;
         if (nMinuta > 0) {
           let queryMin = supabase.from("inv_minutas").select("*");
           if (anioBuscado) queryMin = queryMin.eq("AÑO", anioBuscado);
@@ -160,9 +180,9 @@ export default function PanelPedidos() {
         }
       }
     } 
-    // 3. CASO: ACTA DE TRANSFERENCIA VEHICULAR (SOLO ACTA, SIN TOMO VEHICULAR)
+    // 5. CASO: ACTA DE TRANSFERENCIA VEHICULAR (SOLO ACTA PURA)
     else if (docLower.includes("acta de transferencia vehicular") || (docLower.includes("acta") && !docLower.includes("transferencia"))) {
-      const nRefActa = numInstrumento > 0 ? numInstrumento : (numMinuta > 0 ? numMinuta : numFolio);
+      const nRefActa = nRefIndicador > 0 ? nRefIndicador : numFolio;
       
       let queryActa = supabase.from("inv_actas_vehiculares").select("*");
       if (anioBuscado) queryActa = queryActa.eq("AÑO", anioBuscado);
@@ -175,9 +195,8 @@ export default function PanelPedidos() {
         resultados.push(`[Acta Ref: ${nRefActa} no hallada]`);
       }
     }
-    // 4. CASO: TRANSFERENCIA VEHICULAR COMPLETA (PUEDE INCLUIR TOMO + ACTA ANEXA)
+    // 6. CASO: TRANSFERENCIA VEHICULAR COMPLETA
     else if (docLower.includes("vehicular") || docLower.includes("transferencia")) {
-      // A) Tomo Vehicular principal por folio o instrumento
       const nRefVeh = numFolio > 0 ? numFolio : numInstrumento;
       let queryVeh = supabase.from("inv_vehiculares").select("*");
       if (anioBuscado) queryVeh = queryVeh.eq("AÑO", anioBuscado);
@@ -190,9 +209,8 @@ export default function PanelPedidos() {
         resultados.push(`[Vehicular Folio Ref: ${nRefVeh} no hallado]`);
       }
 
-      // B) Si además incluye acta, se añade el acta anexa
       if (incluyeLower.includes("acta")) {
-        const nRefActa = numInstrumento > 0 ? numInstrumento : numMinuta;
+        const nRefActa = nRefIndicador > 0 ? nRefIndicador : numFolio;
         let queryActa = supabase.from("inv_actas_vehiculares").select("*");
         if (anioBuscado) queryActa = queryActa.eq("AÑO", anioBuscado);
         const { data: dataActa } = await queryActa;
@@ -222,7 +240,7 @@ export default function PanelPedidos() {
         }
       }
 
-      const nRefAdicional = numMinuta > 0 ? numMinuta : (numInstrumento > 0 ? numInstrumento : numFolio);
+      const nRefAdicional = nRefIndicador > 0 ? nRefIndicador : numFolio;
 
       if (incluyeLower.includes("solicitud")) {
         let querySol = supabase.from("inv_solicitudes_no_contenciosos").select("*");
