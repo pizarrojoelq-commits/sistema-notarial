@@ -160,6 +160,21 @@ export default function PanelPedidos() {
         }
       }
     } 
+    // 3. CASO: ACTA DE TRANSFERENCIA VEHICULAR (SOLO ACTA, SIN TOMO VEHICULAR)
+    else if (docLower.includes("acta de transferencia vehicular") || (docLower.includes("acta") && !docLower.includes("transferencia"))) {
+      const nRefActa = numInstrumento > 0 ? numInstrumento : (numMinuta > 0 ? numMinuta : numFolio);
+      
+      let queryActa = supabase.from("inv_actas_vehiculares").select("*");
+      if (anioBuscado) queryActa = queryActa.eq("AÑO", anioBuscado);
+      const { data: dataActa } = await queryActa;
+
+      let halladoActa = dataActa?.find((a: any) => perteneceAlRango(nRefActa, a["RANGO DE ACTAS"] || a.rango));
+      if (halladoActa) {
+        resultados.push(`ACTA ${halladoActa.TOMO || halladoActa.ACTA || halladoActa.archivador || '1'} (Actas Vehiculares)`);
+      } else {
+        resultados.push(`[Acta Ref: ${nRefActa} no hallada]`);
+      }
+    }
     // 4. CASO: TRANSFERENCIA VEHICULAR COMPLETA (PUEDE INCLUIR TOMO + ACTA ANEXA)
     else if (docLower.includes("vehicular") || docLower.includes("transferencia")) {
       // A) Tomo Vehicular principal por folio o instrumento
@@ -169,7 +184,7 @@ export default function PanelPedidos() {
       const { data: dataVeh } = await queryVeh;
 
       let halladoVeh = dataVeh?.find((v: any) => perteneceAlRango(nRefVeh, v["RANGO DE FOLIOS"] || v.rango));
-      if (halladoVeh){
+      if (halladoVeh) {
         resultados.push(`Tomo ${halladoVeh.TOMO || halladoVeh.tomo} (Transferencia Vehicular ${anioBuscado})`);
       } else {
         resultados.push(`[Vehicular Folio Ref: ${nRefVeh} no hallado]`);
