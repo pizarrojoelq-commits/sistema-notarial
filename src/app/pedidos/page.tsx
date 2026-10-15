@@ -94,7 +94,7 @@ export default function PanelPedidos() {
     const docLower = (documento || "").toLowerCase().trim();
     const incluyeLower = (incluye || "").toLowerCase().trim();
 
-    // 1. CASO: SOLICITUD PURA DE NO CONTENCIOSO
+    // 1. CASO: SOLICITUD PURA DE NO CONTENCIOSO (DEBE EMPEZAR CON if, NO con else if)
     if ((docLower.includes("solicitud") || docLower.includes("solicitudes")) && (docLower.includes("no contencioso") || docLower.includes("no contenciosos"))) {
       if (nRefIndicador === 0) {
         resultados.push("[Solicitud de No Contencioso sin N°: Buscar manualmente]");
@@ -103,8 +103,33 @@ export default function PanelPedidos() {
 
         let halladoSol = dataSol?.find((s: any) => {
           const coincideRef = perteneceAlRango(nRefIndicador, s["RANGO DE SOLICITUD"] || s.rango);
-          const anioFila = String(s["AÑO"] || s.anio || "");
-          const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
+          const anioFila = String(s["AÑO"] || s.anio || "").replace(/\s+/g, '');
+          const anioBuscadoClean = String(anioBuscado || "").trim();
+          
+          const coincideAnio = !anioBuscadoClean || anioFila.includes(anioBuscadoClean);
+          return coincideRef && coincideAnio;
+        });
+
+        if (halladoSol) {
+          const valorTomoAnexo = halladoSol.TOMO || halladoSol.tomo || halladoSol.ANEXO || halladoSol.anexo || nRefIndicador;
+          resultados.push(`Tomo ${valorTomoAnexo} (Solicitudes No Contenciosos)`);
+        } else {
+          resultados.push(`[Solicitud No Contenciosa Ref: ${nRefIndicador} no hallada]`);
+        }
+      }
+    }
+    else if ((docLower.includes("solicitud") || docLower.includes("solicitudes")) && (docLower.includes("no contencioso") || docLower.includes("no contenciosos"))) {
+      if (nRefIndicador === 0) {
+        resultados.push("[Solicitud de No Contencioso sin N°: Buscar manualmente]");
+      } else {
+        const { data: dataSol } = await supabase.from("inv_solicitudes_no_contenciosos").select("*");
+
+        let halladoSol = dataSol?.find((s: any) => {
+          const coincideRef = perteneceAlRango(nRefIndicador, s["RANGO DE SOLICITUD"] || s.rango);
+          const anioFila = String(s["AÑO"] || s.anio || "").replace(/\s+/g, '');
+          const anioBuscadoClean = String(anioBuscado || "").trim();
+          
+          const coincideAnio = !anioBuscadoClean || anioFila.includes(anioBuscadoClean);
           return coincideRef && coincideAnio;
         });
 
