@@ -184,7 +184,7 @@ export default function PanelPedidos() {
         }
       }
     } 
-    // 4. CASO: ESCRITURA PÚBLICA (ESCRITURA)
+    // CASO: ESCRITURA PÚBLICA CON MINUTA ANEXA (BÚSQUEDA ROBUSTA Y TOLERANTE A COLUMNAS)
     else if (docLower === "escritura" || docLower.includes("escritura pública") || docLower.includes("escritura")) {
       if (numFolio === 0) {
         resultados.push("[Folio 0: Buscar manualmente]");
@@ -205,13 +205,17 @@ export default function PanelPedidos() {
         }
       }
 
-      if (incluyeLower.includes("incluye minuta") || incluyeLower === "incluye minuta") {
-        const nMinuta = nRefIndicador > 0 ? nRefIndicador : numFolio;
-        if (nMinuta > 0) {
+      if (incluyeLower.includes("incluye minuta") || incluyeLower === "incluye minuta" || incluyeLower.includes("minuta")) {
+        // BUSCAMOS EL NÚMERO DE MINUTA PROBANDO EN TODAS LAS COLUMNAS POSIBLES (Por si se movió de celda)
+        const posiblesNumerosMinuta = [numMinuta, numInstrumento, numFolio].filter(n => n > 0);
+        // Filtramos para tomar el número más lógico (generalmente el menor o el que no sea el folio gigante)
+        const nMinutaReal = posiblesNumerosMinuta.length > 0 ? Math.min(...posiblesNumerosMinuta.filter(n => n < 100000)) : 0;
+
+        if (nMinutaReal > 0) {
           const { data: dataMin } = await supabase.from("inv_minutas").select("*");
 
           let halladoMin = dataMin?.find((m: any) => {
-            const coincideRef = perteneceAlRango(nMinuta, m["RANGO DE MINUTAS"] || m.rango);
+            const coincideRef = perteneceAlRango(nMinutaReal, m["RANGO DE MINUTAS"] || m.rango);
             const anioFila = String(m["AÑO"] || m.anio || "");
             const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
             return coincideRef && coincideAnio;
@@ -220,11 +224,13 @@ export default function PanelPedidos() {
           if (halladoMin) {
             resultados.push(`Tomo ${halladoMin.TOMO || halladoMin.tomo} (Minutas Anexas)`);
           } else {
-            resultados.push(`[Minuta ${nMinuta} anexa no hallada]`);
+            resultados.push(`[Minuta ${nMinutaReal} anexa no hallada]`);
           }
+        } else {
+          resultados.push("[Minuta Anexa sin N° válido]");
         }
       }
-    } 
+    }
     // 5. CASO: ACTA DE TRANSFERENCIA VEHICULAR (SOLO ACTA PURA)
     else if (docLower.includes("acta de transferencia vehicular") || (docLower.includes("acta") && !docLower.includes("transferencia"))) {
       const nRefActa = nRefIndicador > 0 ? nRefIndicador : numFolio;
