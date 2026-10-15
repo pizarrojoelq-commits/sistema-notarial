@@ -186,15 +186,13 @@ export default function PanelPedidos() {
           resultados.push(`[Folio ${numFolio} no hallado en Escrituras]`);
         }
       }
-
-      if (incluyeLower.includes("incluye minuta") || incluyeLower === "incluye minuta" || incluyeLower.includes("minuta")) {
-        const posiblesNumerosMinuta = [numMinuta, numInstrumento, numFolio].filter(n => n > 0);
-        const nMinutaReal = posiblesNumerosMinuta.length > 0 ? Math.min(...posiblesNumerosMinuta.filter(n => n < 100000)) : 0;
+if (incluyeLower.includes("incluye minuta") || incluyeLower === "incluye minuta" || incluyeLower.includes("minuta")) {
+        // USAMOS ESTRICTAMENTE EL NÚMERO DE LA COLUMNA DE MINUTA/ACTA (numMinuta), IGNORANDO LAS DEMÁS COLUMNAS
+        const nMinutaReal = numMinuta;
 
         if (nMinutaReal > 0) {
           const { data: dataMin } = await supabase.from("inv_minutas").select("*");
 
-          // BÚSQUEDA FLEXIBLE: EVALÚA EL RANGO ESTRICTAMENTE (IGNORANDO RESTRICCIONES ESTRICTAS DE AÑO)
           let halladoMin = dataMin?.find((m: any) => {
             const rangoTexto = m["RANGO DE MINUTAS"] || m.rango || "";
             return perteneceAlRango(nMinutaReal, rangoTexto);
