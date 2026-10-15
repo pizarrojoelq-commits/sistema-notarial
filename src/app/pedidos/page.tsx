@@ -82,13 +82,12 @@ export default function PanelPedidos() {
     const max = parseInt(partes[1].trim());
     return !isNaN(min) && !isNaN(max) && numBuscado >= min && numBuscado <= max;
   };
- // LÓGICA DE BÚSQUEDA 100% CORREGIDA Y LIMPIA
+ // LÓGICA DE BÚSQUEDA DEFINITIVA: FILTRO DE AÑOS FLEXIBLE PARA RANGOS (EJ. 1999-2000)
   const calcularTomoNubeDinamico = async (documento: string, incluye: string, anioBuscado: string, instrumento: string, minutaActa: string, folioStr: string) => {
     const numFolio = parseInt((folioStr || "").replace(/[,.]/g, '')) || 0;
     const numInstrumento = parseInt((instrumento || "").replace(/[,.]/g, '')) || 0;
     const numMinuta = parseInt((minutaActa || "").replace(/[,.]/g, '')) || 0;
     
-    // Indicador unificado para N° de Minuta / Acta / Solicitud
     const nRefIndicador = numMinuta > 0 ? numMinuta : (numInstrumento > 0 ? numInstrumento : 0);
 
     let resultados: string[] = [];
@@ -137,18 +136,22 @@ export default function PanelPedidos() {
           resultados.push(`[Minutario No Contencioso Ref: ${nRefIndicador} no hallado]`);
         }
       }
-    }
+    } 
     // 3. CASO: MINUTA PURA ORDINARIA / DE ESCRITURA
     else if (docLower.includes("minuta")) {
       const nRefMinuta = nRefIndicador > 0 ? nRefIndicador : numFolio;
       if (nRefMinuta === 0) {
         resultados.push("[Minuta 0: Buscar manualmente]");
       } else {
-        let queryMin = supabase.from("inv_minutas").select("*");
-        if (anioBuscado) queryMin = queryMin.eq("AÑO", anioBuscado);
-        const { data: dataMin } = await queryMin;
+        const { data: dataMin } = await supabase.from("inv_minutas").select("*");
 
-        let halladoMin = dataMin?.find((m: any) => perteneceAlRango(nRefMinuta, m["RANGO DE MINUTAS"] || m.rango));
+        let halladoMin = dataMin?.find((m: any) => {
+          const coincideRef = perteneceAlRango(nRefMinuta, m["RANGO DE MINUTAS"] || m.rango);
+          const anioFila = String(m["AÑO"] || m.anio || "");
+          const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
+          return coincideRef && coincideAnio;
+        });
+
         if (halladoMin) {
           resultados.push(`Tomo ${halladoMin.TOMO || halladoMin.tomo} (Minutas)`);
         } else {
@@ -161,11 +164,15 @@ export default function PanelPedidos() {
       if (numFolio === 0) {
         resultados.push("[Folio 0: Buscar manualmente]");
       } else {
-        let query = supabase.from("inv_escrituras").select("*");
-        if (anioBuscado) query = query.eq("AÑO", anioBuscado);
-        const { data } = await query;
+        const { data } = await supabase.from("inv_escrituras").select("*");
 
-        let hallado = data?.find((e: any) => perteneceAlRango(numFolio, e["RANGO DE FOLIOS"] || e.rango));
+        let hallado = data?.find((e: any) => {
+          const coincideRef = perteneceAlRango(numFolio, e["RANGO DE FOLIOS"] || e.rango);
+          const anioFila = String(e["AÑO"] || e.anio || "");
+          const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
+          return coincideRef && coincideAnio;
+        });
+
         if (hallado) {
           resultados.push(`Tomo ${hallado.TOMO || hallado.tomo} (Escrituras ${hallado.AÑO || hallado.anio || anioBuscado})`);
         } else {
@@ -176,11 +183,15 @@ export default function PanelPedidos() {
       if (incluyeLower.includes("incluye minuta") || incluyeLower === "incluye minuta") {
         const nMinuta = nRefIndicador > 0 ? nRefIndicador : numFolio;
         if (nMinuta > 0) {
-          let queryMin = supabase.from("inv_minutas").select("*");
-          if (anioBuscado) queryMin = queryMin.eq("AÑO", anioBuscado);
-          const { data: dataMin } = await queryMin;
+          const { data: dataMin } = await supabase.from("inv_minutas").select("*");
 
-          let halladoMin = dataMin?.find((m: any) => perteneceAlRango(nMinuta, m["RANGO DE MINUTAS"] || m.rango));
+          let halladoMin = dataMin?.find((m: any) => {
+            const coincideRef = perteneceAlRango(nMinuta, m["RANGO DE MINUTAS"] || m.rango);
+            const anioFila = String(m["AÑO"] || m.anio || "");
+            const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
+            return coincideRef && coincideAnio;
+          });
+
           if (halladoMin) {
             resultados.push(`Tomo ${halladoMin.TOMO || halladoMin.tomo} (Minutas Anexas)`);
           } else {
@@ -192,12 +203,15 @@ export default function PanelPedidos() {
     // 5. CASO: ACTA DE TRANSFERENCIA VEHICULAR (SOLO ACTA PURA)
     else if (docLower.includes("acta de transferencia vehicular") || (docLower.includes("acta") && !docLower.includes("transferencia"))) {
       const nRefActa = nRefIndicador > 0 ? nRefIndicador : numFolio;
-      
-      let queryActa = supabase.from("inv_actas_vehiculares").select("*");
-      if (anioBuscado) queryActa = queryActa.eq("AÑO", anioBuscado);
-      const { data: dataActa } = await queryActa;
+      const { data: dataActa } = await supabase.from("inv_actas_vehiculares").select("*");
 
-      let halladoActa = dataActa?.find((a: any) => perteneceAlRango(nRefActa, a["RANGO DE ACTAS"] || a.rango));
+      let halladoActa = dataActa?.find((a: any) => {
+        const coincideRef = perteneceAlRango(nRefActa, a["RANGO DE ACTAS"] || a.rango);
+        const anioFila = String(a["AÑO"] || a.anio || "");
+        const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
+        return coincideRef && coincideAnio;
+      });
+
       if (halladoActa) {
         resultados.push(`ACTA ${halladoActa.TOMO || halladoActa.ACTA || halladoActa.archivador || '1'} (Actas Vehiculares)`);
       } else {
@@ -207,11 +221,15 @@ export default function PanelPedidos() {
     // 6. CASO: TRANSFERENCIA VEHICULAR COMPLETA
     else if (docLower.includes("vehicular") || docLower.includes("transferencia")) {
       const nRefVeh = numFolio > 0 ? numFolio : numInstrumento;
-      let queryVeh = supabase.from("inv_vehiculares").select("*");
-      if (anioBuscado) queryVeh = queryVeh.eq("AÑO", anioBuscado);
-      const { data: dataVeh } = await queryVeh;
+      const { data: dataVeh } = await supabase.from("inv_vehiculares").select("*");
 
-      let halladoVeh = dataVeh?.find((v: any) => perteneceAlRango(nRefVeh, v["RANGO DE FOLIOS"] || v.rango));
+      let halladoVeh = dataVeh?.find((v: any) => {
+        const coincideRef = perteneceAlRango(nRefVeh, v["RANGO DE FOLIOS"] || v.rango);
+        const anioFila = String(v["AÑO"] || v.anio || "");
+        const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
+        return coincideRef && coincideAnio;
+      });
+
       if (halladoVeh) {
         resultados.push(`Tomo ${halladoVeh.TOMO || halladoVeh.tomo} (Transferencia Vehicular ${anioBuscado})`);
       } else {
@@ -220,11 +238,15 @@ export default function PanelPedidos() {
 
       if (incluyeLower.includes("acta")) {
         const nRefActa = nRefIndicador > 0 ? nRefIndicador : numFolio;
-        let queryActa = supabase.from("inv_actas_vehiculares").select("*");
-        if (anioBuscado) queryActa = queryActa.eq("AÑO", anioBuscado);
-        const { data: dataActa } = await queryActa;
+        const { data: dataActa } = await supabase.from("inv_actas_vehiculares").select("*");
 
-        let halladoActa = dataActa?.find((a: any) => perteneceAlRango(nRefActa, a["RANGO DE ACTAS"] || a.rango));
+        let halladoActa = dataActa?.find((a: any) => {
+          const coincideRef = perteneceAlRango(nRefActa, a["RANGO DE ACTAS"] || a.rango);
+          const anioFila = String(a["AÑO"] || a.anio || "");
+          const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
+          return coincideRef && coincideAnio;
+        });
+
         if (halladoActa) {
           resultados.push(`ACTA ${halladoActa.TOMO || halladoActa.ACTA || halladoActa.archivador || '330'} (ACTA ANEXA)`);
         } else {
@@ -232,16 +254,20 @@ export default function PanelPedidos() {
         }
       }
     }
-    // 7. CASO: EXPEDIENTE NO CONTENCIOSO COMPLETO (TOMO POR FOLIO + ANEXO SOLICITUD O MINUTA SI LO INCLUYE)
+    // 7. CASO: EXPEDIENTE NO CONTENCIOSO COMPLETO (TOMO POR FOLIO + ANEXO SOLICITUD O MINUTA)
     else if (docLower.includes("no contencioso") || docLower.includes("no contenciosos")) {
       if (numFolio === 0) {
         resultados.push("[Folio No Contencioso 0: Buscar manualmente]");
       } else {
-        let queryNC = supabase.from("inv_no_contenciosos").select("*");
-        if (anioBuscado) queryNC = queryNC.eq("AÑO", anioBuscado);
-        const { data: dataNC } = await queryNC;
+        const { data: dataNC } = await supabase.from("inv_no_contenciosos").select("*");
 
-        let halladoNC = dataNC?.find((nc: any) => perteneceAlRango(numFolio, nc["RANGO DE FOLIOS"] || nc.rango));
+        let halladoNC = dataNC?.find((nc: any) => {
+          const coincideRef = perteneceAlRango(numFolio, nc["RANGO DE FOLIOS"] || nc.rango);
+          const anioFila = String(nc["AÑO"] || nc.anio || "");
+          const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
+          return coincideRef && coincideAnio;
+        });
+
         if (halladoNC) {
           resultados.push(`Tomo ${halladoNC.TOMO || halladoNC.tomo} (No Contenciosos ${anioBuscado})`);
         } else {
@@ -252,23 +278,32 @@ export default function PanelPedidos() {
       const nRefAdicional = nRefIndicador > 0 ? nRefIndicador : numFolio;
 
       if (incluyeLower.includes("solicitud")) {
-        let querySol = supabase.from("inv_solicitudes_no_contenciosos").select("*");
-        if (anioBuscado) querySol = querySol.eq("AÑO", anioBuscado);
-        const { data: dataSol } = await querySol;
+        const { data: dataSol } = await supabase.from("inv_solicitudes_no_contenciosos").select("*");
 
-        let halladoSol = dataSol?.find((s: any) => perteneceAlRango(nRefAdicional, s["RANGO DE SOLICITUD"] || s.rango));
+        let halladoSol = dataSol?.find((s: any) => {
+          const coincideRef = perteneceAlRango(nRefAdicional, s["RANGO DE SOLICITUD"] || s.rango);
+          const anioFila = String(s["AÑO"] || s.anio || "");
+          const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
+          return coincideRef && coincideAnio;
+        });
+
         if (halladoSol) {
-          resultados.push(`Solicitud Anexo ${halladoSol.ANEXO || halladoSol.anexo || '1'} (Solicitudes No Contenciosos)`);
+          const valorTomoAnexo = halladoSol.TOMO || halladoSol.tomo || halladoSol.ANEXO || halladoSol.anexo || nRefAdicional;
+          resultados.push(`Solicitud Anexo ${valorTomoAnexo} (Solicitudes No Contenciosos)`);
         } else {
           resultados.push(`[Solicitud No Contenciosa Ref: ${nRefAdicional} no hallada]`);
         }
       } 
       else if (incluyeLower.includes("minuta") || incluyeLower.includes("minutario")) {
-        let queryMinNC = supabase.from("inv_minutario_no_contenciosos").select("*");
-        if (anioBuscado) queryMinNC = queryMinNC.eq("AÑO", anioBuscado);
-        const { data: dataMinNC } = await queryMinNC;
+        const { data: dataMinNC } = await supabase.from("inv_minutario_no_contenciosos").select("*");
 
-        let halladoMinNC = dataMinNC?.find((m: any) => perteneceAlRango(nRefAdicional, m["RANGO DE MINUTAS"] || m.rango));
+        let halladoMinNC = dataMinNC?.find((m: any) => {
+          const coincideRef = perteneceAlRango(nRefAdicional, m["RANGO DE MINUTAS"] || m.rango);
+          const anioFila = String(m["AÑO"] || m.anio || "");
+          const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
+          return coincideRef && coincideAnio;
+        });
+
         if (halladoMinNC) {
           resultados.push(`Tomo ${halladoMinNC.TOMO || halladoMinNC.tomo} (Minutario No Contenciosos)`);
         } else {
