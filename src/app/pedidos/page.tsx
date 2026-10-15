@@ -76,13 +76,18 @@ export default function PanelPedidos() {
   };
 
   const perteneceAlRango = (numBuscado: number, textoRango: string) => {
-    if (!textoRango || !textoRango.includes('-')) return false;
-    const partes = textoRango.split('-');
-    const min = parseInt(partes[0].trim());
-    const max = parseInt(partes[1].trim());
+    if (!textoRango) return false;
+    const limpio = String(textoRango).trim();
+    if (!limpio.includes('-') && !limpio.includes('–')) {
+      return parseInt(limpio, 10) === numBuscado;
+    }
+    const partes = limpio.split(/[-–]/);
+    const min = parseInt(partes[0].trim(), 10);
+    const max = parseInt(partes[1].trim(), 10);
     return !isNaN(min) && !isNaN(max) && numBuscado >= min && numBuscado <= max;
   };
- // LÓGICA DE BÚSQUEDA DEFINITIVA: FILTRO DE AÑOS FLEXIBLE PARA RANGOS (EJ. 1999-2000)
+
+  // LÓGICA DE BÚSQUEDA DINÁMICA
   const calcularTomoNubeDinamico = async (documento: string, incluye: string, anioBuscado: string, instrumento: string, minutaActa: string, folioStr: string) => {
     const numFolio = parseInt((folioStr || "").replace(/[,.]/g, '')) || 0;
     const numInstrumento = parseInt((instrumento || "").replace(/[,.]/g, '')) || 0;
@@ -94,31 +99,8 @@ export default function PanelPedidos() {
     const docLower = (documento || "").toLowerCase().trim();
     const incluyeLower = (incluye || "").toLowerCase().trim();
 
-    // 1. CASO: SOLICITUD PURA DE NO CONTENCIOSO (DEBE EMPEZAR CON if, NO con else if)
+    // 1. CASO: SOLICITUD PURA DE NO CONTENCIOSO
     if ((docLower.includes("solicitud") || docLower.includes("solicitudes")) && (docLower.includes("no contencioso") || docLower.includes("no contenciosos"))) {
-      if (nRefIndicador === 0) {
-        resultados.push("[Solicitud de No Contencioso sin N°: Buscar manualmente]");
-      } else {
-        const { data: dataSol } = await supabase.from("inv_solicitudes_no_contenciosos").select("*");
-
-        let halladoSol = dataSol?.find((s: any) => {
-          const coincideRef = perteneceAlRango(nRefIndicador, s["RANGO DE SOLICITUD"] || s.rango);
-          const anioFila = String(s["AÑO"] || s.anio || "").replace(/\s+/g, '');
-          const anioBuscadoClean = String(anioBuscado || "").trim();
-          
-          const coincideAnio = !anioBuscadoClean || anioFila.includes(anioBuscadoClean);
-          return coincideRef && coincideAnio;
-        });
-
-        if (halladoSol) {
-          const valorTomoAnexo = halladoSol.TOMO || halladoSol.tomo || halladoSol.ANEXO || halladoSol.anexo || nRefIndicador;
-          resultados.push(`Tomo ${valorTomoAnexo} (Solicitudes No Contenciosos)`);
-        } else {
-          resultados.push(`[Solicitud No Contenciosa Ref: ${nRefIndicador} no hallada]`);
-        }
-      }
-    }
-    else if ((docLower.includes("solicitud") || docLower.includes("solicitudes")) && (docLower.includes("no contencioso") || docLower.includes("no contenciosos"))) {
       if (nRefIndicador === 0) {
         resultados.push("[Solicitud de No Contencioso sin N°: Buscar manualmente]");
       } else {
@@ -184,7 +166,7 @@ export default function PanelPedidos() {
         }
       }
     } 
-    // CASO: ESCRITURA PÚBLICA CON MINUTA ANEXA (BÚSQUEDA ROBUSTA Y TOLERANTE A COLUMNAS)
+    // 4. CASO: ESCRITURA PÚBLICA CON MINUTA ANEXA
     else if (docLower === "escritura" || docLower.includes("escritura pública") || docLower.includes("escritura")) {
       if (numFolio === 0) {
         resultados.push("[Folio 0: Buscar manualmente]");
@@ -206,16 +188,15 @@ export default function PanelPedidos() {
       }
 
       if (incluyeLower.includes("incluye minuta") || incluyeLower === "incluye minuta" || incluyeLower.includes("minuta")) {
-        // BUSCAMOS EL NÚMERO DE MINUTA PROBANDO EN TODAS LAS COLUMNAS POSIBLES (Por si se movió de celda)
         const posiblesNumerosMinuta = [numMinuta, numInstrumento, numFolio].filter(n => n > 0);
-        // Filtramos para tomar el número más lógico (generalmente el menor o el que no sea el folio gigante)
         const nMinutaReal = posiblesNumerosMinuta.length > 0 ? Math.min(...posiblesNumerosMinuta.filter(n => n < 100000)) : 0;
 
         if (nMinutaReal > 0) {
           const { data: dataMin } = await supabase.from("inv_minutas").select("*");
 
           let halladoMin = dataMin?.find((m: any) => {
-            const coincideRef = perteneceAlRango(nMinutaReal, m["RANGO DE MINUTAS"] || m.rango);
+            const rangoTexto = m["RANGO DE MINUTAS"] || m.rango || "";
+            const coincideRef = perteneceAlRango(nMinutaReal, rangoTexto);
             const anioFila = String(m["AÑO"] || m.anio || "");
             const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
             return coincideRef && coincideAnio;
@@ -231,7 +212,7 @@ export default function PanelPedidos() {
         }
       }
     }
-    // 5. CASO: ACTA DE TRANSFERENCIA VEHICULAR (SOLO ACTA PURA)
+    // 5. CASO: ACTA DE TRANSFERENCIA VEHICULAR
     else if (docLower.includes("acta de transferencia vehicular") || (docLower.includes("acta") && !docLower.includes("transferencia"))) {
       const nRefActa = nRefIndicador > 0 ? nRefIndicador : numFolio;
       const { data: dataActa } = await supabase.from("inv_actas_vehiculares").select("*");
@@ -285,7 +266,7 @@ export default function PanelPedidos() {
         }
       }
     }
-    // 7. CASO: EXPEDIENTE NO CONTENCIOSO COMPLETO (TOMO POR FOLIO + ANEXO SOLICITUD O MINUTA)
+    // 7. CASO: EXPEDIENTE NO CONTENCIOSO COMPLETO
     else if (docLower.includes("no contencioso") || docLower.includes("no contenciosos")) {
       if (numFolio === 0) {
         resultados.push("[Folio No Contencioso 0: Buscar manualmente]");
@@ -348,6 +329,7 @@ export default function PanelPedidos() {
 
     return resultados.filter(Boolean).join(" + ");
   };
+
   const procesarYActualizarPedidos = async (listaCruda: any[]) => {
     const listaConTomosUnificados = await Promise.all(
       listaCruda.map(async (item: any) => {
@@ -379,7 +361,7 @@ export default function PanelPedidos() {
 
       if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
         new Notification("🚨 ¡ALERTA: NUEVO PEDIDO EN ARCHIVO!", {
-          body: `Solicitante: ${primerPendiente.solicitante} - Documento: ${primerPendiente.documento}`,
+          body: `Solicitante: ${primerPendiente.solicitante} Documento: ${primerPendiente.documento}`,
           icon: "/favicon.ico"
         });
       }
@@ -579,7 +561,7 @@ export default function PanelPedidos() {
             <div className="bg-red-50 border border-red-200 rounded p-4 text-left text-xs mb-6 space-y-2">
               <p><strong>Solicitante:</strong> {pedidoCriticoActual.solicitante}</p>
               <p><strong>Motivo:</strong> {pedidoCriticoActual.motivo}</p>
-              <p><strong>Documento:</strong> {pedidoCriticoActual.documento} - <span className="text-purple-700 font-bold">{pedidoCriticoActual.incluye}</span></p>
+              <p><strong>Documento:</strong> {pedidoCriticoActual.documento} <span className="text-purple-700 font-bold">{pedidoCriticoActual.incluye}</span></p>
               <p><strong>Año / Referencia:</strong> {pedidoCriticoActual.anio} | Kardex: {pedidoCriticoActual.kardex || "S/N"}</p>
               <p className="font-bold text-indigo-900 bg-indigo-50 p-1 rounded">
                 Ubicación Sugerida: {pedidoCriticoActual.tomoSugerido || pedidoCriticoActual.tomo_sugerido}
