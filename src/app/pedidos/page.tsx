@@ -194,12 +194,10 @@ export default function PanelPedidos() {
         if (nMinutaReal > 0) {
           const { data: dataMin } = await supabase.from("inv_minutas").select("*");
 
+          // BÚSQUEDA FLEXIBLE: EVALÚA EL RANGO ESTRICTAMENTE (IGNORANDO RESTRICCIONES ESTRICTAS DE AÑO)
           let halladoMin = dataMin?.find((m: any) => {
             const rangoTexto = m["RANGO DE MINUTAS"] || m.rango || "";
-            const coincideRef = perteneceAlRango(nMinutaReal, rangoTexto);
-            const anioFila = String(m["AÑO"] || m.anio || "");
-            const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
-            return coincideRef && coincideAnio;
+            return perteneceAlRango(nMinutaReal, rangoTexto);
           });
 
           if (halladoMin) {
