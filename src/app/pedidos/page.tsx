@@ -192,16 +192,18 @@ if (incluyeLower.includes("incluye minuta") || incluyeLower === "incluye minuta"
         if (nMinutaReal > 0) {
           const { data: dataMin } = await supabase.from("inv_minutas").select("*");
 
-          // BÚSQUEDA ROBUSTA: VALIDA EL RANGO Y PERMITE QUE EL AÑO SEA FLEXIBLE O CONTENGA EL TEXTO
+          // BÚSQUEDA BLINDADA: EXIGE QUE COINCIDA EL RANGO Y QUE EL AÑO CONTENGA EL AÑO BUSCADO (EJ. 2023)
           let halladoMin = dataMin?.find((m: any) => {
             const rangoTexto = m["RANGO DE MINUTAS"] || m.rango || "";
             const coincideRef = perteneceAlRango(nMinutaReal, rangoTexto);
             
-            const anioFila = String(m["AÑO"] || m.anio || "").replace(/\s+/g, '');
+            const anioFila = String(m["AÑO"] || m.anio || "").trim();
             const anioBuscadoClean = String(anioBuscado || "").trim();
             
-            // Si coincide el rango de la minuta, damos por válida la fila (los rangos de minutas no se repiten entre tomos del mismo periodo)
-            return coincideRef;
+            // Valida estrictamente que el rango sea el correcto Y que el año de la fila incluya el año del pedido
+            const coincideAnio = !anioBuscadoClean || anioFila.includes(anioBuscadoClean);
+
+            return coincideRef && coincideAnio;
           });
 
           if (halladoMin) {
