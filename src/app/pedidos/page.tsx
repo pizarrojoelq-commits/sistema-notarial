@@ -185,8 +185,9 @@ export default function PanelPedidos() {
         } else {
           resultados.push(`[Folio ${numFolio} no hallado en Escrituras]`);
         }
-      }
-if (incluyeLower.includes("incluye minuta") || incluyeLower === "incluye minuta" || incluyeLower.includes("minuta")) {
+      } // <--- AQUÍ FALTABA CERRAR LA LLAVE DEL BLOQUE DEL FOLIO DE ESCRITURAS
+
+      if (incluyeLower.includes("incluye minuta") || incluyeLower === "incluye minuta" || incluyeLower.includes("minuta")) {
         const nMinutaReal = numMinuta;
 
         if (nMinutaReal > 0) {
@@ -199,7 +200,6 @@ if (incluyeLower.includes("incluye minuta") || incluyeLower === "incluye minuta"
             const anioFila = String(m["AÑO"] || m.anio || "").replace(/\s+/g, '');
             const anioPedido = String(anioBuscado || "").replace(/\s+/g, '');
             
-            // Validación flexible de año (soporta años fijos y rangos como 1997-1998)
             let coincideAnio = false;
             if (!anioPedido) {
               coincideAnio = true;
