@@ -192,16 +192,28 @@ if (incluyeLower.includes("incluye minuta") || incluyeLower === "incluye minuta"
         if (nMinutaReal > 0) {
           const { data: dataMin } = await supabase.from("inv_minutas").select("*");
 
-          // BÚSQUEDA BLINDADA: EXIGE QUE COINCIDA EL RANGO Y QUE EL AÑO CONTENGA EL AÑO BUSCADO (EJ. 2023)
           let halladoMin = dataMin?.find((m: any) => {
             const rangoTexto = m["RANGO DE MINUTAS"] || m.rango || "";
             const coincideRef = perteneceAlRango(nMinutaReal, rangoTexto);
             
-            const anioFila = String(m["AÑO"] || m.anio || "").trim();
-            const anioBuscadoClean = String(anioBuscado || "").trim();
+            const anioFila = String(m["AÑO"] || m.anio || "").replace(/\s+/g, '');
+            const anioPedido = String(anioBuscado || "").replace(/\s+/g, '');
             
-            // Valida estrictamente que el rango sea el correcto Y que el año de la fila incluya el año del pedido
-            const coincideAnio = !anioBuscadoClean || anioFila.includes(anioBuscadoClean);
+            // Validación flexible de año (soporta años fijos y rangos como 1997-1998)
+            let coincideAnio = false;
+            if (!anioPedido) {
+              coincideAnio = true;
+            } else if (anioFila.includes(anioPedido) || anioPedido.includes(anioFila)) {
+              coincideAnio = true;
+            } else if (anioFila.includes('-') || anioFila.includes('–')) {
+              const partesAnio = anioFila.split(/[-–]/);
+              const inicioAnio = parseInt(partesAnio[0], 10);
+              const finAnio = parseInt(partesAnio[1], 10);
+              const pedidoNum = parseInt(anioPedido, 10);
+              if (!isNaN(inicioAnio) && !isNaN(finAnio) && !isNaN(pedidoNum)) {
+                coincideAnio = pedidoNum >= inicioAnio && pedidoNum <= finAnio;
+              }
+            }
 
             return coincideRef && coincideAnio;
           });
