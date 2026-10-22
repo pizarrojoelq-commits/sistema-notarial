@@ -187,15 +187,21 @@ export default function PanelPedidos() {
         }
       }
 if (incluyeLower.includes("incluye minuta") || incluyeLower === "incluye minuta" || incluyeLower.includes("minuta")) {
-        // USAMOS ESTRICTAMENTE EL NÚMERO DE LA COLUMNA DE MINUTA/ACTA (numMinuta), IGNORANDO LAS DEMÁS COLUMNAS
         const nMinutaReal = numMinuta;
 
         if (nMinutaReal > 0) {
           const { data: dataMin } = await supabase.from("inv_minutas").select("*");
 
+          // BÚSQUEDA RESTRINGIDA POR RANGO Y FILTRO DE AÑO FLEXIBLE PARA EVITAR CONFUNDIRSE CON OTROS AÑOS
           let halladoMin = dataMin?.find((m: any) => {
             const rangoTexto = m["RANGO DE MINUTAS"] || m.rango || "";
-            return perteneceAlRango(nMinutaReal, rangoTexto);
+            const coincideRef = perteneceAlRango(nMinutaReal, rangoTexto);
+            
+            const anioFila = String(m["AÑO"] || m.anio || "").replace(/\s+/g, '');
+            const anioBuscadoClean = String(anioBuscado || "").trim();
+            const coincideAnio = !anioBuscadoClean || anioFila.includes(anioBuscadoClean);
+
+            return coincideRef && coincideAnio;
           });
 
           if (halladoMin) {
