@@ -475,18 +475,18 @@ export default function PanelPedidos() {
     }
   };
 
-  const enviarA_Salidas = async (pedido: Pedido) => {
+ const enviarA_Salidas = async (pedido: Pedido) => {
     if (usuarioActual?.rol !== "OPERATIVO") return;
 
     const anioBuscado = pedido.anio || "2026";
     const operadorActual = usuarioActual ? usuarioActual.nombre : "Archivo";
+    
+    // Leemos lo que está visible en la interfaz (calculado o editado a mano)
     const tomoCompleto = pedido.tomoSugerido || pedido.tomo_sugerido || "Tomo Asignado";
 
-    // 1. SEPARAMOS LOS TOMOS SI EL PEDIDO INCLUYE MÁS DE UNO (Ej. Tomo 827 + Tomo 1943)
+    // 1. SEPARAMOS LOS TOMOS SI HAY VARIOS (Ej. Escritura + Minuta Anexa con signo +)
     const partesTomos = tomoCompleto.split("+").map(t => t.trim()).filter(Boolean);
     let registrosSalidaParaInsertar: any[] = [];
-
-    // Si por alguna razón no tuviera el signo +, aseguramos al menos el texto completo
     const tomosAProcesar = partesTomos.length > 0 ? partesTomos : [tomoCompleto];
 
     for (let index = 0; index < tomosAProcesar.length; index++) {
@@ -512,20 +512,25 @@ export default function PanelPedidos() {
         estado: "Pendiente de Entrega"
       });
 
-      // 2. EXTRAEMOS EL NÚMERO DE TOMO PARA ACTUALIZAR EL ESTADO EN EL INVENTARIO DE SUPABASE
-      const matchTomo = tomoTexto.match(/Tomo\s+(\d+)/i) || tomoTexto.match(/ACTA\s+(\d+)/i);
+      // 2. EXTRACCIÓN INTELIGENTE DEL NÚMero DE TOMO (Para automáticos o escritos a mano)
+      const matchTomo = tomoTexto.match(/Tomo\s+(\d+)/i) || tomoTexto.match(/ACTA\s+(\d+)/i) || tomoTexto.match(/(\d+)/);
       const numeroTomo = matchTomo ? matchTomo[1] : null;
 
       if (numeroTomo) {
         try {
-          if (tomoTexto.toLowerCase().includes("escritura")) {
+          const textoLower = tomoTexto.toLowerCase();
+          
+          if (textoLower.includes("escritura") || (!textoLower.includes("minuta") && !textoLower.includes("acta") && !textoLower.includes("no contencioso") && !textoLower.includes("vehicular"))) {
             await supabase.from("inv_escrituras").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
-          } else if (tomoTexto.toLowerCase().includes("minuta")) {
+          } 
+          else if (textoLower.includes("minuta") || textoLower.includes("minutas")) {
             await supabase.from("inv_minutas").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
-          } else if (tomoTexto.toLowerCase().includes("no contencioso")) {
+          } 
+          else if (textoLower.includes("no contencioso")) {
             await supabase.from("inv_no_contenciosos").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
-          } else if (tomoTexto.toLowerCase().includes("vehicular") || tomoTexto.toLowerCase().includes("acta")) {
-            await supabase.from("inv_vehiculares").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
+          } 
+          else if (textoLower.includes("vehicular") || textoLower.includes("acta")) {
+            await supabase.from("inv_actas_vehiculares").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
           }
         } catch (err) {
           console.error("Error al actualizar inventario como no disponible:", err);
@@ -534,7 +539,7 @@ export default function PanelPedidos() {
     }
 
     try {
-      // 3. INSERTAMOS LOS REGISTROS SEPARADOS EN LA TABLA DE SALIDAS
+      // 3. INSERTAMOS EN LA TABLA DE SALIDAS
       const { error } = await supabase
         .from("salidas")
         .insert(registrosSalidaParaInsertar);
