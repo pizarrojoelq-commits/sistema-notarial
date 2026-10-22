@@ -480,30 +480,61 @@ export default function PanelPedidos() {
 
     const anioBuscado = pedido.anio || "2026";
     const operadorActual = usuarioActual ? usuarioActual.nombre : "Archivo";
+    const tomoCompleto = pedido.tomoSugerido || pedido.tomo_sugerido || "Tomo Asignado";
 
+    // 1. SEPARAMOS LOS TOMOS SI EL PEDIDO INCLUYE MÁS DE UNO (Ej. Tomo 827 + Tomo 1943)
+    const partesTomos = tomoCompleto.split("+").map(t => t.trim()).filter(Boolean);
     let registrosSalidaParaInsertar: any[] = [];
 
-    registrosSalidaParaInsertar.push({
-      id: `salida-${pedido.id}-${Date.now()}`,
-      pedido_id: Number(pedido.id),
-      tipo: "SALIDAS",
-      tomo_exacto: pedido.tomoSugerido || pedido.tomo_sugerido || "Tomo Asignado",
-      anio: anioBuscado,
-      motivo: pedido.motivo || "Préstamo de Tomo Físico",
-      abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
-      persona_responsable: "",
-      atendido_por: operadorActual,
-      fecha_operacion: "",
-      hora_ingreso_persona: "",
-      hora_salida_persona: "",
-      tiempo_atencion_segundos: 0,
-      tiempo_inicio_timestamp: null,
-      observaciones: `Solicitante: ${pedido.solicitante}`,
-      firma_digital: "",
-      estado: "Pendiente de Entrega"
-    });
+    // Si por alguna razón no tuviera el signo +, aseguramos al menos el texto completo
+    const tomosAProcesar = partesTomos.length > 0 ? partesTomos : [tomoCompleto];
+
+    for (let index = 0; index < tomosAProcesar.length; index++) {
+      const tomoTexto = tomosAProcesar[index];
+
+      registrosSalidaParaInsertar.push({
+        id: `salida-${pedido.id}-${index}-${Date.now()}`,
+        pedido_id: Number(pedido.id),
+        tipo: "SALIDAS",
+        tomo_exacto: tomoTexto,
+        anio: anioBuscado,
+        motivo: pedido.motivo || "Préstamo de Tomo Físico",
+        abogado_solicita: pedido.autoriza || pedido.solicitante || "General",
+        persona_responsable: "",
+        atendido_por: operadorActual,
+        fecha_operacion: "",
+        hora_ingreso_persona: "",
+        hora_salida_persona: "",
+        tiempo_atencion_segundos: 0,
+        tiempo_inicio_timestamp: null,
+        observaciones: `Solicitante: ${pedido.solicitante} - Doc: ${pedido.documento} (${pedido.incluye})`,
+        firma_digital: "",
+        estado: "Pendiente de Entrega"
+      });
+
+      // 2. EXTRAEMOS EL NÚMERO DE TOMO PARA ACTUALIZAR EL ESTADO EN EL INVENTARIO DE SUPABASE
+      const matchTomo = tomoTexto.match(/Tomo\s+(\d+)/i) || tomoTexto.match(/ACTA\s+(\d+)/i);
+      const numeroTomo = matchTomo ? matchTomo[1] : null;
+
+      if (numeroTomo) {
+        try {
+          if (tomoTexto.toLowerCase().includes("escritura")) {
+            await supabase.from("inv_escrituras").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
+          } else if (tomoTexto.toLowerCase().includes("minuta")) {
+            await supabase.from("inv_minutas").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
+          } else if (tomoTexto.toLowerCase().includes("no contencioso")) {
+            await supabase.from("inv_no_contenciosos").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
+          } else if (tomoTexto.toLowerCase().includes("vehicular") || tomoTexto.toLowerCase().includes("acta")) {
+            await supabase.from("inv_vehiculares").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
+          }
+        } catch (err) {
+          console.error("Error al actualizar inventario como no disponible:", err);
+        }
+      }
+    }
 
     try {
+      // 3. INSERTAMOS LOS REGISTROS SEPARADOS EN LA TABLA DE SALIDAS
       const { error } = await supabase
         .from("salidas")
         .insert(registrosSalidaParaInsertar);
@@ -520,7 +551,6 @@ export default function PanelPedidos() {
       window.location.href = "/salidas";
     }
   };
-
   const exportarExcel = () => {
     let contenido = "ID\tSolicitante\tMotivo\tDocumento\tIncluye\tAño\tKardex\tFolio\tUbicación\tAtendido Por\tEstado\n";
     pedidosFiltrados.forEach(p => {
