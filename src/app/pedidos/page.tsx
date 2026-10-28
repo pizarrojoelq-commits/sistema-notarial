@@ -99,20 +99,16 @@ export default function PanelPedidos() {
     const docLower = (documento || "").toLowerCase().trim();
     const incluyeLower = (incluye || "").toLowerCase().trim();
 
-    // 1. CASO: SOLICITUD PURA DE NO CONTENCIOSO
     if ((docLower.includes("solicitud") || docLower.includes("solicitudes")) && (docLower.includes("no contencioso") || docLower.includes("no contenciosos"))) {
       if (nRefIndicador === 0) {
         resultados.push("[Solicitud de No Contencioso sin N°: Buscar manualmente]");
       } else {
         const { data: dataSol } = await supabase.from("inv_solicitudes_no_contenciosos").select("*");
-
         let halladoSol = dataSol?.find((s: any) => {
           const coincideRef = perteneceAlRango(nRefIndicador, s["RANGO DE SOLICITUD"] || s.rango);
           const anioFila = String(s["AÑO"] || s.anio || "").replace(/\s+/g, '');
           const anioBuscadoClean = String(anioBuscado || "").trim();
-          
-          const coincideAnio = !anioBuscadoClean || anioFila.includes(anioBuscadoClean);
-          return coincideRef && coincideAnio;
+          return coincideRef && (!anioBuscadoClean || anioFila.includes(anioBuscadoClean));
         });
 
         if (halladoSol) {
@@ -123,18 +119,15 @@ export default function PanelPedidos() {
         }
       }
     }
-    // 2. CASO: MINUTA PURA DE NO CONTENCIOSO
     else if (docLower.includes("minuta") && (docLower.includes("no contencioso") || docLower.includes("no contenciosos"))) {
       if (nRefIndicador === 0) {
         resultados.push("[Minuta de No Contencioso sin N°: Buscar manualmente]");
       } else {
         const { data: dataMinNC } = await supabase.from("inv_minutario_no_contenciosos").select("*");
-        
         let halladoMinNC = dataMinNC?.find((m: any) => {
           const coincideRef = perteneceAlRango(nRefIndicador, m["RANGO DE MINUTAS"] || m.rango);
           const anioFila = String(m["AÑO"] || m.anio || "");
-          const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
-          return coincideRef && coincideAnio;
+          return coincideRef && (!anioBuscado || anioFila.includes(anioBuscado));
         });
 
         if (halladoMinNC) {
@@ -144,19 +137,16 @@ export default function PanelPedidos() {
         }
       }
     } 
-    // 3. CASO: MINUTA PURA ORDINARIA / DE ESCRITURA
     else if (docLower.includes("minuta")) {
       const nRefMinuta = nRefIndicador > 0 ? nRefIndicador : numFolio;
       if (nRefMinuta === 0) {
         resultados.push("[Minuta 0: Buscar manualmente]");
       } else {
         const { data: dataMin } = await supabase.from("inv_minutas").select("*");
-
         let halladoMin = dataMin?.find((m: any) => {
           const coincideRef = perteneceAlRango(nRefMinuta, m["RANGO DE MINUTAS"] || m.rango);
           const anioFila = String(m["AÑO"] || m.anio || "");
-          const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
-          return coincideRef && coincideAnio;
+          return coincideRef && (!anioBuscado || anioFila.includes(anioBuscado));
         });
 
         if (halladoMin) {
@@ -166,18 +156,15 @@ export default function PanelPedidos() {
         }
       }
     } 
-    // 4. CASO: ESCRITURA PÚBLICA CON MINUTA ANEXA
     else if (docLower === "escritura" || docLower.includes("escritura pública") || docLower.includes("escritura")) {
       if (numFolio === 0) {
         resultados.push("[Folio 0: Buscar manualmente]");
       } else {
         const { data } = await supabase.from("inv_escrituras").select("*");
-
         let hallado = data?.find((e: any) => {
           const coincideRef = perteneceAlRango(numFolio, e["RANGO DE FOLIOS"] || e.rango);
           const anioFila = String(e["AÑO"] || e.anio || "");
-          const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
-          return coincideRef && coincideAnio;
+          return coincideRef && (!anioBuscado || anioFila.includes(anioBuscado));
         });
 
         if (hallado) {
@@ -185,18 +172,15 @@ export default function PanelPedidos() {
         } else {
           resultados.push(`[Folio ${numFolio} no hallado en Escrituras]`);
         }
-      } // <--- AQUÍ FALTABA CERRAR LA LLAVE DEL BLOQUE DEL FOLIO DE ESCRITURAS
+      }
 
       if (incluyeLower.includes("incluye minuta") || incluyeLower === "incluye minuta" || incluyeLower.includes("minuta")) {
         const nMinutaReal = numMinuta;
-
         if (nMinutaReal > 0) {
           const { data: dataMin } = await supabase.from("inv_minutas").select("*");
-
           let halladoMin = dataMin?.find((m: any) => {
             const rangoTexto = m["RANGO DE MINUTAS"] || m.rango || "";
             const coincideRef = perteneceAlRango(nMinutaReal, rangoTexto);
-            
             const anioFila = String(m["AÑO"] || m.anio || "").replace(/\s+/g, '');
             const anioPedido = String(anioBuscado || "").replace(/\s+/g, '');
             
@@ -214,7 +198,6 @@ export default function PanelPedidos() {
                 coincideAnio = pedidoNum >= inicioAnio && pedidoNum <= finAnio;
               }
             }
-
             return coincideRef && coincideAnio;
           });
 
@@ -228,16 +211,13 @@ export default function PanelPedidos() {
         }
       }
     }
-    // 5. CASO: ACTA DE TRANSFERENCIA VEHICULAR
     else if (docLower.includes("acta de transferencia vehicular") || (docLower.includes("acta") && !docLower.includes("transferencia"))) {
       const nRefActa = nRefIndicador > 0 ? nRefIndicador : numFolio;
       const { data: dataActa } = await supabase.from("inv_actas_vehiculares").select("*");
-
       let halladoActa = dataActa?.find((a: any) => {
         const coincideRef = perteneceAlRango(nRefActa, a["RANGO DE ACTAS"] || a.rango);
         const anioFila = String(a["AÑO"] || a.anio || "");
-        const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
-        return coincideRef && coincideAnio;
+        return coincideRef && (!anioBuscado || anioFila.includes(anioBuscado));
       });
 
       if (halladoActa) {
@@ -246,16 +226,13 @@ export default function PanelPedidos() {
         resultados.push(`[Acta Ref: ${nRefActa} no hallada]`);
       }
     }
-    // 6. CASO: TRANSFERENCIA VEHICULAR COMPLETA
     else if (docLower.includes("vehicular") || docLower.includes("transferencia")) {
       const nRefVeh = numFolio > 0 ? numFolio : numInstrumento;
       const { data: dataVeh } = await supabase.from("inv_vehiculares").select("*");
-
       let halladoVeh = dataVeh?.find((v: any) => {
         const coincideRef = perteneceAlRango(nRefVeh, v["RANGO DE FOLIOS"] || v.rango);
         const anioFila = String(v["AÑO"] || v.anio || "");
-        const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
-        return coincideRef && coincideAnio;
+        return coincideRef && (!anioBuscado || anioFila.includes(anioBuscado));
       });
 
       if (halladoVeh) {
@@ -267,12 +244,10 @@ export default function PanelPedidos() {
       if (incluyeLower.includes("acta")) {
         const nRefActa = nRefIndicador > 0 ? nRefIndicador : numFolio;
         const { data: dataActa } = await supabase.from("inv_actas_vehiculares").select("*");
-
         let halladoActa = dataActa?.find((a: any) => {
           const coincideRef = perteneceAlRango(nRefActa, a["RANGO DE ACTAS"] || a.rango);
           const anioFila = String(a["AÑO"] || a.anio || "");
-          const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
-          return coincideRef && coincideAnio;
+          return coincideRef && (!anioBuscado || anioFila.includes(anioBuscado));
         });
 
         if (halladoActa) {
@@ -282,18 +257,15 @@ export default function PanelPedidos() {
         }
       }
     }
-    // 7. CASO: EXPEDIENTE NO CONTENCIOSO COMPLETO
     else if (docLower.includes("no contencioso") || docLower.includes("no contenciosos")) {
       if (numFolio === 0) {
         resultados.push("[Folio No Contencioso 0: Buscar manualmente]");
       } else {
         const { data: dataNC } = await supabase.from("inv_no_contenciosos").select("*");
-
         let halladoNC = dataNC?.find((nc: any) => {
           const coincideRef = perteneceAlRango(numFolio, nc["RANGO DE FOLIOS"] || nc.rango);
           const anioFila = String(nc["AÑO"] || nc.anio || "");
-          const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
-          return coincideRef && coincideAnio;
+          return coincideRef && (!anioBuscado || anioFila.includes(anioBuscado));
         });
 
         if (halladoNC) {
@@ -304,15 +276,12 @@ export default function PanelPedidos() {
       }
 
       const nRefAdicional = nRefIndicador > 0 ? nRefIndicador : numFolio;
-
       if (incluyeLower.includes("solicitud")) {
         const { data: dataSol } = await supabase.from("inv_solicitudes_no_contenciosos").select("*");
-
         let halladoSol = dataSol?.find((s: any) => {
           const coincideRef = perteneceAlRango(nRefAdicional, s["RANGO DE SOLICITUD"] || s.rango);
           const anioFila = String(s["AÑO"] || s.anio || "");
-          const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
-          return coincideRef && coincideAnio;
+          return coincideRef && (!anioBuscado || anioFila.includes(anioBuscado));
         });
 
         if (halladoSol) {
@@ -324,12 +293,10 @@ export default function PanelPedidos() {
       } 
       else if (incluyeLower.includes("minuta") || incluyeLower.includes("minutario")) {
         const { data: dataMinNC } = await supabase.from("inv_minutario_no_contenciosos").select("*");
-
         let halladoMinNC = dataMinNC?.find((m: any) => {
           const coincideRef = perteneceAlRango(nRefAdicional, m["RANGO DE MINUTAS"] || m.rango);
           const anioFila = String(m["AÑO"] || m.anio || "");
-          const coincideAnio = !anioBuscado || anioFila.includes(anioBuscado);
-          return coincideRef && coincideAnio;
+          return coincideRef && (!anioBuscado || anioFila.includes(anioBuscado));
         });
 
         if (halladoMinNC) {
@@ -354,8 +321,8 @@ export default function PanelPedidos() {
         );
         return { 
           ...item, 
-          tomoSugerido: tomoUnificado, 
-          tomo_sugerido: tomoUnificado 
+          tomoSugerido: item.tomoSugerido || item.tomo_sugerido || tomoUnificado, 
+          tomo_sugerido: item.tomoSugerido || item.tomo_sugerido || tomoUnificado 
         };
       })
     );
@@ -364,12 +331,10 @@ export default function PanelPedidos() {
 
     const sesion = localStorage.getItem("usuarioLogueado");
     const usuarioObj = sesion ? JSON.parse(sesion) : null;
-    
     const esExterno = usuarioObj && (usuarioObj.rol === "EXTERNO" || usuarioObj.nombre.includes("Cinthia") || usuarioObj.nombre.includes("Enrique"));
     const esOperativo = usuarioObj && usuarioObj.rol === "OPERATIVO" && !esExterno;
 
     const primerPendiente = listaConTomosUnificados.find(p => p.estado === "Pendiente");
-    
     if (primerPendiente && esOperativo) {
       setPedidoCriticoActual(primerPendiente);
       setAlarmaActiva(true);
@@ -389,11 +354,9 @@ export default function PanelPedidos() {
 
   useEffect(() => {
     if (!isMounted) return;
-    
     const intervaloMonitoreo = setInterval(() => {
       cargarPedidosNube();
     }, 4000); 
-
     return () => clearInterval(intervaloMonitoreo);
   }, [isMounted]);
 
@@ -423,7 +386,6 @@ export default function PanelPedidos() {
 
     const ahora = Date.now();
     const nombreOperador = usuarioActual ? usuarioActual.nombre : "Personal de Archivo";
-
     const pedidoActual = pedidos.find(p => p.id === id);
     if (!pedidoActual) return;
 
@@ -457,7 +419,8 @@ export default function PanelPedidos() {
           estado: nuevoEstado,
           escaneado_por: nuevoEscaneadoPor,
           tiempo_inicio: nuevoTiempoInicio,
-          duracion_segundos: nuevaDuracion
+          duracion_segundos: nuevaDuracion,
+          tomo_sugerido: pedidoActual.tomoSugerido || pedidoActual.tomo_sugerido
         })
         .eq("id", id);
 
@@ -475,19 +438,21 @@ export default function PanelPedidos() {
     }
   };
 
- const enviarA_Salidas = async (pedido: Pedido) => {
+  // FUNCIÓN INTELIGENTE DE SALIDAS Y ACTUALIZACIÓN DE INVENTARIO A "NO DISPONIBLE"
+  const enviarA_Salidas = async (pedido: Pedido) => {
     if (usuarioActual?.rol !== "OPERATIVO") return;
 
     const anioBuscado = pedido.anio || "2026";
     const operadorActual = usuarioActual ? usuarioActual.nombre : "Archivo";
     
-    // Leemos lo que está visible en la interfaz (calculado o editado a mano)
+    // Leemos lo que está en la interfaz (permitiendo que uses el tomo que editaste a mano)
     const tomoCompleto = pedido.tomoSugerido || pedido.tomo_sugerido || "Tomo Asignado";
 
-    // 1. SEPARAMOS LOS TOMOS SI HAY VARIOS (Ej. Escritura + Minuta Anexa con signo +)
     const partesTomos = tomoCompleto.split("+").map(t => t.trim()).filter(Boolean);
     let registrosSalidaParaInsertar: any[] = [];
     const tomosAProcesar = partesTomos.length > 0 ? partesTomos : [tomoCompleto];
+
+    let tomosActualizadosTexto: string[] = [];
 
     for (let index = 0; index < tomosAProcesar.length; index++) {
       const tomoTexto = tomosAProcesar[index];
@@ -512,26 +477,33 @@ export default function PanelPedidos() {
         estado: "Pendiente de Entrega"
       });
 
-      // 2. EXTRACCIÓN INTELIGENTE DEL NÚMero DE TOMO (Para automáticos o escritos a mano)
+      // Extraemos el número del tomo con alta precisión (incluso si lo escribiste a mano)
       const matchTomo = tomoTexto.match(/Tomo\s+(\d+)/i) || tomoTexto.match(/ACTA\s+(\d+)/i) || tomoTexto.match(/(\d+)/);
       const numeroTomo = matchTomo ? matchTomo[1] : null;
 
       if (numeroTomo) {
         try {
           const textoLower = tomoTexto.toLowerCase();
-          
+          let tablaActualizada = "";
+
           if (textoLower.includes("escritura") || (!textoLower.includes("minuta") && !textoLower.includes("acta") && !textoLower.includes("no contencioso") && !textoLower.includes("vehicular"))) {
             await supabase.from("inv_escrituras").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
+            tablaActualizada = "Escrituras";
           } 
           else if (textoLower.includes("minuta") || textoLower.includes("minutas")) {
             await supabase.from("inv_minutas").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
+            tablaActualizada = "Minutas";
           } 
           else if (textoLower.includes("no contencioso")) {
             await supabase.from("inv_no_contenciosos").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
+            tablaActualizada = "No Contenciosos";
           } 
           else if (textoLower.includes("vehicular") || textoLower.includes("acta")) {
             await supabase.from("inv_actas_vehiculares").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
+            tablaActualizada = "Vehiculares/Actas";
           }
+
+          tomosActualizadosTexto.push(`Tomo/Acta ${numeroTomo} (${tablaActualizada})`);
         } catch (err) {
           console.error("Error al actualizar inventario como no disponible:", err);
         }
@@ -539,7 +511,6 @@ export default function PanelPedidos() {
     }
 
     try {
-      // 3. INSERTAMOS EN LA TABLA DE SALIDAS
       const { error } = await supabase
         .from("salidas")
         .insert(registrosSalidaParaInsertar);
@@ -550,12 +521,16 @@ export default function PanelPedidos() {
         return;
       }
 
+      // Mensaje de éxito que confirma la actualización en la base de datos y el cambio a NO DISPONIBLE
+      alert(`✅ ¡Salida registrada con éxito!\n\nSe han actualizado los siguientes tomos como 'NO DISPONIBLE' en la base de datos:\n- ${tomosActualizadosTexto.join("\n- ")}`);
+
       window.location.href = "/salidas";
     } catch (e) {
       console.error("Error de conexión al transferir a salidas:", e);
       window.location.href = "/salidas";
     }
   };
+
   const exportarExcel = () => {
     let contenido = "ID\tSolicitante\tMotivo\tDocumento\tIncluye\tAño\tKardex\tFolio\tUbicación\tAtendido Por\tEstado\n";
     pedidosFiltrados.forEach(p => {
@@ -588,7 +563,7 @@ export default function PanelPedidos() {
       String(p.solicitante).toLowerCase().includes(texto) ||
       String(p.kardex).toLowerCase().includes(texto) ||
       String(p.anio).toLowerCase().includes(texto) ||
-      String(p.tomoSugerido).toLowerCase().includes(texto) ||
+      String(p.tomoSugerido || p.tomo_sugerido || "").toLowerCase().includes(texto) ||
       String(p.autoriza).toLowerCase().includes(texto) ||
       String(p.documento).toLowerCase().includes(texto) ||
       String(p.escaneado_por || "").toLowerCase().includes(texto)
@@ -703,7 +678,7 @@ export default function PanelPedidos() {
                 <th className="border border-gray-300 p-2">N° de Folio</th>
                 <th className="border border-gray-300 p-2">Instrumento</th>
                 <th className="border border-gray-300 p-2">N° de Minuta</th>
-                <th className="border border-gray-300 p-2 bg-indigo-900">Ubicación (Tomos Sugeridos)</th>
+                <th className="border border-gray-300 p-2 bg-indigo-900">Ubicación (Tomos Sugeridos - Editable)</th>
                 <th className="border border-gray-300 p-2">Atendido Por</th>
                 <th className="border border-gray-300 p-2">Abogado</th>
                 <th className="border border-gray-300 p-2">Destino</th>
@@ -740,8 +715,18 @@ export default function PanelPedidos() {
                     <td className="border border-gray-300 p-2">{item.instrumento}</td>
                     <td className="border border-gray-300 p-2">{item.minuta_acta}</td>
                     
+                    {/* CAMPO EDITABLE DE UBICACIÓN (TOMOS) PARA QUE PUEDAS CORREGIRLO A MANO SI ES NECESARIO */}
                     <td className="border border-gray-300 p-2 font-bold text-indigo-900 bg-indigo-50">
-                      {item.tomoSugerido || item.tomo_sugerido}
+                      <input 
+                        type="text"
+                        value={item.tomoSugerido || item.tomo_sugerido || ""}
+                        onChange={(e) => {
+                          const nuevoValor = e.target.value;
+                          setPedidos(prev => prev.map(p => p.id === item.id ? { ...p, tomoSugerido: nuevoValor, tomo_sugerido: nuevoValor } : p));
+                        }}
+                        className="w-full bg-white border border-indigo-300 rounded p-1 text-center font-bold text-xs text-indigo-950 focus:border-blue-600 outline-none shadow-inner"
+                        placeholder="Ej. Tomo 1943 (Minutas)"
+                      />
                     </td>
 
                     <td className="border border-gray-300 p-2 font-bold text-gray-700">
