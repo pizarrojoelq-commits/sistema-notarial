@@ -35,11 +35,14 @@ export default function PanelPedidos() {
   const [usuarioActual, setUsuarioActual] = useState<{ nombre: string; rol: string } | null>(null);
   const [busqueda, setBusqueda] = useState("");
   
-  // Catálogos para los desplegables basados en Supabase
+  // LAS 7 TABLAS DE INVENTARIO BASADAS EN TU BASE DE DATOS SUPABASE
   const [listaEscrituras, setListaEscrituras] = useState<any[]>([]);
   const [listaMinutas, setListaMinutas] = useState<any[]>([]);
   const [listaNoContenciosos, setListaNoContenciosos] = useState<any[]>([]);
   const [listaVehiculares, setListaVehiculares] = useState<any[]>([]);
+  const [listaActasVehiculares, setListaActasVehiculares] = useState<any[]>([]);
+  const [listaMinutarioNC, setListaMinutarioNC] = useState<any[]>([]);
+  const [listaSolicitudesNC, setListaSolicitudesNC] = useState<any[]>([]);
 
   const [pedidoCriticoActual, setPedidoCriticoActual] = useState<Pedido | null>(null);
   const [alarmaActiva, setAlarmaActiva] = useState(false);
@@ -66,15 +69,32 @@ export default function PanelPedidos() {
 
   const cargarCatalogosInventario = async () => {
     try {
-      const { data: esc } = await supabase.from("inv_escrituras").select("TOMO, AÑO").order("TOMO", { ascending: true });
-      const { data: min } = await supabase.from("inv_minutas").select("TOMO, AÑO").order("TOMO", { ascending: true });
-      const { data: nc } = await supabase.from("inv_no_contenciosos").select("TOMO, AÑO").order("TOMO", { ascending: true });
-      const { data: veh } = await supabase.from("inv_vehiculares").select("TOMO, AÑO").order("TOMO", { ascending: true });
+      const { data: esc } = await supabase.from("inv_escrituras").select("TOMO, AÑO");
+      const { data: min } = await supabase.from("inv_minutas").select("TOMO, AÑO");
+      const { data: nc } = await supabase.from("inv_no_contenciosos").select("TOMO, AÑO");
+      const { data: veh } = await supabase.from("inv_vehiculares").select("TOMO, AÑO");
+      const { data: actVeh } = await supabase.from("inv_actas_vehiculares").select("TOMO, ACTA, AÑO");
+      const { data: minNC } = await supabase.from("inv_minutario_no_contenciosos").select("TOMO, AÑO");
+      const { data: solNC } = await supabase.from("inv_solicitudes_no_contenciosos").select("TOMO, ANEXO, AÑO");
 
-      if (esc) setListaEscrituras(esc);
-      if (min) setListaMinutas(min);
-      if (nc) setListaNoContenciosos(nc);
-      if (veh) setListaVehiculares(veh);
+      // ORDENAMIENTO MATEMÁTICO PERFECTO EXTRAIYENDO SOLO NÚMEROS
+      const ordenarNumericamente = (a: any, b: any) => {
+        const valA = String(a.TOMO ?? a.ACTA ?? a.ANEXO ?? "0");
+        const valB = String(b.TOMO ?? b.ACTA ?? b.ANEXO ?? "0");
+        const matchA = valA.match(/\d+/);
+        const matchB = valB.match(/\d+/);
+        const numA = matchA ? parseInt(matchA[0], 10) : 0;
+        const numB = matchB ? parseInt(matchB[0], 10) : 0;
+        return numA - numB;
+      };
+
+      if (esc) setListaEscrituras(esc.sort(ordenarNumericamente));
+      if (min) setListaMinutas(min.sort(ordenarNumericamente));
+      if (nc) setListaNoContenciosos(nc.sort(ordenarNumericamente));
+      if (veh) setListaVehiculares(veh.sort(ordenarNumericamente));
+      if (actVeh) setListaActasVehiculares(actVeh.sort(ordenarNumericamente));
+      if (minNC) setListaMinutarioNC(minNC.sort(ordenarNumericamente));
+      if (solNC) setListaSolicitudesNC(solNC.sort(ordenarNumericamente));
     } catch (e) {
       console.error("Error al cargar catálogos:", e);
     }
@@ -112,7 +132,6 @@ export default function PanelPedidos() {
     return !isNaN(min) && !isNaN(max) && numBuscado >= min && numBuscado <= max;
   };
 
-  // LÓGICA DE BÚSQUEDA AUTOMÁTICA AFINADA
   const calcularTomoNubeDinamico = async (documento: string, incluye: string, anioBuscado: string, instrumento: string, minutaActa: string, folioStr: string) => {
     const numFolio = parseInt((folioStr || "").replace(/[,.]/g, '')) || 0;
     const numInstrumento = parseInt((instrumento || "").replace(/[,.]/g, '')) || 0;
@@ -193,9 +212,9 @@ export default function PanelPedidos() {
         });
 
         if (hallado) {
-          resultados.push(`Tomo ${hallado.TOMO || hallado.tomo} (Escrituras)`);
+          resultados.push(`Tomo ${hallado.TOMO || hallado.tomo} (Escrituras ${hallado.AÑO || hallado.anio || anioBuscado})`);
         } else {
-          resultados.push(`[Folio ${numFolio} no hallado]`);
+          resultados.push(`[Folio ${numFolio} no hallado en Escrituras]`);
         }
       }
 
@@ -262,6 +281,55 @@ export default function PanelPedidos() {
         resultados.push(`Tomo ${halladoVeh.TOMO || halladoVeh.tomo} (Transferencia Vehicular)`);
       } else {
         resultados.push(`[Vehicular ${nRefVeh} no hallado]`);
+      }
+    }
+    else if (docLower.includes("no contencioso") || docLower.includes("no contenciosos")) {
+      if (numFolio === 0) {
+        resultados.push("[Folio No Contencioso 0]");
+      } else {
+        const { data: dataNC } = await supabase.from("inv_no_contenciosos").select("*");
+        let halladoNC = dataNC?.find((nc: any) => {
+          const coincideRef = perteneceAlRango(numFolio, nc["RANGO DE FOLIOS"] || nc.rango);
+          const anioFila = String(nc["AÑO"] || nc.anio || "");
+          return coincideRef && (!anioBuscado || anioFila.includes(anioBuscado));
+        });
+
+        if (halladoNC) {
+          resultados.push(`Tomo ${halladoNC.TOMO || halladoNC.tomo} (No Contenciosos)`);
+        } else {
+          resultados.push(`[Folio No Contencioso ${numFolio} no hallado]`);
+        }
+      }
+
+      const nRefAdicional = nRefIndicador > 0 ? nRefIndicador : numFolio;
+      if (incluyeLower.includes("solicitud")) {
+        const { data: dataSol } = await supabase.from("inv_solicitudes_no_contenciosos").select("*");
+        let halladoSol = dataSol?.find((s: any) => {
+          const coincideRef = perteneceAlRango(nRefAdicional, s["RANGO DE SOLICITUD"] || s.rango);
+          const anioFila = String(s["AÑO"] || s.anio || "");
+          return coincideRef && (!anioBuscado || anioFila.includes(anioBuscado));
+        });
+
+        if (halladoSol) {
+          const valorTomoAnexo = halladoSol.TOMO || halladoSol.tomo || halladoSol.ANEXO || halladoSol.anexo || nRefAdicional;
+          resultados.push(`Tomo ${valorTomoAnexo} (Solicitudes No Contenciosos)`);
+        } else {
+          resultados.push(`[Solicitud No Contenciosa Ref: ${nRefAdicional} no hallada]`);
+        }
+      } 
+      else if (incluyeLower.includes("minuta") || incluyeLower.includes("minutario")) {
+        const { data: dataMinNC } = await supabase.from("inv_minutario_no_contenciosos").select("*");
+        let halladoMinNC = dataMinNC?.find((m: any) => {
+          const coincideRef = perteneceAlRango(nRefAdicional, m["RANGO DE MINUTAS"] || m.rango);
+          const anioFila = String(m["AÑO"] || m.anio || "");
+          return coincideRef && (!anioBuscado || anioFila.includes(anioBuscado));
+        });
+
+        if (halladoMinNC) {
+          resultados.push(`Tomo ${halladoMinNC.TOMO || halladoMinNC.tomo} (Minutario No Contenciosos)`);
+        } else {
+          resultados.push(`[Minutario No Contencioso Ref: ${nRefAdicional} no hallado]`);
+        }
       }
     }
     else {
@@ -347,7 +415,6 @@ export default function PanelPedidos() {
     let nuevoEscaneadoPor = pedidoActual.escaneado_por;
     let nuevoTiempoInicio = pedidoActual.tiempo_inicio;
     let nuevaDuracion = pedidoActual.duracion_segundos;
-
     const esFisico = pedidoActual.motivo.includes("Salida") || pedidoActual.motivo.includes("Préstamo");
 
     if (pedidoActual.estado === "Pendiente") {
@@ -385,17 +452,13 @@ export default function PanelPedidos() {
     }
   };
 
-  // ENVÍO A SALIDAS Y ACTUALIZACIÓN AUTOMÁTICA A "NO DISPONIBLE" EN SUPABASE
-  // ENVÍO A SALIDAS Y ACTUALIZACIÓN AUTOMÁTICA A "NO DISPONIBLE" EN SUPABASE
   const enviarA_Salidas = async (pedido: Pedido) => {
     if (usuarioActual?.rol !== "OPERATIVO") return;
 
     const anioBuscado = pedido.anio || "2026";
     const operadorActual = usuarioActual ? usuarioActual.nombre : "Archivo";
     
-    // Filtramos y aseguramos que sean strings limpios y válidos
     const tomosElegidos = [pedido.tomoSeleccionado1, pedido.tomoSeleccionado2].filter((t): t is string => Boolean(t && t.trim() !== ""));
-    
     if (tomosElegidos.length === 0) {
       alert("⚠️ Debe seleccionar al menos un tomo válido antes de enviar a salidas.");
       return;
@@ -444,8 +507,17 @@ export default function PanelPedidos() {
             tablaActualizada = "Minutas";
           } 
           else if (textoLower.includes("no contencioso")) {
-            await supabase.from("inv_no_contenciosos").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
-            tablaActualizada = "No Contenciosos";
+            // Verifica si es minutario o solicitud
+            if (textoLower.includes("minutario")) {
+              await supabase.from("inv_minutario_no_contenciosos").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
+              tablaActualizada = "Minutario No Contenciosos";
+            } else if (textoLower.includes("solicitud")) {
+              await supabase.from("inv_solicitudes_no_contenciosos").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
+              tablaActualizada = "Solicitudes No Contenciosos";
+            } else {
+              await supabase.from("inv_no_contenciosos").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
+              tablaActualizada = "No Contenciosos";
+            }
           } 
           else if (textoLower.includes("vehicular") || textoLower.includes("acta")) {
             await supabase.from("inv_actas_vehiculares").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
@@ -469,7 +541,6 @@ export default function PanelPedidos() {
       }
 
       alert(`✅ ¡Salida registrada con éxito!\n\nSe actualizó la base de datos y ahora figuran como NO DISPONIBLE:\n- ${tomosActualizadosTexto.join("\n- ")}`);
-
       window.location.href = "/salidas";
     } catch (e) {
       console.error("Error:", e);
@@ -498,10 +569,37 @@ export default function PanelPedidos() {
     return `${mins}m ${segs}s`;
   };
 
+  // FUNCIONES AUXILIARES PARA DETERMINAR QUÉ LISTA MOSTRAR EN LOS DESPLEGABLES SEGÚN EL DOCUMENTO
+  const obtenerOpcionesPrincipal = (doc: string) => {
+    const d = (doc || "").toLowerCase();
+    if ((d.includes("solicitud") || d.includes("solicitudes")) && d.includes("no contencioso")) return { lista: listaSolicitudesNC, lbl: "Solicitudes NC" };
+    if (d.includes("minuta") && d.includes("no contencioso")) return { lista: listaMinutarioNC, lbl: "Minutario NC" };
+    if (d.includes("minuta")) return { lista: listaMinutas, lbl: "Minutas" };
+    if (d.includes("acta") || d.includes("acta de transferencia vehicular")) return { lista: listaActasVehiculares, lbl: "Actas Vehiculares" };
+    if (d.includes("vehicular") || d.includes("transferencia")) return { lista: listaVehiculares, lbl: "Transferencia Vehicular" };
+    if (d.includes("no contencioso")) return { lista: listaNoContenciosos, lbl: "No Contenciosos" };
+    return { lista: listaEscrituras, lbl: "Escrituras" };
+  };
+
+  const obtenerOpcionesAnexo = (doc: string, inc: string) => {
+    const d = (doc || "").toLowerCase();
+    const i = (inc || "").toLowerCase();
+    if (!i) return null;
+    if (d.includes("no contencioso")) {
+      if (i.includes("solicitud")) return { lista: listaSolicitudesNC, lbl: "Solicitudes Anexas" };
+      if (i.includes("minuta")) return { lista: listaMinutarioNC, lbl: "Minutario Anexo" };
+    }
+    if (d.includes("vehicular") || d.includes("transferencia")) {
+      if (i.includes("acta")) return { lista: listaActasVehiculares, lbl: "Actas Anexas" };
+    }
+    if (d.includes("escritura")) {
+      if (i.includes("minuta")) return { lista: listaMinutas, lbl: "Minutas Anexas" };
+    }
+    return null;
+  };
+
   if (!isMounted) return null;
-
   const esOperativo = usuarioActual?.rol === "OPERATIVO";
-
   const pedidosFiltrados = pedidos.filter(p => {
     const texto = busqueda.toLowerCase();
     return (
@@ -603,8 +701,9 @@ export default function PanelPedidos() {
                 else if (item.estado === "Listo para Recoger") rowStyle = "bg-cyan-100 transition-colors"; 
                 else if (item.estado === "Atendido" || item.estado === "Entregado") rowStyle = "bg-green-200 text-gray-900 font-medium transition-colors"; 
 
-                const esEscritura = item.documento.toLowerCase().includes("escritura");
-                const incluyeMinuta = item.incluye.toLowerCase().includes("minuta");
+                // Resolvemos qué listas mostrar basándonos en el documento
+                const configPrincipal = obtenerOpcionesPrincipal(item.documento);
+                const configAnexo = obtenerOpcionesAnexo(item.documento, item.incluye);
 
                 return (
                   <tr key={item.id} className={rowStyle}>
@@ -617,7 +716,7 @@ export default function PanelPedidos() {
                     <td className="border border-gray-300 p-2 font-semibold">{item.kardex}</td>
                     <td className="border border-gray-300 p-2">{item.folio || item.minuta_acta || "-"}</td>
                     
-                    {/* DESPLEGABLES CON AUTO-SELECCIÓN Y OPCIÓN DE CAMBIO */}
+                    {/* DESPLEGABLES CON AUTO-SELECCIÓN Y OPCIÓN DE CAMBIO DESDE SUPABASE */}
                     <td className="border border-gray-300 p-2 bg-indigo-50 space-y-1">
                       <select 
                         value={item.tomoSeleccionado1 || ""}
@@ -625,40 +724,40 @@ export default function PanelPedidos() {
                           const val = e.target.value;
                           setPedidos(prev => prev.map(p => p.id === item.id ? { ...p, tomoSeleccionado1: val } : p));
                         }}
-                        className="w-full bg-white border border-indigo-300 rounded p-1 text-xs font-bold text-indigo-950 outline-none"
+                        className="w-full bg-white border border-indigo-300 rounded p-1 text-[10px] font-bold text-indigo-950 outline-none"
                       >
-                        <option value="">-- Seleccionar Tomo 1 --</option>
-                        {esEscritura ? (
-                          listaEscrituras.map((e, idx) => (
-                            <option key={`esc-${idx}`} value={`Tomo ${e.TOMO} (Escrituras ${e.AÑO || ''})`}>
-                              Tomo {e.TOMO} (Año {e.AÑO || 'S/A'})
+                        <option value="">-- Seleccionar Principal --</option>
+                        {configPrincipal.lista.map((x, idx) => {
+                          const valorTomo = x.TOMO || x.ACTA || x.ANEXO;
+                          const esActa = String(valorTomo).toLowerCase().includes("acta");
+                          return (
+                            <option key={`prin-${idx}`} value={`${esActa ? '' : 'Tomo '}${valorTomo} (${configPrincipal.lbl})`}>
+                              {esActa ? '' : 'Tomo '} {valorTomo} (Año {x.AÑO || 'S/A'})
                             </option>
-                          ))
-                        ) : (
-                          listaMinutas.map((m, idx) => (
-                            <option key={`min-${idx}`} value={`Tomo ${m.TOMO} (Minutas ${m.AÑO || ''})`}>
-                              Tomo {m.TOMO} (Año {m.AÑO || 'S/A'})
-                            </option>
-                          ))
-                        )}
+                          );
+                        })}
                         <option value={item.tomoSeleccionado1}>{item.tomoSeleccionado1 || "Actual (Automático)"}</option>
                       </select>
 
-                      {incluyeMinuta && (
+                      {configAnexo && (
                         <select 
                           value={item.tomoSeleccionado2 || ""}
                           onChange={(e) => {
                             const val = e.target.value;
                             setPedidos(prev => prev.map(p => p.id === item.id ? { ...p, tomoSeleccionado2: val } : p));
                           }}
-                          className="w-full bg-purple-50 border border-purple-300 rounded p-1 text-xs font-bold text-purple-950 outline-none"
+                          className="w-full bg-purple-50 border border-purple-300 rounded p-1 text-[10px] font-bold text-purple-950 outline-none"
                         >
-                          <option value="">-- Seleccionar Tomo Anexo (Minuta) --</option>
-                          {listaMinutas.map((m, idx) => (
-                            <option key={`minanx-${idx}`} value={`Tomo ${m.TOMO} (Minutas Anexas)`}>
-                              Tomo {m.TOMO} (Minutas - Año {m.AÑO || 'S/A'})
-                            </option>
-                          ))}
+                          <option value="">-- Seleccionar Anexo --</option>
+                          {configAnexo.lista.map((x, idx) => {
+                            const valorTomo = x.TOMO || x.ACTA || x.ANEXO;
+                            const esActa = String(valorTomo).toLowerCase().includes("acta");
+                            return (
+                              <option key={`anx-${idx}`} value={`${esActa ? '' : 'Tomo '}${valorTomo} (${configAnexo.lbl})`}>
+                                {esActa ? '' : 'Tomo '} {valorTomo} (Año {x.AÑO || 'S/A'})
+                              </option>
+                            );
+                          })}
                           <option value={item.tomoSeleccionado2}>{item.tomoSeleccionado2 || "Anexo (Automático)"}</option>
                         </select>
                       )}
@@ -714,7 +813,6 @@ export default function PanelPedidos() {
             </tbody>
           </table>
         </div>
-
       </div>
     </div>
   );
