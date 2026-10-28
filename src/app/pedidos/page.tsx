@@ -66,7 +66,6 @@ export default function PanelPedidos() {
     cargarPedidosNube();
   }, []);
 
-  // DESCARGA COMPLETA Y SIN LÍMITES CON BUCLE DE PAGINACIÓN
   const cargarCatalogosInventario = async () => {
     const fetchTodo = async (tabla: string) => {
       let todos: any[] = [];
@@ -537,7 +536,7 @@ export default function PanelPedidos() {
             }
           } 
           else if (textoLower.includes("vehicular") || textoLower.includes("acta")) {
-            await supabase.from("inv_actas_vehiculares").update({ ESTADO: "NO DISPONIBLE" }).eq("ACTA", numeroTomo); // Cambiado a ACTA por tu estructura
+            await supabase.from("inv_actas_vehiculares").update({ ESTADO: "NO DISPONIBLE" }).eq("ACTA", numeroTomo);
             tablaActualizada = "Vehiculares/Actas";
           }
 
@@ -566,9 +565,9 @@ export default function PanelPedidos() {
   };
 
   const exportarExcel = () => {
-    let contenido = "ID\tSolicitante\tMotivo\tDocumento\tIncluye\tAño\tKardex\tFolio\tUbicación\tAtendido Por\tEstado\n";
+    let contenido = "ID\tSolicitante\tMotivo\tDocumento\tIncluye\tAño\tKardex\tEscritura\tMinuta/Acta\tFolio\tUbicación\tAtendido Por\tEstado\n";
     pedidosFiltrados.forEach(p => {
-      contenido += `${p.id}\t${p.solicitante}\t${p.motivo}\t${p.documento}\t${p.incluye}\t${p.anio}\t${p.kardex}\t${p.folio}\t${p.tomoSugerido}\t${p.escaneado_por || "-"}\t${p.estado}\n`;
+      contenido += `${p.id}\t${p.solicitante}\t${p.motivo}\t${p.documento}\t${p.incluye}\t${p.anio}\t${p.kardex}\t${p.instrumento || "-"}\t${p.minuta_acta || "-"}\t${p.folio || "-"}\t${p.tomoSugerido}\t${p.escaneado_por || "-"}\t${p.estado}\n`;
     });
     const blob = new Blob([contenido], { type: "application/vnd.ms-excel" });
     const url = URL.createObjectURL(blob);
@@ -693,7 +692,9 @@ export default function PanelPedidos() {
                 <th className="border border-gray-300 p-2">Incluye</th>
                 <th className="border border-gray-300 p-2">Año</th>
                 <th className="border border-gray-300 p-2">N° Kardex</th>
-                <th className="border border-gray-300 p-2">N° Folio / Minuta</th>
+                <th className="border border-gray-300 p-2">N° Escritura</th>
+                <th className="border border-gray-300 p-2">N° Minuta/Acta</th>
+                <th className="border border-gray-300 p-2">N° Folio</th>
                 <th className="border border-gray-300 p-2 bg-indigo-900">Ubicación (Búsqueda Automática + Desplegables)</th>
                 <th className="border border-gray-300 p-2">Atendido Por</th>
                 <th className="border border-gray-300 p-2">Abogado</th>
@@ -705,7 +706,7 @@ export default function PanelPedidos() {
             <tbody>
               {pedidosFiltrados.length === 0 && (
                 <tr>
-                  <td colSpan={14} className="p-8 text-gray-400 font-medium text-center">
+                  <td colSpan={esOperativo ? 16 : 15} className="p-8 text-gray-400 font-medium text-center">
                     No se encontraron registros coincidentes.
                   </td>
                 </tr>
@@ -726,10 +727,12 @@ export default function PanelPedidos() {
                     <td className="border border-gray-300 p-2">{item.solicitante}</td>
                     <td className="border border-gray-300 p-2">{item.motivo}</td>
                     <td className="border border-gray-300 p-2">{item.documento}</td>
-                    <td className="border border-gray-300 p-2 font-semibold text-purple-700">{item.incluye}</td>
+                    <td className="border border-gray-300 p-2 font-semibold text-purple-700">{item.incluye || "-"}</td>
                     <td className="border border-gray-300 p-2">{item.anio}</td>
-                    <td className="border border-gray-300 p-2 font-semibold">{item.kardex}</td>
-                    <td className="border border-gray-300 p-2">{item.folio || item.minuta_acta || "-"}</td>
+                    <td className="border border-gray-300 p-2 font-semibold">{item.kardex || "-"}</td>
+                    <td className="border border-gray-300 p-2">{item.instrumento || "-"}</td>
+                    <td className="border border-gray-300 p-2">{item.minuta_acta || "-"}</td>
+                    <td className="border border-gray-300 p-2">{item.folio || "-"}</td>
                     
                     <td className="border border-gray-300 p-2 bg-indigo-50 space-y-1">
                       <select 
@@ -780,7 +783,7 @@ export default function PanelPedidos() {
                     </td>
 
                     <td className="border border-gray-300 p-2 font-bold text-gray-700">{item.escaneado_por || "-"}</td>
-                    <td className="border border-gray-300 p-2">{item.autoriza}</td>
+                    <td className="border border-gray-300 p-2">{item.autoriza || "-"}</td>
                     <td className="border border-gray-300 p-2 font-semibold text-blue-700">{formatearTiempo(item.duracion_segundos)}</td>
                     
                     <td className="border border-gray-300 p-2 text-center">
