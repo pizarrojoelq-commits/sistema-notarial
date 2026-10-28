@@ -11,6 +11,7 @@ interface ItemInventario {
   anio: string;
   rango: string;
   estado: string;
+  tablaSupabase: string; // Útil para las descargas individuales
 }
 
 export default function ControlInventarioTomos() {
@@ -45,7 +46,6 @@ export default function ControlInventarioTomos() {
         let limite = 1000;
         let hayMasDatos = true;
 
-        // Paginación ordenada por ID para evitar saltos extraños entre bloques
         while (hayMasDatos) {
           const { data, error } = await supabase
             .from(t.nombre)
@@ -71,7 +71,6 @@ export default function ControlInventarioTomos() {
         }
 
         const formateados = registrosTabla.map((item: any, index: number) => {
-          // Búsqueda exhaustiva asegurando que detecte el '1' o '0' en cualquier variante de columna
           let valorTomo = 
             item['TOMO'] ?? item['Tomo'] ?? item['tomo'] ?? 
             item['ACTA'] ?? item['Acta'] ?? item['acta'] ?? 
@@ -79,7 +78,6 @@ export default function ControlInventarioTomos() {
             item['ANEXO'] ?? item['Anexo'] ?? item['anexo'] ?? 
             item['ARCHIVADOR'] ?? item['Archivador'] ?? item['archivador'];
 
-          // Si por alguna razón la celda del acta o tomo vino vacía en la fila 0, le asignamos su ID correspondiente (ej: Acta 1)
           if ((valorTomo === undefined || valorTomo === null || valorTomo === '') && t.cat.includes('Actas')) {
             valorTomo = item.id || index + 1;
           } else if (valorTomo === undefined || valorTomo === null || valorTomo === '') {
@@ -97,7 +95,7 @@ export default function ControlInventarioTomos() {
             item['RANGO DE SOLICITUD'] ?? item['Rango de Solicitud'] ?? item['rango de solicitud'] ?? 
             item['rango'] ?? '';
 
-          const valorEstado = String(item['ESTADO'] ?? item['Estado'] ?? item['estado'] ?? 'DISPONIBLE').toUpperCase();
+          const valorEstado = String(item['ESTADO'] ?? item['Estado'] ?? item['estado'] ?? 'DISPONIBLE').trim().toUpperCase();
 
           return {
             id: `${t.nombre}-${item.id || index + 1}`,
@@ -106,7 +104,8 @@ export default function ControlInventarioTomos() {
             archivador: '1',
             anio: String(valorAnio),
             rango: String(valorRango),
-            estado: valorEstado
+            estado: valorEstado === "NO DISPONIBLE" ? "NO DISPONIBLE" : "DISPONIBLE",
+            tablaSupabase: t.nombre
           };
         });
 
@@ -119,11 +118,36 @@ export default function ControlInventarioTomos() {
     }
   };
 
+  // FUNCIÓN PARA DESCARGAR EL EXCEL INDEPENDIENTE POR CATEGORÍA
+  const descargarExcelCategoria = (nombreCategoria: string, tituloArchivo: string) => {
+    const datosA_Exportar = nombreCategoria === "TODAS" 
+      ? inventario 
+      : inventario.filter(i => i.categoria === nombreCategoria);
+
+    if (datosA_Exportar.length === 0) {
+      alert(`⚠️ No hay registros disponibles para exportar en ${tituloArchivo}.`);
+      return;
+    }
+
+    let contenido = "ID\tCategoría\tN° Tomo / Acta / Anexo\tAño\tRango\tEstado Actual\n";
+    datosA_Exportar.forEach(item => {
+      contenido += `${item.id}\t${item.categoria}\t${item.tomo}\t${item.anio}\t${item.rango}\t${item.estado}\n`;
+    });
+
+    const blob = new Blob([contenido], { type: "application/vnd.ms-excel" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Inventario_${tituloArchivo.replace(/\s+/g, '_')}_${new Date().toISOString().split("T")[0]}.xls`;
+    a.click();
+  };
+
   if (!isMounted) return null;
 
+  // CONTEO ESTRICTO Y EXACTO
   const totalRegistros = inventario.length;
-  const disponibles = inventario.filter(i => i.estado.includes("DISPONIBLE")).length;
-  const noDisponibles = totalRegistros - disponibles;
+  const noDisponibles = inventario.filter(i => i.estado === "NO DISPONIBLE").length;
+  const disponibles = totalRegistros - noDisponibles;
 
   const inventarioFiltrado = inventario.filter(item => {
     const texto = busqueda.toLowerCase();
@@ -134,7 +158,7 @@ export default function ControlInventarioTomos() {
       String(item.rango).toLowerCase().includes(texto);
 
     const coincideCat = filtroCategoria === "TODAS" || item.categoria === filtroCategoria;
-    const coincideEst = filtroEstado === "TODOS" || item.estado.includes(filtroEstado);
+    const coincideEst = filtroEstado === "TODOS" || item.estado === filtroEstado;
 
     return coincideTexto && coincideCat && coincideEst;
   });
@@ -150,7 +174,7 @@ export default function ControlInventarioTomos() {
               Monitoreo en tiempo real de libros, archivadores, escrituras, minutas, actas y no contenciosos desde la nube.
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <a href="/salidas" className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-3 rounded text-xs transition-colors">
               Ir a Salidas y Entradas
             </a>
@@ -160,6 +184,7 @@ export default function ControlInventarioTomos() {
           </div>
         </div>
 
+        {/* CONTADORES SUPERIORES CON ROJO INTENSO PARA NO DISPONIBLES */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="bg-blue-50 border border-blue-200 p-4 rounded shadow-sm text-center">
             <p className="text-xs text-blue-800 font-bold uppercase">Total Registrados</p>
@@ -169,12 +194,44 @@ export default function ControlInventarioTomos() {
             <p className="text-xs text-green-800 font-bold uppercase">Disponibles en Archivo</p>
             <p className="text-2xl font-black text-green-700 mt-1">{disponibles}</p>
           </div>
-          <div className="bg-red-50 border border-red-200 p-4 rounded shadow-sm text-center">
+          <div className="bg-red-50 border border-red-300 p-4 rounded shadow-sm text-center">
             <p className="text-xs text-red-800 font-bold uppercase">No Disponibles (Fuera / Préstamo)</p>
             <p className="text-2xl font-black text-red-700 mt-1">{noDisponibles}</p>
           </div>
         </div>
 
+        {/* BOTONES DE DESCARGA INDEPENDIENTE POR TIPO DE INVENTARIO */}
+        <div className="bg-indigo-50 p-4 border border-indigo-200 rounded mb-6">
+          <p className="text-xs font-bold text-indigo-900 mb-2 uppercase tracking-wide">📥 Descarga de Reportes Independientes (Excel):</p>
+          <div className="flex flex-wrap gap-2">
+            <button onClick={() => descargarExcelCategoria("TODAS", "Inventario_Completo")} className="bg-indigo-700 hover:bg-indigo-800 text-white font-semibold py-1.5 px-3 rounded text-xs shadow-sm cursor-pointer transition-colors">
+              📥 Descargar Todo
+            </button>
+            <button onClick={() => descargarExcelCategoria("Escrituras", "Escrituras")} className="bg-white hover:bg-gray-100 text-indigo-900 border border-indigo-300 font-medium py-1.5 px-3 rounded text-xs shadow-sm cursor-pointer">
+              📄 Escrituras
+            </button>
+            <button onClick={() => descargarExcelCategoria("Minutas", "Minutas")} className="bg-white hover:bg-gray-100 text-indigo-900 border border-indigo-300 font-medium py-1.5 px-3 rounded text-xs shadow-sm cursor-pointer">
+              📄 Minutas
+            </button>
+            <button onClick={() => descargarExcelCategoria("Transferencias Vehiculares", "Transferencias_Vehiculares")} className="bg-white hover:bg-gray-100 text-indigo-900 border border-indigo-300 font-medium py-1.5 px-3 rounded text-xs shadow-sm cursor-pointer">
+              📄 Transf. Vehiculares
+            </button>
+            <button onClick={() => descargarExcelCategoria("Actas Transferencias Vehiculares", "Actas_Vehiculares")} className="bg-white hover:bg-gray-100 text-indigo-900 border border-indigo-300 font-medium py-1.5 px-3 rounded text-xs shadow-sm cursor-pointer">
+              📄 Actas Vehiculares
+            </button>
+            <button onClick={() => descargarExcelCategoria("Asuntos No Contenciosos", "No_Contenciosos")} className="bg-white hover:bg-gray-100 text-indigo-900 border border-indigo-300 font-medium py-1.5 px-3 rounded text-xs shadow-sm cursor-pointer">
+              📄 No Contenciosos
+            </button>
+            <button onClick={() => descargarExcelCategoria("Minutario No Contenciosos", "Minutario_No_Contenciosos")} className="bg-white hover:bg-gray-100 text-indigo-900 border border-indigo-300 font-medium py-1.5 px-3 rounded text-xs shadow-sm cursor-pointer">
+              📄 Minutario NC
+            </button>
+            <button onClick={() => descargarExcelCategoria("Solicitudes No Contenciosos", "Solicitudes_No_Contenciosos")} className="bg-white hover:bg-gray-100 text-indigo-900 border border-indigo-300 font-medium py-1.5 px-3 rounded text-xs shadow-sm cursor-pointer">
+              📄 Solicitudes NC
+            </button>
+          </div>
+        </div>
+
+        {/* FILTROS Y BÚSQUEDA */}
         <div className="bg-slate-50 p-4 border rounded mb-6 flex flex-col md:flex-row gap-4 justify-between items-center">
           <div className="flex flex-wrap gap-2 w-full md:w-auto">
             <input 
@@ -182,13 +239,13 @@ export default function ControlInventarioTomos() {
               placeholder="🔍 Buscar Tomo, Acta, Año o Rango..." 
               value={busqueda}
               onChange={(e) => setBusqueda(e.target.value)}
-              className="p-2 border rounded text-xs w-full md:w-72 bg-white text-gray-700 outline-none focus:border-blue-600"
+              className="p-2 border rounded text-xs w-full md:w-72 bg-white text-gray-700 outline-none focus:border-blue-600 shadow-sm"
             />
             
             <select 
               value={filtroCategoria} 
               onChange={(e) => setFiltroCategoria(e.target.value)}
-              className="p-2 border rounded text-xs bg-white text-gray-700"
+              className="p-2 border rounded text-xs bg-white text-gray-700 shadow-sm"
             >
               <option value="TODAS">Todas las Categorías</option>
               <option value="Escrituras">Escrituras</option>
@@ -203,7 +260,7 @@ export default function ControlInventarioTomos() {
             <select 
               value={filtroEstado} 
               onChange={(e) => setFiltroEstado(e.target.value)}
-              className="p-2 border rounded text-xs bg-white text-gray-700"
+              className="p-2 border rounded text-xs bg-white text-gray-700 shadow-sm"
             >
               <option value="TODOS">Todos los Estados</option>
               <option value="DISPONIBLE">DISPONIBLE</option>
@@ -221,6 +278,7 @@ export default function ControlInventarioTomos() {
           ) : null}
         </div>
 
+        {/* TABLA DE INVENTARIO */}
         <div className="overflow-x-auto pb-4">
           <table className="w-full text-center border-collapse text-[11px] border border-gray-300">
             <thead className="bg-[#243c5a] text-white">
@@ -241,20 +299,23 @@ export default function ControlInventarioTomos() {
                   </td>
                 </tr>
               )}
-              {inventarioFiltrado.map((item) => (
-                <tr key={item.id} className={item.estado.includes("DISPONIBLE") ? "hover:bg-gray-50" : "bg-red-50 text-red-950 font-semibold"}>
-                  <td className="border border-gray-300 p-2 font-bold">{item.id}</td>
-                  <td className="border border-gray-300 p-2">{item.categoria}</td>
-                  <td className="border border-gray-300 p-2 font-bold">{item.tomo}</td>
-                  <td className="border border-gray-300 p-2">{item.anio}</td>
-                  <td className="border border-gray-300 p-2 font-semibold text-indigo-900">{item.rango}</td>
-                  <td className="border border-gray-300 p-2 font-bold">
-                    <span className={`px-2 py-1 rounded text-[10px] text-white ${item.estado.includes("DISPONIBLE") ? "bg-green-600" : "bg-red-600"}`}>
-                      {item.estado}
-                    </span>
-                  </td>
-                </tr>
-              ))}
+              {inventarioFiltrado.map((item) => {
+                const esNoDisponible = item.estado === "NO DISPONIBLE";
+                return (
+                  <tr key={item.id} className={esNoDisponible ? "bg-red-50 text-red-950 font-semibold" : "hover:bg-gray-50"}>
+                    <td className="border border-gray-300 p-2 font-bold">{item.id}</td>
+                    <td className="border border-gray-300 p-2">{item.categoria}</td>
+                    <td className="border border-gray-300 p-2 font-bold">{item.tomo}</td>
+                    <td className="border border-gray-300 p-2">{item.anio}</td>
+                    <td className="border border-gray-300 p-2 font-semibold text-indigo-900">{item.rango}</td>
+                    <td className="border border-gray-300 p-2 font-bold">
+                      <span className={`px-2.5 py-1 rounded text-[10px] text-white shadow-sm ${esNoDisponible ? "bg-red-600" : "bg-green-600"}`}>
+                        {item.estado}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
