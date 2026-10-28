@@ -25,6 +25,8 @@ interface Pedido {
   tiempo_inicio?: number | null;
   tomo_sugerido?: string;
   tomoSugerido?: string;
+  tomoSeleccionado1?: string; 
+  tomoSeleccionado2?: string; 
 }
 
 export default function PanelPedidos() {
@@ -33,6 +35,12 @@ export default function PanelPedidos() {
   const [usuarioActual, setUsuarioActual] = useState<{ nombre: string; rol: string } | null>(null);
   const [busqueda, setBusqueda] = useState("");
   
+  // Catálogos para los desplegables basados en Supabase
+  const [listaEscrituras, setListaEscrituras] = useState<any[]>([]);
+  const [listaMinutas, setListaMinutas] = useState<any[]>([]);
+  const [listaNoContenciosos, setListaNoContenciosos] = useState<any[]>([]);
+  const [listaVehiculares, setListaVehiculares] = useState<any[]>([]);
+
   const [pedidoCriticoActual, setPedidoCriticoActual] = useState<Pedido | null>(null);
   const [alarmaActiva, setAlarmaActiva] = useState(false);
 
@@ -52,8 +60,25 @@ export default function PanelPedidos() {
       }
     }
 
+    cargarCatalogosInventario();
     cargarPedidosNube();
   }, []);
+
+  const cargarCatalogosInventario = async () => {
+    try {
+      const { data: esc } = await supabase.from("inv_escrituras").select("TOMO, AÑO").order("TOMO", { ascending: true });
+      const { data: min } = await supabase.from("inv_minutas").select("TOMO, AÑO").order("TOMO", { ascending: true });
+      const { data: nc } = await supabase.from("inv_no_contenciosos").select("TOMO, AÑO").order("TOMO", { ascending: true });
+      const { data: veh } = await supabase.from("inv_vehiculares").select("TOMO, AÑO").order("TOMO", { ascending: true });
+
+      if (esc) setListaEscrituras(esc);
+      if (min) setListaMinutas(min);
+      if (nc) setListaNoContenciosos(nc);
+      if (veh) setListaVehiculares(veh);
+    } catch (e) {
+      console.error("Error al cargar catálogos:", e);
+    }
+  };
 
   const cargarPedidosNube = async () => {
     try {
@@ -63,7 +88,7 @@ export default function PanelPedidos() {
         .order("id", { ascending: true });
 
       if (error) {
-        console.error("Error al cargar pedidos de Supabase:", error);
+        console.error("Error al cargar pedidos:", error);
         return;
       }
 
@@ -71,7 +96,7 @@ export default function PanelPedidos() {
         await procesarYActualizarPedidos(data);
       }
     } catch (err) {
-      console.error("Error de conexión al cargar:", err);
+      console.error("Error de conexión:", err);
     }
   };
 
@@ -87,7 +112,7 @@ export default function PanelPedidos() {
     return !isNaN(min) && !isNaN(max) && numBuscado >= min && numBuscado <= max;
   };
 
-  // LÓGICA DE BÚSQUEDA DINÁMICA
+  // LÓGICA DE BÚSQUEDA AUTOMÁTICA AFINADA
   const calcularTomoNubeDinamico = async (documento: string, incluye: string, anioBuscado: string, instrumento: string, minutaActa: string, folioStr: string) => {
     const numFolio = parseInt((folioStr || "").replace(/[,.]/g, '')) || 0;
     const numInstrumento = parseInt((instrumento || "").replace(/[,.]/g, '')) || 0;
@@ -101,7 +126,7 @@ export default function PanelPedidos() {
 
     if ((docLower.includes("solicitud") || docLower.includes("solicitudes")) && (docLower.includes("no contencioso") || docLower.includes("no contenciosos"))) {
       if (nRefIndicador === 0) {
-        resultados.push("[Solicitud de No Contencioso sin N°: Buscar manualmente]");
+        resultados.push("[Solicitud de No Contencioso sin N°]");
       } else {
         const { data: dataSol } = await supabase.from("inv_solicitudes_no_contenciosos").select("*");
         let halladoSol = dataSol?.find((s: any) => {
@@ -121,7 +146,7 @@ export default function PanelPedidos() {
     }
     else if (docLower.includes("minuta") && (docLower.includes("no contencioso") || docLower.includes("no contenciosos"))) {
       if (nRefIndicador === 0) {
-        resultados.push("[Minuta de No Contencioso sin N°: Buscar manualmente]");
+        resultados.push("[Minuta de No Contencioso sin N°]");
       } else {
         const { data: dataMinNC } = await supabase.from("inv_minutario_no_contenciosos").select("*");
         let halladoMinNC = dataMinNC?.find((m: any) => {
@@ -140,7 +165,7 @@ export default function PanelPedidos() {
     else if (docLower.includes("minuta")) {
       const nRefMinuta = nRefIndicador > 0 ? nRefIndicador : numFolio;
       if (nRefMinuta === 0) {
-        resultados.push("[Minuta 0: Buscar manualmente]");
+        resultados.push("[Minuta 0]");
       } else {
         const { data: dataMin } = await supabase.from("inv_minutas").select("*");
         let halladoMin = dataMin?.find((m: any) => {
@@ -152,13 +177,13 @@ export default function PanelPedidos() {
         if (halladoMin) {
           resultados.push(`Tomo ${halladoMin.TOMO || halladoMin.tomo} (Minutas)`);
         } else {
-          resultados.push(`[Minuta ${nRefMinuta} no hallada en Minutas]`);
+          resultados.push(`[Minuta ${nRefMinuta} no hallada]`);
         }
       }
     } 
     else if (docLower === "escritura" || docLower.includes("escritura pública") || docLower.includes("escritura")) {
       if (numFolio === 0) {
-        resultados.push("[Folio 0: Buscar manualmente]");
+        resultados.push("[Folio 0]");
       } else {
         const { data } = await supabase.from("inv_escrituras").select("*");
         let hallado = data?.find((e: any) => {
@@ -168,9 +193,9 @@ export default function PanelPedidos() {
         });
 
         if (hallado) {
-          resultados.push(`Tomo ${hallado.TOMO || hallado.tomo} (Escrituras ${hallado.AÑO || hallado.anio || anioBuscado})`);
+          resultados.push(`Tomo ${hallado.TOMO || hallado.tomo} (Escrituras)`);
         } else {
-          resultados.push(`[Folio ${numFolio} no hallado en Escrituras]`);
+          resultados.push(`[Folio ${numFolio} no hallado]`);
         }
       }
 
@@ -206,8 +231,6 @@ export default function PanelPedidos() {
           } else {
             resultados.push(`[Minuta ${nMinutaReal} anexa no hallada]`);
           }
-        } else {
-          resultados.push("[Minuta Anexa sin N° válido]");
         }
       }
     }
@@ -236,74 +259,9 @@ export default function PanelPedidos() {
       });
 
       if (halladoVeh) {
-        resultados.push(`Tomo ${halladoVeh.TOMO || halladoVeh.tomo} (Transferencia Vehicular ${anioBuscado})`);
+        resultados.push(`Tomo ${halladoVeh.TOMO || halladoVeh.tomo} (Transferencia Vehicular)`);
       } else {
-        resultados.push(`[Vehicular Folio Ref: ${nRefVeh} no hallado]`);
-      }
-
-      if (incluyeLower.includes("acta")) {
-        const nRefActa = nRefIndicador > 0 ? nRefIndicador : numFolio;
-        const { data: dataActa } = await supabase.from("inv_actas_vehiculares").select("*");
-        let halladoActa = dataActa?.find((a: any) => {
-          const coincideRef = perteneceAlRango(nRefActa, a["RANGO DE ACTAS"] || a.rango);
-          const anioFila = String(a["AÑO"] || a.anio || "");
-          return coincideRef && (!anioBuscado || anioFila.includes(anioBuscado));
-        });
-
-        if (halladoActa) {
-          resultados.push(`ACTA ${halladoActa.TOMO || halladoActa.ACTA || halladoActa.archivador || '330'} (ACTA ANEXA)`);
-        } else {
-          resultados.push(`[Acta Instrumento Ref: ${nRefActa} no hallada]`);
-        }
-      }
-    }
-    else if (docLower.includes("no contencioso") || docLower.includes("no contenciosos")) {
-      if (numFolio === 0) {
-        resultados.push("[Folio No Contencioso 0: Buscar manualmente]");
-      } else {
-        const { data: dataNC } = await supabase.from("inv_no_contenciosos").select("*");
-        let halladoNC = dataNC?.find((nc: any) => {
-          const coincideRef = perteneceAlRango(numFolio, nc["RANGO DE FOLIOS"] || nc.rango);
-          const anioFila = String(nc["AÑO"] || nc.anio || "");
-          return coincideRef && (!anioBuscado || anioFila.includes(anioBuscado));
-        });
-
-        if (halladoNC) {
-          resultados.push(`Tomo ${halladoNC.TOMO || halladoNC.tomo} (No Contenciosos ${anioBuscado})`);
-        } else {
-          resultados.push(`[Folio No Contencioso ${numFolio} no hallado]`);
-        }
-      }
-
-      const nRefAdicional = nRefIndicador > 0 ? nRefIndicador : numFolio;
-      if (incluyeLower.includes("solicitud")) {
-        const { data: dataSol } = await supabase.from("inv_solicitudes_no_contenciosos").select("*");
-        let halladoSol = dataSol?.find((s: any) => {
-          const coincideRef = perteneceAlRango(nRefAdicional, s["RANGO DE SOLICITUD"] || s.rango);
-          const anioFila = String(s["AÑO"] || s.anio || "");
-          return coincideRef && (!anioBuscado || anioFila.includes(anioBuscado));
-        });
-
-        if (halladoSol) {
-          const valorTomoAnexo = halladoSol.TOMO || halladoSol.tomo || halladoSol.ANEXO || halladoSol.anexo || nRefAdicional;
-          resultados.push(`Solicitud Anexo ${valorTomoAnexo} (Solicitudes No Contenciosos)`);
-        } else {
-          resultados.push(`[Solicitud No Contenciosa Ref: ${nRefAdicional} no hallada]`);
-        }
-      } 
-      else if (incluyeLower.includes("minuta") || incluyeLower.includes("minutario")) {
-        const { data: dataMinNC } = await supabase.from("inv_minutario_no_contenciosos").select("*");
-        let halladoMinNC = dataMinNC?.find((m: any) => {
-          const coincideRef = perteneceAlRango(nRefAdicional, m["RANGO DE MINUTAS"] || m.rango);
-          const anioFila = String(m["AÑO"] || m.anio || "");
-          return coincideRef && (!anioBuscado || anioFila.includes(anioBuscado));
-        });
-
-        if (halladoMinNC) {
-          resultados.push(`Tomo ${halladoMinNC.TOMO || halladoMinNC.tomo} (Minutario No Contenciosos)`);
-        } else {
-          resultados.push(`[Minutario No Contencioso Ref: ${nRefAdicional} no hallado]`);
-        }
+        resultados.push(`[Vehicular ${nRefVeh} no hallado]`);
       }
     }
     else {
@@ -316,13 +274,18 @@ export default function PanelPedidos() {
   const procesarYActualizarPedidos = async (listaCruda: any[]) => {
     const listaConTomosUnificados = await Promise.all(
       listaCruda.map(async (item: any) => {
-        const tomoUnificado = await calcularTomoNubeDinamico(
+        const tomoCalculado = await calcularTomoNubeDinamico(
           item.documento, item.incluye, item.anio, item.instrumento || "", item.minuta_acta || "", item.folio || ""
         );
+        const sugeridoFinal = item.tomoSugerido || item.tomo_sugerido || tomoCalculado;
+        const partes = sugeridoFinal.split("+").map((s: string) => s.trim());
+
         return { 
           ...item, 
-          tomoSugerido: item.tomoSugerido || item.tomo_sugerido || tomoUnificado, 
-          tomo_sugerido: item.tomoSugerido || item.tomo_sugerido || tomoUnificado 
+          tomoSugerido: sugeridoFinal, 
+          tomo_sugerido: sugeridoFinal,
+          tomoSeleccionado1: item.tomoSeleccionado1 || partes[0] || "",
+          tomoSeleccionado2: item.tomoSeleccionado2 || partes[1] || ""
         };
       })
     );
@@ -339,13 +302,6 @@ export default function PanelPedidos() {
       setPedidoCriticoActual(primerPendiente);
       setAlarmaActiva(true);
       reproducirAlarmaConstante();
-
-      if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
-        new Notification("🚨 ¡ALERTA: NUEVO PEDIDO EN ARCHIVO!", {
-          body: `Solicitante: ${primerPendiente.solicitante} Documento: ${primerPendiente.documento}`,
-          icon: "/favicon.ico"
-        });
-      }
     } else {
       setPedidoCriticoActual(null);
       setAlarmaActiva(false);
@@ -356,7 +312,7 @@ export default function PanelPedidos() {
     if (!isMounted) return;
     const intervaloMonitoreo = setInterval(() => {
       cargarPedidosNube();
-    }, 4000); 
+    }, 5000); 
     return () => clearInterval(intervaloMonitoreo);
   }, [isMounted]);
 
@@ -368,16 +324,14 @@ export default function PanelPedidos() {
   const reproducirAlarmaConstante = () => {
     const sesion = localStorage.getItem("usuarioLogueado");
     const usuarioObj = sesion ? JSON.parse(sesion) : null;
-    if (usuarioObj && (usuarioObj.rol === "EXTERNO" || usuarioObj.nombre.includes("Cinthia") || usuarioObj.nombre.includes("Enrique"))) {
-      return;
-    }
+    if (usuarioObj && (usuarioObj.rol === "EXTERNO" || usuarioObj.nombre.includes("Cinthia") || usuarioObj.nombre.includes("Enrique"))) return;
 
     try {
       const audio = new Audio("/timbre.mp3"); 
       audio.volume = 1.0; 
-      audio.play().catch(e => console.log("Esperando interacción para reproducir audio:", e));
+      audio.play().catch(e => console.log("Audio esperando interacción:", e));
     } catch (e) {
-      console.error("No se pudo reproducir el archivo de audio:", e);
+      console.error("Error de audio:", e);
     }
   };
 
@@ -413,49 +367,45 @@ export default function PanelPedidos() {
     }
 
     try {
-      const { error } = await supabase
+      const combinado = [pedidoActual.tomoSeleccionado1, pedidoActual.tomoSeleccionado2].filter(Boolean).join(" + ");
+      await supabase
         .from("pedidos")
         .update({
           estado: nuevoEstado,
           escaneado_por: nuevoEscaneadoPor,
           tiempo_inicio: nuevoTiempoInicio,
           duracion_segundos: nuevaDuracion,
-          tomo_sugerido: pedidoActual.tomoSugerido || pedidoActual.tomo_sugerido
+          tomo_sugerido: combinado
         })
         .eq("id", id);
 
-      if (error) {
-        console.error("Error al actualizar estado en Supabase:", error);
-        alert("No se pudo actualizar el estado en la nube.");
-        return;
-      }
-
-      setAlarmaActiva(false);
-      setPedidoCriticoActual(null);
       cargarPedidosNube();
     } catch (err) {
-      console.error("Error de conexión:", err);
+      console.error("Error al cambiar estado:", err);
     }
   };
 
-  // FUNCIÓN INTELIGENTE DE SALIDAS Y ACTUALIZACIÓN DE INVENTARIO A "NO DISPONIBLE"
+  // ENVÍO A SALIDAS Y ACTUALIZACIÓN AUTOMÁTICA A "NO DISPONIBLE" EN SUPABASE
+  // ENVÍO A SALIDAS Y ACTUALIZACIÓN AUTOMÁTICA A "NO DISPONIBLE" EN SUPABASE
   const enviarA_Salidas = async (pedido: Pedido) => {
     if (usuarioActual?.rol !== "OPERATIVO") return;
 
     const anioBuscado = pedido.anio || "2026";
     const operadorActual = usuarioActual ? usuarioActual.nombre : "Archivo";
     
-    // Leemos lo que está en la interfaz (permitiendo que uses el tomo que editaste a mano)
-    const tomoCompleto = pedido.tomoSugerido || pedido.tomo_sugerido || "Tomo Asignado";
+    // Filtramos y aseguramos que sean strings limpios y válidos
+    const tomosElegidos = [pedido.tomoSeleccionado1, pedido.tomoSeleccionado2].filter((t): t is string => Boolean(t && t.trim() !== ""));
+    
+    if (tomosElegidos.length === 0) {
+      alert("⚠️ Debe seleccionar al menos un tomo válido antes de enviar a salidas.");
+      return;
+    }
 
-    const partesTomos = tomoCompleto.split("+").map(t => t.trim()).filter(Boolean);
     let registrosSalidaParaInsertar: any[] = [];
-    const tomosAProcesar = partesTomos.length > 0 ? partesTomos : [tomoCompleto];
-
     let tomosActualizadosTexto: string[] = [];
 
-    for (let index = 0; index < tomosAProcesar.length; index++) {
-      const tomoTexto = tomosAProcesar[index];
+    for (let index = 0; index < tomosElegidos.length; index++) {
+      const tomoTexto: string = tomosElegidos[index];
 
       registrosSalidaParaInsertar.push({
         id: `salida-${pedido.id}-${index}-${Date.now()}`,
@@ -477,9 +427,8 @@ export default function PanelPedidos() {
         estado: "Pendiente de Entrega"
       });
 
-      // Extraemos el número del tomo con alta precisión (incluso si lo escribiste a mano)
-      const matchTomo = tomoTexto.match(/Tomo\s+(\d+)/i) || tomoTexto.match(/ACTA\s+(\d+)/i) || tomoTexto.match(/(\d+)/);
-      const numeroTomo = matchTomo ? matchTomo[1] : null;
+      const matchNum = tomoTexto.match(/(\d+)/);
+      const numeroTomo = matchNum ? matchNum[1] : null;
 
       if (numeroTomo) {
         try {
@@ -490,7 +439,7 @@ export default function PanelPedidos() {
             await supabase.from("inv_escrituras").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
             tablaActualizada = "Escrituras";
           } 
-          else if (textoLower.includes("minuta") || textoLower.includes("minutas")) {
+          else if (textoLower.includes("minuta")) {
             await supabase.from("inv_minutas").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
             tablaActualizada = "Minutas";
           } 
@@ -503,30 +452,27 @@ export default function PanelPedidos() {
             tablaActualizada = "Vehiculares/Actas";
           }
 
-          tomosActualizadosTexto.push(`Tomo/Acta ${numeroTomo} (${tablaActualizada})`);
+          tomosActualizadosTexto.push(`${tomoTexto} (Actualizado a NO DISPONIBLE en ${tablaActualizada})`);
         } catch (err) {
-          console.error("Error al actualizar inventario como no disponible:", err);
+          console.error("Error al actualizar inventario:", err);
         }
       }
     }
 
     try {
-      const { error } = await supabase
-        .from("salidas")
-        .insert(registrosSalidaParaInsertar);
+      const { error } = await supabase.from("salidas").insert(registrosSalidaParaInsertar);
 
       if (error) {
-        console.error("Error al registrar salidas en Supabase:", error);
+        console.error("Error al registrar salidas:", error);
         alert("No se pudo transferir a salidas en la nube.");
         return;
       }
 
-      // Mensaje de éxito que confirma la actualización en la base de datos y el cambio a NO DISPONIBLE
-      alert(`✅ ¡Salida registrada con éxito!\n\nSe han actualizado los siguientes tomos como 'NO DISPONIBLE' en la base de datos:\n- ${tomosActualizadosTexto.join("\n- ")}`);
+      alert(`✅ ¡Salida registrada con éxito!\n\nSe actualizó la base de datos y ahora figuran como NO DISPONIBLE:\n- ${tomosActualizadosTexto.join("\n- ")}`);
 
       window.location.href = "/salidas";
     } catch (e) {
-      console.error("Error de conexión al transferir a salidas:", e);
+      console.error("Error:", e);
       window.location.href = "/salidas";
     }
   };
@@ -563,59 +509,21 @@ export default function PanelPedidos() {
       String(p.solicitante).toLowerCase().includes(texto) ||
       String(p.kardex).toLowerCase().includes(texto) ||
       String(p.anio).toLowerCase().includes(texto) ||
-      String(p.tomoSugerido || p.tomo_sugerido || "").toLowerCase().includes(texto) ||
+      String(p.tomoSugerido || "").toLowerCase().includes(texto) ||
       String(p.autoriza).toLowerCase().includes(texto) ||
-      String(p.documento).toLowerCase().includes(texto) ||
-      String(p.escaneado_por || "").toLowerCase().includes(texto)
+      String(p.documento).toLowerCase().includes(texto)
     );
   });
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 relative">
-      
-      {esOperativo && alarmaActiva && pedidoCriticoActual && (
-        <div className="fixed inset-0 bg-red-950 bg-opacity-85 z-50 flex items-center justify-center p-4 animate-pulse">
-          <div className="bg-white border-4 border-red-600 rounded-lg shadow-2xl w-full max-w-lg p-6 text-center">
-            <div className="text-red-600 text-5xl mb-2">🚨</div>
-            <h2 className="text-2xl font-black text-red-700 uppercase tracking-wide mb-1">
-              ¡TENEMOS UN PEDIDO PENDIENTE!
-            </h2>
-            <p className="text-xs text-gray-500 mb-4">
-              Hay una solicitud urgente en el Archivo Central esperando atención inmediata.
-            </p>
-
-            <div className="bg-red-50 border border-red-200 rounded p-4 text-left text-xs mb-6 space-y-2">
-              <p><strong>Solicitante:</strong> {pedidoCriticoActual.solicitante}</p>
-              <p><strong>Motivo:</strong> {pedidoCriticoActual.motivo}</p>
-              <p><strong>Documento:</strong> {pedidoCriticoActual.documento} <span className="text-purple-700 font-bold">{pedidoCriticoActual.incluye}</span></p>
-              <p><strong>Año / Referencia:</strong> {pedidoCriticoActual.anio} | Kardex: {pedidoCriticoActual.kardex || "S/N"}</p>
-              <p className="font-bold text-indigo-900 bg-indigo-50 p-1 rounded">
-                Ubicación Sugerida: {pedidoCriticoActual.tomoSugerido || pedidoCriticoActual.tomo_sugerido}
-              </p>
-            </div>
-
-            <div className="flex gap-3 justify-center">
-              <button
-                onClick={() => cambiarEstado(pedidoCriticoActual.id)}
-                className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded text-sm shadow-lg transition-transform transform active:scale-95 cursor-pointer animate-bounce"
-              >
-                🛠️ Atender Pedido Ahora (Iniciar Atención)
-              </button>
-            </div>
-            <p className="text-[10px] text-gray-400 mt-4">
-              Esta alerta sonora y visual se detendrá en cuanto el pedido comience a ser atendido.
-            </p>
-          </div>
-        </div>
-      )}
-
       <div className="w-full max-w-[95%] mx-auto bg-white shadow-md rounded-sm overflow-hidden p-6">
         
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-6 mb-6 gap-4">
           <div>
             <h1 className="text-2xl font-bold text-[#243c5a]">Panel de Control - Archivo Central y Pedidos (Nube)</h1>
             <p className="text-sm text-gray-500 mt-1">
-              {esOperativo ? "Sincronización en tiempo real de solicitudes y cronómetro." : "Modo Consulta (Solicitante): Monitoreo de estado de solicitudes enviadas."}
+              {esOperativo ? "Gestión de pedidos con búsqueda automática y selección desplegable." : "Modo Consulta."}
             </p>
           </div>
           
@@ -634,16 +542,12 @@ export default function PanelPedidos() {
             <a href="/" className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-2 px-4 rounded text-xs transition-colors">
               Ir al Formulario
             </a>
-
             {usuarioActual && (
               <span className="text-xs font-semibold text-gray-700 bg-gray-100 px-3 py-2 rounded border">
                 👤 {usuarioActual.nombre} ({usuarioActual.rol})
               </span>
             )}
-            <button 
-              onClick={cerrarSesion}
-              className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-3 rounded text-xs transition-colors shadow-sm cursor-pointer"
-            >
+            <button onClick={cerrarSesion} className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-3 rounded text-xs transition-colors shadow-sm cursor-pointer">
               Cerrar Sesión
             </button>
           </div>
@@ -652,7 +556,7 @@ export default function PanelPedidos() {
         <div className="mb-4 flex items-center gap-2">
           <input 
             type="text" 
-            placeholder="🔍 Buscar por Kardex, Tomo, Año, Solicitante, Abogado, Atendido Por o ID..." 
+            placeholder="🔍 Buscar por Kardex, Tomo, Año, Solicitante..." 
             value={busqueda}
             onChange={(e) => setBusqueda(e.target.value)}
             className="w-full md:w-1/2 p-2 border border-gray-300 rounded text-xs outline-none focus:border-blue-600 text-gray-700 shadow-sm"
@@ -675,13 +579,10 @@ export default function PanelPedidos() {
                 <th className="border border-gray-300 p-2">Incluye</th>
                 <th className="border border-gray-300 p-2">Año</th>
                 <th className="border border-gray-300 p-2">N° Kardex</th>
-                <th className="border border-gray-300 p-2">N° de Folio</th>
-                <th className="border border-gray-300 p-2">Instrumento</th>
-                <th className="border border-gray-300 p-2">N° de Minuta</th>
-                <th className="border border-gray-300 p-2 bg-indigo-900">Ubicación (Tomos Sugeridos - Editable)</th>
+                <th className="border border-gray-300 p-2">N° Folio / Minuta</th>
+                <th className="border border-gray-300 p-2 bg-indigo-900">Ubicación (Búsqueda Automática + Desplegables)</th>
                 <th className="border border-gray-300 p-2">Atendido Por</th>
                 <th className="border border-gray-300 p-2">Abogado</th>
-                <th className="border border-gray-300 p-2">Destino</th>
                 <th className="border border-gray-300 p-2 bg-blue-900">Duración</th>
                 <th className="border border-gray-300 p-2 bg-blue-900">Estado</th>
                 {esOperativo && <th className="border border-gray-300 p-2">Acción</th>}
@@ -690,7 +591,7 @@ export default function PanelPedidos() {
             <tbody>
               {pedidosFiltrados.length === 0 && (
                 <tr>
-                  <td colSpan={esOperativo ? 17 : 16} className="p-8 text-gray-400 font-medium text-center">
+                  <td colSpan={14} className="p-8 text-gray-400 font-medium text-center">
                     No se encontraron registros coincidentes.
                   </td>
                 </tr>
@@ -702,6 +603,9 @@ export default function PanelPedidos() {
                 else if (item.estado === "Listo para Recoger") rowStyle = "bg-cyan-100 transition-colors"; 
                 else if (item.estado === "Atendido" || item.estado === "Entregado") rowStyle = "bg-green-200 text-gray-900 font-medium transition-colors"; 
 
+                const esEscritura = item.documento.toLowerCase().includes("escritura");
+                const incluyeMinuta = item.incluye.toLowerCase().includes("minuta");
+
                 return (
                   <tr key={item.id} className={rowStyle}>
                     <td className="border border-gray-300 p-2 font-bold">{item.id}</td>
@@ -711,30 +615,57 @@ export default function PanelPedidos() {
                     <td className="border border-gray-300 p-2 font-semibold text-purple-700">{item.incluye}</td>
                     <td className="border border-gray-300 p-2">{item.anio}</td>
                     <td className="border border-gray-300 p-2 font-semibold">{item.kardex}</td>
-                    <td className="border border-gray-300 p-2">{item.folio}</td>
-                    <td className="border border-gray-300 p-2">{item.instrumento}</td>
-                    <td className="border border-gray-300 p-2">{item.minuta_acta}</td>
+                    <td className="border border-gray-300 p-2">{item.folio || item.minuta_acta || "-"}</td>
                     
-                    {/* CAMPO EDITABLE DE UBICACIÓN (TOMOS) PARA QUE PUEDAS CORREGIRLO A MANO SI ES NECESARIO */}
-                    <td className="border border-gray-300 p-2 font-bold text-indigo-900 bg-indigo-50">
-                      <input 
-                        type="text"
-                        value={item.tomoSugerido || item.tomo_sugerido || ""}
+                    {/* DESPLEGABLES CON AUTO-SELECCIÓN Y OPCIÓN DE CAMBIO */}
+                    <td className="border border-gray-300 p-2 bg-indigo-50 space-y-1">
+                      <select 
+                        value={item.tomoSeleccionado1 || ""}
                         onChange={(e) => {
-                          const nuevoValor = e.target.value;
-                          setPedidos(prev => prev.map(p => p.id === item.id ? { ...p, tomoSugerido: nuevoValor, tomo_sugerido: nuevoValor } : p));
+                          const val = e.target.value;
+                          setPedidos(prev => prev.map(p => p.id === item.id ? { ...p, tomoSeleccionado1: val } : p));
                         }}
-                        className="w-full bg-white border border-indigo-300 rounded p-1 text-center font-bold text-xs text-indigo-950 focus:border-blue-600 outline-none shadow-inner"
-                        placeholder="Ej. Tomo 1943 (Minutas)"
-                      />
+                        className="w-full bg-white border border-indigo-300 rounded p-1 text-xs font-bold text-indigo-950 outline-none"
+                      >
+                        <option value="">-- Seleccionar Tomo 1 --</option>
+                        {esEscritura ? (
+                          listaEscrituras.map((e, idx) => (
+                            <option key={`esc-${idx}`} value={`Tomo ${e.TOMO} (Escrituras ${e.AÑO || ''})`}>
+                              Tomo {e.TOMO} (Año {e.AÑO || 'S/A'})
+                            </option>
+                          ))
+                        ) : (
+                          listaMinutas.map((m, idx) => (
+                            <option key={`min-${idx}`} value={`Tomo ${m.TOMO} (Minutas ${m.AÑO || ''})`}>
+                              Tomo {m.TOMO} (Año {m.AÑO || 'S/A'})
+                            </option>
+                          ))
+                        )}
+                        <option value={item.tomoSeleccionado1}>{item.tomoSeleccionado1 || "Actual (Automático)"}</option>
+                      </select>
+
+                      {incluyeMinuta && (
+                        <select 
+                          value={item.tomoSeleccionado2 || ""}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setPedidos(prev => prev.map(p => p.id === item.id ? { ...p, tomoSeleccionado2: val } : p));
+                          }}
+                          className="w-full bg-purple-50 border border-purple-300 rounded p-1 text-xs font-bold text-purple-950 outline-none"
+                        >
+                          <option value="">-- Seleccionar Tomo Anexo (Minuta) --</option>
+                          {listaMinutas.map((m, idx) => (
+                            <option key={`minanx-${idx}`} value={`Tomo ${m.TOMO} (Minutas Anexas)`}>
+                              Tomo {m.TOMO} (Minutas - Año {m.AÑO || 'S/A'})
+                            </option>
+                          ))}
+                          <option value={item.tomoSeleccionado2}>{item.tomoSeleccionado2 || "Anexo (Automático)"}</option>
+                        </select>
+                      )}
                     </td>
 
-                    <td className="border border-gray-300 p-2 font-bold text-gray-700">
-                      {item.escaneado_por || "-"}
-                    </td>
-
+                    <td className="border border-gray-300 p-2 font-bold text-gray-700">{item.escaneado_por || "-"}</td>
                     <td className="border border-gray-300 p-2">{item.autoriza}</td>
-                    <td className="border border-gray-300 p-2">{item.enviar_a}</td>
                     <td className="border border-gray-300 p-2 font-semibold text-blue-700">{formatearTiempo(item.duracion_segundos)}</td>
                     
                     <td className="border border-gray-300 p-2 text-center">
