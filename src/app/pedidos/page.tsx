@@ -43,10 +43,10 @@ export default function PanelPedidos() {
   const [listaMinutarioNC, setListaMinutarioNC] = useState<any[]>([]);
   const [listaSolicitudesNC, setListaSolicitudesNC] = useState<any[]>([]);
 
+  // ESTADOS RESTAURADOS PARA LA ALERTA EMERGENTE Y EL TIMBRE
   const [pedidoCriticoActual, setPedidoCriticoActual] = useState<Pedido | null>(null);
   const [alarmaActiva, setAlarmaActiva] = useState(false);
   
-  // ESTADO ANTI-DOBLE CLIC PARA EVITAR SALIDAS DUPLICADAS
   const [procesandoSalidaId, setProcesandoSalidaId] = useState<string | number | null>(null);
 
   useEffect(() => {
@@ -58,7 +58,8 @@ export default function PanelPedidos() {
       const usuarioParsed = JSON.parse(sesion);
       setUsuarioActual(usuarioParsed);
 
-      if (usuarioParsed.rol === "OPERATIVO" && typeof window !== "undefined" && "Notification" in window) {
+      const esExterno = usuarioParsed.rol === "EXTERNO" || usuarioParsed.nombre.includes("Cinthia") || usuarioParsed.nombre.includes("Enrique");
+      if (!esExterno && typeof window !== "undefined" && "Notification" in window) {
         if (Notification.permission !== "granted") {
           Notification.requestPermission();
         }
@@ -77,10 +78,7 @@ export default function PanelPedidos() {
       let hayMas = true;
       while (hayMas) {
         const { data, error } = await supabase.from(tabla).select("*").range(inicio, inicio + limite - 1);
-        if (error) {
-          console.error(`Error al cargar ${tabla}:`, error);
-          break;
-        }
+        if (error) break;
         if (data && data.length > 0) {
           todos = [...todos, ...data];
           if (data.length < limite) hayMas = false;
@@ -127,10 +125,7 @@ export default function PanelPedidos() {
         .select("*")
         .order("id", { ascending: true });
 
-      if (error) {
-        console.error("Error al cargar pedidos:", error);
-        return;
-      }
+      if (error) return;
 
       if (data) {
         await procesarYActualizarPedidos(data);
@@ -385,6 +380,7 @@ export default function PanelPedidos() {
     const esExterno = usuarioObj && (usuarioObj.rol === "EXTERNO" || usuarioObj.nombre.includes("Cinthia") || usuarioObj.nombre.includes("Enrique"));
     const esOperativo = usuarioObj && usuarioObj.rol === "OPERATIVO" && !esExterno;
 
+    // ACTIVACIÓN DE LA ALERTA EMERGENTE Y TIMBRE PARA OPERATIVOS
     const primerPendiente = listaConTomosUnificados.find(p => p.estado === "Pendiente");
     if (primerPendiente && esOperativo) {
       setPedidoCriticoActual(primerPendiente);
@@ -424,10 +420,17 @@ export default function PanelPedidos() {
   };
 
   const cambiarEstado = async (id: string | number) => {
-    if (usuarioActual?.rol !== "OPERATIVO") return;
+    // RESTRICCIÓN: LOS EXTERNOS NO PUEDEN CAMBIAR ESTADOS
+    const sesion = localStorage.getItem("usuarioLogueado");
+    const usuarioObj = sesion ? JSON.parse(sesion) : null;
+    const esExterno = usuarioObj && (usuarioObj.rol === "EXTERNO" || usuarioObj.nombre.includes("Cinthia") || usuarioObj.nombre.includes("Enrique"));
+    if (esExterno) {
+      alert("⚠️ Los usuarios externos solo tienen acceso de visualización.");
+      return;
+    }
 
     const ahora = Date.now();
-    const nombreOperador = usuarioActual ? usuarioActual.nombre : "Personal de Archivo";
+    const nombreOperador = usuarioObj ? usuarioObj.nombre : "Personal de Archivo";
     const pedidoActual = pedidos.find(p => p.id === id);
     if (!pedidoActual) return;
 
@@ -473,13 +476,15 @@ export default function PanelPedidos() {
   };
 
   const enviarA_Salidas = async (pedido: Pedido) => {
-    if (usuarioActual?.rol !== "OPERATIVO") return;
+    const sesion = localStorage.getItem("usuarioLogueado");
+    const usuarioObj = sesion ? JSON.parse(sesion) : null;
+    const esExterno = usuarioObj && (usuarioObj.rol === "EXTERNO" || usuarioObj.nombre.includes("Cinthia") || usuarioObj.nombre.includes("Enrique"));
+    if (esExterno) return;
     
-    // BLOQUEO ANTI-DOBLE CLIC
     if (procesandoSalidaId === pedido.id) return;
 
     const anioBuscado = pedido.anio || "2026";
-    const operadorActual = usuarioActual ? usuarioActual.nombre : "Archivo";
+    const operadorActual = usuarioObj ? usuarioObj.nombre : "Archivo";
     
     const tomosElegidos = [pedido.tomoSeleccionado1, pedido.tomoSeleccionado2].filter((t): t is string => Boolean(t && t.trim() !== ""));
     if (tomosElegidos.length === 0) {
@@ -487,7 +492,6 @@ export default function PanelPedidos() {
       return;
     }
 
-    // ACTIVAMOS EL ESTADO DE PROCESAMIENTO PARA ESTE PEDIDO
     setProcesandoSalidaId(pedido.id);
 
     let registrosSalidaParaInsertar: any[] = [];
@@ -562,7 +566,7 @@ export default function PanelPedidos() {
       if (error) {
         console.error("Error al registrar salidas:", error);
         alert("No se pudo transferir a salidas en la nube.");
-        setProcesandoSalidaId(null); // Liberar botón en caso de error
+        setProcesandoSalidaId(null);
         return;
       }
 
@@ -570,13 +574,12 @@ export default function PanelPedidos() {
       window.location.href = "/salidas";
     } catch (e) {
       console.error("Error:", e);
-      setProcesandoSalidaId(null); // Liberar botón en caso de error
+      setProcesandoSalidaId(null);
       window.location.href = "/salidas";
     }
   };
 
   const exportarExcel = () => {
-    // También ajustado el Excel al orden: Escritura, Folio, Minuta/Acta
     let contenido = "ID\tSolicitante\tMotivo\tDocumento\tIncluye\tAño\tKardex\tEscritura\tFolio\tMinuta/Acta\tUbicación\tAtendido Por\tEstado\n";
     pedidosFiltrados.forEach(p => {
       contenido += `${p.id}\t${p.solicitante}\t${p.motivo}\t${p.documento}\t${p.incluye}\t${p.anio}\t${p.kardex}\t${p.instrumento || "-"}\t${p.folio || "-"}\t${p.minuta_acta || "-"}\t${p.tomoSugerido}\t${p.escaneado_por || "-"}\t${p.estado}\n`;
@@ -626,7 +629,12 @@ export default function PanelPedidos() {
   };
 
   if (!isMounted) return null;
-  const esOperativo = usuarioActual?.rol === "OPERATIVO";
+
+  const sesionActual = localStorage.getItem("usuarioLogueado");
+  const usuarioObj = sesionActual ? JSON.parse(sesionActual) : null;
+  const esExterno = usuarioObj && (usuarioObj.rol === "EXTERNO" || usuarioObj.nombre.includes("Cinthia") || usuarioObj.nombre.includes("Enrique"));
+  const esOperativo = !esExterno;
+
   const pedidosFiltrados = pedidos.filter(p => {
     const texto = busqueda.toLowerCase();
     return (
@@ -642,13 +650,32 @@ export default function PanelPedidos() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 relative">
+
+      {/* MODAL / ALERTA EMERGENTE DE PEDIDO CRÍTICO PARA OPERATIVOS */}
+      {alarmaActiva && pedidoCriticoActual && esOperativo && (
+        <div className="fixed top-4 right-4 z-50 bg-red-600 text-white p-4 rounded-lg shadow-2xl border-2 border-white animate-bounce max-w-sm">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-xl">🚨</span>
+            <h3 className="font-black text-sm uppercase">¡Nuevo Pedido Pendiente!</h3>
+          </div>
+          <p className="text-xs mb-2">Solicitante: <strong>{pedidoCriticoActual.solicitante}</strong></p>
+          <p className="text-xs mb-3">Doc: {pedidoCriticoActual.documento} (Kardex: {pedidoCriticoActual.kardex})</p>
+          <button 
+            onClick={() => setAlarmaActiva(false)} 
+            className="w-full bg-white text-red-700 font-bold py-1 rounded text-xs hover:bg-gray-100 transition-colors"
+          >
+            Silenciar / Entendido
+          </button>
+        </div>
+      )}
+
       <div className="w-full max-w-[95%] mx-auto bg-white shadow-md rounded-sm overflow-hidden p-6">
         
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-6 mb-6 gap-4">
           <div>
             <h1 className="text-2xl font-bold text-[#243c5a]">Panel de Control - Archivo Central y Pedidos (Nube)</h1>
             <p className="text-sm text-gray-500 mt-1">
-              {esOperativo ? "Gestión de pedidos con búsqueda automática y selección desplegable." : "Modo Consulta."}
+              {esOperativo ? "Gestión de pedidos con búsqueda automática y selección desplegable." : "Modo Consulta Externa (Solo Visualización)."}
             </p>
           </div>
           
@@ -704,11 +731,10 @@ export default function PanelPedidos() {
                 <th className="border border-gray-300 p-2">Incluye</th>
                 <th className="border border-gray-300 p-2">Año</th>
                 <th className="border border-gray-300 p-2">N° Kardex</th>
-                {/* ORDEN CORREGIDO AQUÍ */}
                 <th className="border border-gray-300 p-2">N° Escritura</th>
                 <th className="border border-gray-300 p-2">N° Folio</th>
                 <th className="border border-gray-300 p-2">N° Minuta/Acta</th>
-                <th className="border border-gray-300 p-2 bg-indigo-900">Ubicación (Búsqueda Automática + Desplegables)</th>
+                <th className="border border-gray-300 p-2 bg-indigo-900">Ubicación (Búsqueda Automática)</th>
                 <th className="border border-gray-300 p-2">Atendido Por</th>
                 <th className="border border-gray-300 p-2">Abogado</th>
                 <th className="border border-gray-300 p-2 bg-blue-900">Duración</th>
@@ -743,56 +769,65 @@ export default function PanelPedidos() {
                     <td className="border border-gray-300 p-2 font-semibold text-purple-700">{item.incluye || "-"}</td>
                     <td className="border border-gray-300 p-2">{item.anio}</td>
                     <td className="border border-gray-300 p-2 font-semibold">{item.kardex || "-"}</td>
-                    {/* ORDEN CORREGIDO AQUÍ TAMBIÉN */}
                     <td className="border border-gray-300 p-2">{item.instrumento || "-"}</td>
                     <td className="border border-gray-300 p-2">{item.folio || "-"}</td>
                     <td className="border border-gray-300 p-2">{item.minuta_acta || "-"}</td>
                     
+                    {/* UBICACIÓN: SI ES EXTERNO SE MUESTRA COMO TEXTO FIJO, SI ES OPERATIVO PUEDE SELECCIONARSE */}
                     <td className="border border-gray-300 p-2 bg-indigo-50 space-y-1">
-                      <select 
-                        value={item.tomoSeleccionado1 || ""}
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          setPedidos(prev => prev.map(p => p.id === item.id ? { ...p, tomoSeleccionado1: val } : p));
-                        }}
-                        className="w-full bg-white border border-indigo-300 rounded p-1 text-[10px] font-bold text-indigo-950 outline-none"
-                      >
-                        <option value="">-- Seleccionar Principal --</option>
-                        {configPrincipal.lista.map((x, idx) => {
-                          const valorTomo = x.TOMO ?? x.Tomo ?? x.tomo ?? x.ACTA ?? x.Acta ?? x.acta ?? x.ANEXO ?? x.Anexo ?? x.anexo ?? x.id;
-                          const esActa = configPrincipal.lbl.toLowerCase().includes("acta") || String(valorTomo).toLowerCase().includes("acta");
-                          const prefijo = esActa ? "ACTA " : "Tomo ";
-                          return (
-                            <option key={`prin-${idx}`} value={`${prefijo}${valorTomo} (${configPrincipal.lbl})`}>
-                              {prefijo}{valorTomo} (Año {x.AÑO ?? x.Año ?? x.anio ?? 'S/A'})
-                            </option>
-                          );
-                        })}
-                        <option value={item.tomoSeleccionado1}>{item.tomoSeleccionado1 || "Actual (Automático)"}</option>
-                      </select>
+                      {esExterno ? (
+                        <div className="text-left font-bold text-indigo-950 text-[10px] p-1">
+                          📍 {item.tomoSeleccionado1 || item.tomoSugerido || "Calculando..."}
+                          {item.tomoSeleccionado2 && <div className="text-purple-800">+ {item.tomoSeleccionado2}</div>}
+                        </div>
+                      ) : (
+                        <>
+                          <select 
+                            value={item.tomoSeleccionado1 || ""}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setPedidos(prev => prev.map(p => p.id === item.id ? { ...p, tomoSeleccionado1: val } : p));
+                            }}
+                            className="w-full bg-white border border-indigo-300 rounded p-1 text-[10px] font-bold text-indigo-950 outline-none"
+                          >
+                            <option value="">-- Seleccionar Principal --</option>
+                            {configPrincipal.lista.map((x, idx) => {
+                              const valorTomo = x.TOMO ?? x.Tomo ?? x.tomo ?? x.ACTA ?? x.Acta ?? x.acta ?? x.ANEXO ?? x.Anexo ?? x.anexo ?? x.id;
+                              const esActa = configPrincipal.lbl.toLowerCase().includes("acta") || String(valorTomo).toLowerCase().includes("acta");
+                              const prefijo = esActa ? "ACTA " : "Tomo ";
+                              return (
+                                <option key={`prin-${idx}`} value={`${prefijo}${valorTomo} (${configPrincipal.lbl})`}>
+                                  {prefijo}{valorTomo} (Año {x.AÑO ?? x.Año ?? x.anio ?? 'S/A'})
+                                </option>
+                              );
+                            })}
+                            <option value={item.tomoSeleccionado1}>{item.tomoSeleccionado1 || "Actual (Automático)"}</option>
+                          </select>
 
-                      {configAnexo && (
-                        <select 
-                          value={item.tomoSeleccionado2 || ""}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            setPedidos(prev => prev.map(p => p.id === item.id ? { ...p, tomoSeleccionado2: val } : p));
-                          }}
-                          className="w-full bg-purple-50 border border-purple-300 rounded p-1 text-[10px] font-bold text-purple-950 outline-none"
-                        >
-                          <option value="">-- Seleccionar Anexo --</option>
-                          {configAnexo.lista.map((x, idx) => {
-                            const valorTomo = x.TOMO ?? x.Tomo ?? x.tomo ?? x.ACTA ?? x.Acta ?? x.acta ?? x.ANEXO ?? x.Anexo ?? x.anexo ?? x.id;
-                            const esActa = configAnexo.lbl.toLowerCase().includes("acta") || String(valorTomo).toLowerCase().includes("acta");
-                            const prefijo = esActa ? "ACTA " : "Tomo ";
-                            return (
-                              <option key={`anx-${idx}`} value={`${prefijo}${valorTomo} (${configAnexo.lbl})`}>
-                                {prefijo}{valorTomo} (Año {x.AÑO ?? x.Año ?? x.anio ?? 'S/A'})
-                              </option>
-                            );
-                          })}
-                          <option value={item.tomoSeleccionado2}>{item.tomoSeleccionado2 || "Anexo (Automático)"}</option>
-                        </select>
+                          {configAnexo && (
+                            <select 
+                              value={item.tomoSeleccionado2 || ""}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                setPedidos(prev => prev.map(p => p.id === item.id ? { ...p, tomoSeleccionado2: val } : p));
+                              }}
+                              className="w-full bg-purple-50 border border-purple-300 rounded p-1 text-[10px] font-bold text-purple-950 outline-none"
+                            >
+                              <option value="">-- Seleccionar Anexo --</option>
+                              {configAnexo.lista.map((x, idx) => {
+                                const valorTomo = x.TOMO ?? x.Tomo ?? x.tomo ?? x.ACTA ?? x.Acta ?? x.acta ?? x.ANEXO ?? x.Anexo ?? x.anexo ?? x.id;
+                                const esActa = configAnexo.lbl.toLowerCase().includes("acta") || String(valorTomo).toLowerCase().includes("acta");
+                                const prefijo = esActa ? "ACTA " : "Tomo ";
+                                return (
+                                  <option key={`anx-${idx}`} value={`${prefijo}${valorTomo} (${configAnexo.lbl})`}>
+                                    {prefijo}{valorTomo} (Año {x.AÑO ?? x.Año ?? x.anio ?? 'S/A'})
+                                  </option>
+                                );
+                              })}
+                              <option value={item.tomoSeleccionado2}>{item.tomoSeleccionado2 || "Anexo (Automático)"}</option>
+                            </select>
+                          )}
+                        </>
                       )}
                     </td>
 
