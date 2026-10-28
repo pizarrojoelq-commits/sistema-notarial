@@ -45,6 +45,9 @@ export default function PanelPedidos() {
 
   const [pedidoCriticoActual, setPedidoCriticoActual] = useState<Pedido | null>(null);
   const [alarmaActiva, setAlarmaActiva] = useState(false);
+  
+  // ESTADO ANTI-DOBLE CLIC PARA EVITAR SALIDAS DUPLICADAS
+  const [procesandoSalidaId, setProcesandoSalidaId] = useState<string | number | null>(null);
 
   useEffect(() => {
     setIsMounted(true);
@@ -471,6 +474,9 @@ export default function PanelPedidos() {
 
   const enviarA_Salidas = async (pedido: Pedido) => {
     if (usuarioActual?.rol !== "OPERATIVO") return;
+    
+    // BLOQUEO ANTI-DOBLE CLIC
+    if (procesandoSalidaId === pedido.id) return;
 
     const anioBuscado = pedido.anio || "2026";
     const operadorActual = usuarioActual ? usuarioActual.nombre : "Archivo";
@@ -480,6 +486,9 @@ export default function PanelPedidos() {
       alert("⚠️ Debe seleccionar al menos un tomo válido antes de enviar a salidas.");
       return;
     }
+
+    // ACTIVAMOS EL ESTADO DE PROCESAMIENTO PARA ESTE PEDIDO
+    setProcesandoSalidaId(pedido.id);
 
     let registrosSalidaParaInsertar: any[] = [];
     let tomosActualizadosTexto: string[] = [];
@@ -553,6 +562,7 @@ export default function PanelPedidos() {
       if (error) {
         console.error("Error al registrar salidas:", error);
         alert("No se pudo transferir a salidas en la nube.");
+        setProcesandoSalidaId(null); // Liberar botón en caso de error
         return;
       }
 
@@ -560,14 +570,16 @@ export default function PanelPedidos() {
       window.location.href = "/salidas";
     } catch (e) {
       console.error("Error:", e);
+      setProcesandoSalidaId(null); // Liberar botón en caso de error
       window.location.href = "/salidas";
     }
   };
 
   const exportarExcel = () => {
-    let contenido = "ID\tSolicitante\tMotivo\tDocumento\tIncluye\tAño\tKardex\tEscritura\tMinuta/Acta\tFolio\tUbicación\tAtendido Por\tEstado\n";
+    // También ajustado el Excel al orden: Escritura, Folio, Minuta/Acta
+    let contenido = "ID\tSolicitante\tMotivo\tDocumento\tIncluye\tAño\tKardex\tEscritura\tFolio\tMinuta/Acta\tUbicación\tAtendido Por\tEstado\n";
     pedidosFiltrados.forEach(p => {
-      contenido += `${p.id}\t${p.solicitante}\t${p.motivo}\t${p.documento}\t${p.incluye}\t${p.anio}\t${p.kardex}\t${p.instrumento || "-"}\t${p.minuta_acta || "-"}\t${p.folio || "-"}\t${p.tomoSugerido}\t${p.escaneado_por || "-"}\t${p.estado}\n`;
+      contenido += `${p.id}\t${p.solicitante}\t${p.motivo}\t${p.documento}\t${p.incluye}\t${p.anio}\t${p.kardex}\t${p.instrumento || "-"}\t${p.folio || "-"}\t${p.minuta_acta || "-"}\t${p.tomoSugerido}\t${p.escaneado_por || "-"}\t${p.estado}\n`;
     });
     const blob = new Blob([contenido], { type: "application/vnd.ms-excel" });
     const url = URL.createObjectURL(blob);
@@ -692,9 +704,10 @@ export default function PanelPedidos() {
                 <th className="border border-gray-300 p-2">Incluye</th>
                 <th className="border border-gray-300 p-2">Año</th>
                 <th className="border border-gray-300 p-2">N° Kardex</th>
+                {/* ORDEN CORREGIDO AQUÍ */}
                 <th className="border border-gray-300 p-2">N° Escritura</th>
-                <th className="border border-gray-300 p-2">N° Minuta/Acta</th>
                 <th className="border border-gray-300 p-2">N° Folio</th>
+                <th className="border border-gray-300 p-2">N° Minuta/Acta</th>
                 <th className="border border-gray-300 p-2 bg-indigo-900">Ubicación (Búsqueda Automática + Desplegables)</th>
                 <th className="border border-gray-300 p-2">Atendido Por</th>
                 <th className="border border-gray-300 p-2">Abogado</th>
@@ -730,9 +743,10 @@ export default function PanelPedidos() {
                     <td className="border border-gray-300 p-2 font-semibold text-purple-700">{item.incluye || "-"}</td>
                     <td className="border border-gray-300 p-2">{item.anio}</td>
                     <td className="border border-gray-300 p-2 font-semibold">{item.kardex || "-"}</td>
+                    {/* ORDEN CORREGIDO AQUÍ TAMBIÉN */}
                     <td className="border border-gray-300 p-2">{item.instrumento || "-"}</td>
-                    <td className="border border-gray-300 p-2">{item.minuta_acta || "-"}</td>
                     <td className="border border-gray-300 p-2">{item.folio || "-"}</td>
+                    <td className="border border-gray-300 p-2">{item.minuta_acta || "-"}</td>
                     
                     <td className="border border-gray-300 p-2 bg-indigo-50 space-y-1">
                       <select 
@@ -817,10 +831,15 @@ export default function PanelPedidos() {
                           {item.estado === "Listo para Recoger" && (
                             <button
                               onClick={() => enviarA_Salidas(item)}
+                              disabled={procesandoSalidaId === item.id}
                               type="button"
-                              className="w-full bg-cyan-600 hover:bg-cyan-700 text-white py-1 px-2 rounded text-[10px] font-bold shadow-sm cursor-pointer"
+                              className={`w-full text-white py-1 px-2 rounded text-[10px] font-bold shadow-sm ${
+                                procesandoSalidaId === item.id 
+                                  ? "bg-gray-400 cursor-not-allowed" 
+                                  : "bg-cyan-600 hover:bg-cyan-700 cursor-pointer"
+                              }`}
                             >
-                              Llevar a Entregar ✍️
+                              {procesandoSalidaId === item.id ? "Procesando..." : "Llevar a Entregar ✍️"}
                             </button>
                           )}
                         </div>
