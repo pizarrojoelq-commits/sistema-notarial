@@ -34,6 +34,7 @@ export default function PanelPedidos() {
   const [isMounted, setIsMounted] = useState(false);
   const [usuarioActual, setUsuarioActual] = useState<{ nombre: string; rol: string } | null>(null);
   const [busqueda, setBusqueda] = useState("");
+  const [idPedidoSilenciado, setIdPedidoSilenciado] = useState<string | number | null>(null);
   
   const [listaEscrituras, setListaEscrituras] = useState<any[]>([]);
   const [listaMinutas, setListaMinutas] = useState<any[]>([]);
@@ -380,15 +381,26 @@ export default function PanelPedidos() {
     const esExterno = usuarioObj && (usuarioObj.rol === "EXTERNO" || usuarioObj.nombre.includes("Cinthia") || usuarioObj.nombre.includes("Enrique"));
     const esOperativo = usuarioObj && usuarioObj.rol === "OPERATIVO" && !esExterno;
 
-    // ACTIVACIÓN DE LA ALERTA EMERGENTE Y TIMBRE PARA OPERATIVOS
+    // Buscamos el primer pedido pendiente
     const primerPendiente = listaConTomosUnificados.find(p => p.estado === "Pendiente");
+
     if (primerPendiente && esOperativo) {
-      setPedidoCriticoActual(primerPendiente);
-      setAlarmaActiva(true);
-      reproducirAlarmaConstante();
+      // SI ESTE PEDIDO YA FUE SILENCIADO ANTES, NO VOLVEMOS A ABRIR LA VENTANA
+      if (idPedidoSilenciado === primerPendiente.id) {
+        return; 
+      }
+
+      // Si es un pedido nuevo diferente al silenciado, activamos la alerta
+      if (!pedidoCriticoActual || pedidoCriticoActual.id !== primerPendiente.id) {
+        setPedidoCriticoActual(primerPendiente);
+        setAlarmaActiva(true);
+        reproducirAlarmaConstante();
+      }
     } else {
+      // Si ya no hay pendientes en la base de datos, limpiamos todo y reiniciamos el filtro de silencio
       setPedidoCriticoActual(null);
-      setAlarmaActiva(false);
+      setIdPedidoSilenciado(null);
+      detenerAlarma();
     }
   };
 
@@ -405,20 +417,32 @@ export default function PanelPedidos() {
     window.location.href = "/login";
   };
 
-  const reproducirAlarmaConstante = () => {
-    const sesion = localStorage.getItem("usuarioLogueado");
-    const usuarioObj = sesion ? JSON.parse(sesion) : null;
-    if (usuarioObj && (usuarioObj.rol === "EXTERNO" || usuarioObj.nombre.includes("Cinthia") || usuarioObj.nombre.includes("Enrique"))) return;
+  // INSTANCIA GLOBAL ÚNICA PARA EL AUDIO FUERA DEL COMPONENTE
+let audioAlerta: HTMLAudioElement | null = null;
 
-    try {
-      const audio = new Audio("/timbre.mp3"); 
-      audio.volume = 1.0; 
-      audio.play().catch(e => console.log("Audio esperando interacción:", e));
-    } catch (e) {
-      console.error("Error de audio:", e);
+const reproducirAlarmaConstante = () => {
+  const sesion = localStorage.getItem("usuarioLogueado");
+  const usuarioObj = sesion ? JSON.parse(sesion) : null;
+  if (usuarioObj && (usuarioObj.rol === "EXTERNO" || usuarioObj.nombre.includes("Cinthia") || usuarioObj.nombre.includes("Enrique"))) return;
+
+  try {
+    if (!audioAlerta) {
+      audioAlerta = new Audio("/timbre.mp3");
+      audioAlerta.loop = true;
     }
-  };
+    audioAlerta.volume = 1.0;
+    audioAlerta.play().catch(e => console.log("Audio esperando interacción:", e));
+  } catch (e) {
+    console.error("Error de audio:", e);
+  }
+};
 
+const detenerAlarma = () => {
+  if (audioAlerta) {
+    audioAlerta.pause();
+    audioAlerta.currentTime = 0;
+  }
+};
   const cambiarEstado = async (id: string | number) => {
     // RESTRICCIÓN: LOS EXTERNOS NO PUEDEN CAMBIAR ESTADOS
     const sesion = localStorage.getItem("usuarioLogueado");
@@ -651,20 +675,25 @@ export default function PanelPedidos() {
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 relative">
 
-      {/* MODAL / ALERTA EMERGENTE DE PEDIDO CRÍTICO PARA OPERATIVOS */}
+      {/* ALERTA EMERGENTE DE PEDIDO CRÍTICO */}
       {alarmaActiva && pedidoCriticoActual && esOperativo && (
-        <div className="fixed top-4 right-4 z-50 bg-red-600 text-white p-4 rounded-lg shadow-2xl border-2 border-white animate-bounce max-w-sm">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xl">🚨</span>
-            <h3 className="font-black text-sm uppercase">¡Nuevo Pedido Pendiente!</h3>
+        <div className="fixed top-6 right-6 z-50 bg-red-600 text-white p-5 rounded-xl shadow-2xl border-4 border-white animate-bounce max-w-md w-full">
+          <div className="flex items-center gap-3 mb-2">
+            <span className="text-2xl">🚨</span>
+            <h3 className="font-black text-base uppercase tracking-wide">¡Nuevo Pedido Pendiente!</h3>
           </div>
-          <p className="text-xs mb-2">Solicitante: <strong>{pedidoCriticoActual.solicitante}</strong></p>
-          <p className="text-xs mb-3">Doc: {pedidoCriticoActual.documento} (Kardex: {pedidoCriticoActual.kardex})</p>
+          <p className="text-xs mb-1">Solicitante: <strong className="text-sm">{pedidoCriticoActual.solicitante}</strong></p>
+          <p className="text-xs mb-4">Documento: <strong>{pedidoCriticoActual.documento}</strong> (Kardex: {pedidoCriticoActual.kardex})</p>
           <button 
-            onClick={() => setAlarmaActiva(false)} 
-            className="w-full bg-white text-red-700 font-bold py-1 rounded text-xs hover:bg-gray-100 transition-colors"
+            onClick={() => {
+              if (pedidoCriticoActual) {
+                setIdPedidoSilenciado(pedidoCriticoActual.id); // Guarda el ID para que no vuelva a salir
+              }
+              detenerAlarma(); // Apaga el sonido y borra la ventana para siempre de este pedido
+            }} 
+            className="w-full bg-white text-red-700 font-extrabold py-2 rounded-lg text-xs hover:bg-gray-100 transition-colors shadow-md cursor-pointer uppercase tracking-wider"
           >
-            Silenciar / Entendido
+            Silenciar / Entendido 🔕
           </button>
         </div>
       )}
