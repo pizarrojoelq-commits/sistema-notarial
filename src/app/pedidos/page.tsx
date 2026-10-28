@@ -35,7 +35,6 @@ export default function PanelPedidos() {
   const [usuarioActual, setUsuarioActual] = useState<{ nombre: string; rol: string } | null>(null);
   const [busqueda, setBusqueda] = useState("");
   
-  // LAS 7 TABLAS DE INVENTARIO BASADAS EN TU BASE DE DATOS SUPABASE
   const [listaEscrituras, setListaEscrituras] = useState<any[]>([]);
   const [listaMinutas, setListaMinutas] = useState<any[]>([]);
   const [listaNoContenciosos, setListaNoContenciosos] = useState<any[]>([]);
@@ -67,24 +66,43 @@ export default function PanelPedidos() {
     cargarPedidosNube();
   }, []);
 
+  // DESCARGA COMPLETA Y SIN LÍMITES CON BUCLE DE PAGINACIÓN
   const cargarCatalogosInventario = async () => {
-    try {
-      const { data: esc } = await supabase.from("inv_escrituras").select("TOMO, AÑO");
-      const { data: min } = await supabase.from("inv_minutas").select("TOMO, AÑO");
-      const { data: nc } = await supabase.from("inv_no_contenciosos").select("TOMO, AÑO");
-      const { data: veh } = await supabase.from("inv_vehiculares").select("TOMO, AÑO");
-      const { data: actVeh } = await supabase.from("inv_actas_vehiculares").select("TOMO, ACTA, AÑO");
-      const { data: minNC } = await supabase.from("inv_minutario_no_contenciosos").select("TOMO, AÑO");
-      const { data: solNC } = await supabase.from("inv_solicitudes_no_contenciosos").select("TOMO, ANEXO, AÑO");
+    const fetchTodo = async (tabla: string) => {
+      let todos: any[] = [];
+      let inicio = 0;
+      const limite = 1000;
+      let hayMas = true;
+      while (hayMas) {
+        const { data, error } = await supabase.from(tabla).select("*").range(inicio, inicio + limite - 1);
+        if (error) {
+          console.error(`Error al cargar ${tabla}:`, error);
+          break;
+        }
+        if (data && data.length > 0) {
+          todos = [...todos, ...data];
+          if (data.length < limite) hayMas = false;
+          else inicio += limite;
+        } else {
+          hayMas = false;
+        }
+      }
+      return todos;
+    };
 
-      // ORDENAMIENTO MATEMÁTICO PERFECTO EXTRAIYENDO SOLO NÚMEROS
+    try {
+      const esc = await fetchTodo("inv_escrituras");
+      const min = await fetchTodo("inv_minutas");
+      const nc = await fetchTodo("inv_no_contenciosos");
+      const veh = await fetchTodo("inv_vehiculares");
+      const actVeh = await fetchTodo("inv_actas_vehiculares");
+      const minNC = await fetchTodo("inv_minutario_no_contenciosos");
+      const solNC = await fetchTodo("inv_solicitudes_no_contenciosos");
+
       const ordenarNumericamente = (a: any, b: any) => {
-        const valA = String(a.TOMO ?? a.ACTA ?? a.ANEXO ?? "0");
-        const valB = String(b.TOMO ?? b.ACTA ?? b.ANEXO ?? "0");
-        const matchA = valA.match(/\d+/);
-        const matchB = valB.match(/\d+/);
-        const numA = matchA ? parseInt(matchA[0], 10) : 0;
-        const numB = matchB ? parseInt(matchB[0], 10) : 0;
+        const getVal = (item: any) => String(item.TOMO ?? item.Tomo ?? item.tomo ?? item.ACTA ?? item.Acta ?? item.acta ?? item.ANEXO ?? item.Anexo ?? item.anexo ?? item.id ?? "0");
+        const numA = parseInt(getVal(a).match(/\d+/) ? getVal(a).match(/\d+/)![0] : "0", 10);
+        const numB = parseInt(getVal(b).match(/\d+/) ? getVal(b).match(/\d+/)![0] : "0", 10);
         return numA - numB;
       };
 
@@ -507,7 +525,6 @@ export default function PanelPedidos() {
             tablaActualizada = "Minutas";
           } 
           else if (textoLower.includes("no contencioso")) {
-            // Verifica si es minutario o solicitud
             if (textoLower.includes("minutario")) {
               await supabase.from("inv_minutario_no_contenciosos").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
               tablaActualizada = "Minutario No Contenciosos";
@@ -520,7 +537,7 @@ export default function PanelPedidos() {
             }
           } 
           else if (textoLower.includes("vehicular") || textoLower.includes("acta")) {
-            await supabase.from("inv_actas_vehiculares").update({ ESTADO: "NO DISPONIBLE" }).eq("TOMO", numeroTomo);
+            await supabase.from("inv_actas_vehiculares").update({ ESTADO: "NO DISPONIBLE" }).eq("ACTA", numeroTomo); // Cambiado a ACTA por tu estructura
             tablaActualizada = "Vehiculares/Actas";
           }
 
@@ -569,7 +586,6 @@ export default function PanelPedidos() {
     return `${mins}m ${segs}s`;
   };
 
-  // FUNCIONES AUXILIARES PARA DETERMINAR QUÉ LISTA MOSTRAR EN LOS DESPLEGABLES SEGÚN EL DOCUMENTO
   const obtenerOpcionesPrincipal = (doc: string) => {
     const d = (doc || "").toLowerCase();
     if ((d.includes("solicitud") || d.includes("solicitudes")) && d.includes("no contencioso")) return { lista: listaSolicitudesNC, lbl: "Solicitudes NC" };
@@ -701,7 +717,6 @@ export default function PanelPedidos() {
                 else if (item.estado === "Listo para Recoger") rowStyle = "bg-cyan-100 transition-colors"; 
                 else if (item.estado === "Atendido" || item.estado === "Entregado") rowStyle = "bg-green-200 text-gray-900 font-medium transition-colors"; 
 
-                // Resolvemos qué listas mostrar basándonos en el documento
                 const configPrincipal = obtenerOpcionesPrincipal(item.documento);
                 const configAnexo = obtenerOpcionesAnexo(item.documento, item.incluye);
 
@@ -716,7 +731,6 @@ export default function PanelPedidos() {
                     <td className="border border-gray-300 p-2 font-semibold">{item.kardex}</td>
                     <td className="border border-gray-300 p-2">{item.folio || item.minuta_acta || "-"}</td>
                     
-                    {/* DESPLEGABLES CON AUTO-SELECCIÓN Y OPCIÓN DE CAMBIO DESDE SUPABASE */}
                     <td className="border border-gray-300 p-2 bg-indigo-50 space-y-1">
                       <select 
                         value={item.tomoSeleccionado1 || ""}
@@ -728,11 +742,12 @@ export default function PanelPedidos() {
                       >
                         <option value="">-- Seleccionar Principal --</option>
                         {configPrincipal.lista.map((x, idx) => {
-                          const valorTomo = x.TOMO || x.ACTA || x.ANEXO;
-                          const esActa = String(valorTomo).toLowerCase().includes("acta");
+                          const valorTomo = x.TOMO ?? x.Tomo ?? x.tomo ?? x.ACTA ?? x.Acta ?? x.acta ?? x.ANEXO ?? x.Anexo ?? x.anexo ?? x.id;
+                          const esActa = configPrincipal.lbl.toLowerCase().includes("acta") || String(valorTomo).toLowerCase().includes("acta");
+                          const prefijo = esActa ? "ACTA " : "Tomo ";
                           return (
-                            <option key={`prin-${idx}`} value={`${esActa ? '' : 'Tomo '}${valorTomo} (${configPrincipal.lbl})`}>
-                              {esActa ? '' : 'Tomo '} {valorTomo} (Año {x.AÑO || 'S/A'})
+                            <option key={`prin-${idx}`} value={`${prefijo}${valorTomo} (${configPrincipal.lbl})`}>
+                              {prefijo}{valorTomo} (Año {x.AÑO ?? x.Año ?? x.anio ?? 'S/A'})
                             </option>
                           );
                         })}
@@ -750,11 +765,12 @@ export default function PanelPedidos() {
                         >
                           <option value="">-- Seleccionar Anexo --</option>
                           {configAnexo.lista.map((x, idx) => {
-                            const valorTomo = x.TOMO || x.ACTA || x.ANEXO;
-                            const esActa = String(valorTomo).toLowerCase().includes("acta");
+                            const valorTomo = x.TOMO ?? x.Tomo ?? x.tomo ?? x.ACTA ?? x.Acta ?? x.acta ?? x.ANEXO ?? x.Anexo ?? x.anexo ?? x.id;
+                            const esActa = configAnexo.lbl.toLowerCase().includes("acta") || String(valorTomo).toLowerCase().includes("acta");
+                            const prefijo = esActa ? "ACTA " : "Tomo ";
                             return (
-                              <option key={`anx-${idx}`} value={`${esActa ? '' : 'Tomo '}${valorTomo} (${configAnexo.lbl})`}>
-                                {esActa ? '' : 'Tomo '} {valorTomo} (Año {x.AÑO || 'S/A'})
+                              <option key={`anx-${idx}`} value={`${prefijo}${valorTomo} (${configAnexo.lbl})`}>
+                                {prefijo}{valorTomo} (Año {x.AÑO ?? x.Año ?? x.anio ?? 'S/A'})
                               </option>
                             );
                           })}
